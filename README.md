@@ -1,19 +1,19 @@
 # Practise
 <strong>Todo: </strong></br>
 For [R] </br>
-<strike>1. Create database by MySQL contains tables such as "patient", "diagnoses", "list_d", pictures", "evidences", "objects", "dye_types",  "preparation_types"</strike>, "public_info" </br>
-<strike>1a. diagnoses has id, name, death_rate </br></strike>
+<strike>1. Create database by MySQL contains tables such as "patient", "diagnoses", "list_d", pictures", "evidences", "objects", "dye_types",  "preparation_types", "public_info" </br>
+1a. diagnoses has id, name, death_rate </br>
 1b. list_d (means list of diagnoses) has id, diagnosis_id(FOREIGN_KEY to id of diagnosis),public_info_id(FOREIGN_KEY to id of public_info) </br>
-<strike><i>Lis_d needs for some anonymization.</i></br>
-1c. patient( is private table) has id, fullname, birth_date, sex, health_insurance_id, unique_val </br></strike>
+<i>Lis_d needs for some anonymization.</i></br>
+1c. patient( is private table) has id, fullname, birth_date, sex, health_insurance_id, unique_val </br>
 <i>unique_val is BLOB</i></br>
 1d. pictures has id, picture, dye_types_id(FOREIGN_KEY to id of dye_types), zoom_index, preparation_types_id(FOREIGN_KEY to id of preparation_types), description, list_d_id(FOREIGN_KEY to id of list_d), is_a_part_of, top_left_coordinate  </br>
-<strike>1e. evidences has id, name, picture_id(FOREIGN_KEY to id of pictures) </br>
+1e. evidences has id, name, picture_id(FOREIGN_KEY to id of pictures) </br>
 1f. objects has id, string_data, evidence_id(FOREIGN_KEY to id of evidences) </br>
 1g. dye_types has id, name  </br>
-1h. preparations_types has id, name </strike> </br>
+1h. preparations_types has id, name </br>
 1i. public_info has id, age, sex, patient_uniq_val(FOREIGN_KEY to unique_val of patient)</br>
-<i>age is <strong>NOT</strong> a birth_date: age is integer,birth_date is date </i></br>
+<i>age is <strong>NOT</strong> a birth_date: age is integer,birth_date is date </i></br></strike>
 <i>Created in MySQL Workbench 6.3.3.0 32 bits</i></br>
 </br>
 For [I] </br>
