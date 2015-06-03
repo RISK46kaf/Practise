@@ -15,6 +15,12 @@ For [R] </br>
 1i. public_info has id, age, sex, patient_uniq_val(FOREIGN_KEY to unique_val of patient)</br>
 <i>age is <strong>NOT</strong> a birth_date: age is integer,birth_date is date </i></br></strike>
 <i>Created in MySQL Workbench 6.3.3.0 32 bits</i></br>
+2. Add to patient table photo as BLOB, phone_number as BIGINT, emaill as VARCHAR(255) </br></br>
+3a. Change in 'patient' table 'sex' type to BOOL (coz we ain't facebook to have more then 2 variation of sex) </br>
+3b. Rename in 'patient' table 'health_insurance_it' to health_insurance_id' </br>
+3c. Change in 'patient' table 'birth_date' type to DATE </br>
+3d. Rename in 'pictures' table 'left_top_coordinate' to 'coordinates_data' and change type of it to TEXT </br>
+3e. Change in 'object' table 'string_data' type to TEXT </br>
 </br>
 For [I] </br>
 Create program that afford:</br>
@@ -29,5 +35,5 @@ Create program that afford:</br>
 2. save their type and coordinates as string_data </br>
 3. save evidences list of selected areas</br>
 For [K] </br>
-1. Make report about work was done </br>
-2. Make info website based on (1) </br>
+1. Make report about diagnostics prostate oncology DSS that existing now</br>
+2. Make info website based on our project scope </br>
