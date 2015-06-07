@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/MyFiles">
+        <file>icons/add_image_ico.png</file>
+        <file>icons/add_info_ico.png</file>
+        <file>icons/del_info_ico.png</file>
+        <file>icons/diagnosis_ico.png</file>
+        <file>icons/edit_ico.png</file>
+        <file>icons/photo_ico.png</file>
+        <file>icons/personal_ico.png</file>
+        <file>icons/save_ico.png</file>
+        <file>icons/update_ico.png</file>
+    </qresource>
+</RCC>
