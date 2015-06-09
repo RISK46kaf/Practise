@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/MyFiles">
+        <file>logo.jpg</file>
+        <file>hosts</file>
+    </qresource>
+</RCC>
