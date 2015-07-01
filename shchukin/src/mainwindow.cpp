@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "storage.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,8 +17,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->scrollArea->setWidget(storage_);
     ui->frame_2->setLayout(ui->verticalLayout);
     storage_size_ = ui->scrollArea->size();
-    //ui->treeWidget->header() ->close ();
+    ui->treeWidget->header() ->close ();
     storage_->resize(storage_size_);
+    MakedFigure<Rect> tmp;
+    qDebug() << "\"MakedFigure<Rect> tmp;\ntmp.getFigure()\"\n//output:" << tmp.getFigure();
+    std::vector<MakedFigureInterface *> vector;
+    vector.push_back(&tmp);
+    qDebug() <<
+    "\"std::vector<MakedFigureInterface *> vector;\nvector.push_back(&tmp);\nvector[0]->getFigure()\"\n//output:"
+             <<  vector[0]->getFigure();
+    MakedFigure<Rect> tmp2 = * (reinterpret_cast<MakedFigure<Rect> *>(vector[0]));
 }
 
 MainWindow::~MainWindow()
@@ -63,8 +72,13 @@ void MainWindow::zoomChange(bool plus)
     storage_->setPixmap(_image);
     if(plus) storage_->scaleStorage(ZoomIn,s);
     else storage_->scaleStorage(ZoomOut,s);
-    ui->scrollArea->horizontalScrollBar()->setValue((ui->scrollArea->horizontalScrollBar()->maximum()+ui->scrollArea->horizontalScrollBar()->minimum())/2);
-    ui->scrollArea->verticalScrollBar()->setValue((ui->scrollArea->horizontalScrollBar()->maximum()+ui->scrollArea->horizontalScrollBar()->minimum())/2);
+    ui->scrollArea->horizontalScrollBar()->setValue(
+    (ui->scrollArea->horizontalScrollBar()->maximum()+
+     ui->scrollArea->horizontalScrollBar()->minimum())/2);
+
+    ui->scrollArea->verticalScrollBar()->setValue(
+    (ui->scrollArea->verticalScrollBar()->maximum()+
+     ui->scrollArea->verticalScrollBar()->minimum())/2);
 }
 void MainWindow::on_openButton_clicked()
 {

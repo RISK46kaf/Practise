@@ -29,7 +29,7 @@
      <height>649</height>
     </size>
    </property>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="layoutWidget1">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -89,8 +89,7 @@
               <height>497</height>
              </rect>
             </property>
-            <zorder>layoutWidget</zorder>
-            <zorder>layoutWidget</zorder>
+            <zorder>layoutWidget1</zorder>
            </widget>
           </widget>
          </item>
@@ -239,7 +238,13 @@
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidget"/>
+          <widget class="QTreeWidget" name="treeWidget">
+           <column>
+            <property name="text">
+             <string notr="true">1</string>
+            </property>
+           </column>
+          </widget>
          </item>
          <item>
           <widget class="QFrame" name="frame_10">
@@ -410,7 +415,7 @@
             <string notr="true">background-color: #505050;</string>
            </property>
            <property name="text">
-            <string>Ellipce</string>
+            <string>Ellipse</string>
            </property>
           </widget>
          </item>

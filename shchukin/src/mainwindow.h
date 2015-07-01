@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QScrollBar>
+#include "shape.h"
 
 class Storage;
 
