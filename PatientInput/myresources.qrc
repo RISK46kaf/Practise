@@ -10,4 +10,17 @@
         <file>icons/save_ico.png</file>
         <file>icons/update_ico.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>icons/Arrow_pointing_to_right_32.png</file>
+        <file>icons/Check_mark_32.png</file>
+        <file>icons/Cross_remove_sign_32.png</file>
+        <file>icons/Ellipse_outline_shape_variant_32.png</file>
+        <file>icons/open_image_file_32.png</file>
+        <file>icons/Pentagon__32.png</file>
+        <file>icons/Plus_zoom_or_search_symbol_of_interface_32.png</file>
+        <file>icons/Rectangular_shape_outline_32.png</file>
+        <file>icons/Save_Disk_32.png</file>
+        <file>icons/Search_32.png</file>
+        <file>icons/Zoom_out_32.png</file>
+    </qresource>
 </RCC>

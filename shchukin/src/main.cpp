@@ -1,10 +1,10 @@
-#include "mainwindow.h"
+#include "markingtools.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    MarkingTools w;
     w.show();
 
     return a.exec();

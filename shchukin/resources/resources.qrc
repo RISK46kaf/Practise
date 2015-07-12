@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Arrow_pointing_to_right_32.png</file>
+        <file>Ellipse_outline_shape_variant_32.png</file>
+        <file>open_image_file_32.png</file>
+        <file>Pentagon__32.png</file>
+        <file>Plus_zoom_or_search_symbol_of_interface_32.png</file>
+        <file>Rectangular_shape_outline_32.png</file>
+        <file>Search_32.png</file>
+        <file>Zoom_out_32.png</file>
+        <file>Check_mark_32.png</file>
+        <file>Save_Disk_32.png</file>
+        <file>Cross_remove_sign_32.png</file>
+    </qresource>
+</RCC>

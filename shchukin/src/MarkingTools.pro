@@ -4,25 +4,33 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = MarkingTools
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -std=c++1y
+QMAKE_CXXFLAGS += -std=c++11
 CONFIG += c++11
-
+#QMAKE_CXXFLAGS += -std=c++14
 #CONFIG += c++14
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     storage.cpp \
-    shape.cpp
+    shape.cpp \
+    mainpicdialog.cpp \
+    markingtools.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     storage.h \
-    shape.h
+    shape.h \
+    mainpicdialog.h \
+    markingtools.h
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    mainpicdialog.ui \
+    markingtools.ui
+
+RESOURCES += \
+    ../resources/resources.qrc
