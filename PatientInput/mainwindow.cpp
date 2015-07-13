@@ -50,9 +50,9 @@ MainWindow::MainWindow(QWidget *parent) :
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("127.0.0.1");
     db.setPort(3306);
-    db.setDatabaseName("mydb"); //название бд
-    db.setUserName("root");
-    db.setPassword("12345");
+    db.setDatabaseName("database.mwb"); //название бд
+    db.setUserName("admin");
+    db.setPassword("");
     if (db.open())
         qDebug() << "OK!";
     else
@@ -288,4 +288,6 @@ void MainWindow::on_saveButton_clicked()
         q.exec();
         qDebug()<<q.lastError().text();
     }
+
 }
+
