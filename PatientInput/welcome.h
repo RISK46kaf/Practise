@@ -30,7 +30,9 @@ private:
     Ui::Welcome *ui;
     bool auth_b;
 signals:
-    void auth();
+    void auth_i();
+    void auth_f();
+
 
 };
 

@@ -21,19 +21,22 @@ SOURCES += main.cpp\
     mainpicdialog.cpp \
     markingtools.cpp \
     shape.cpp \
-    storage.cpp
+    storage.cpp \
+    finder.cpp
 
 HEADERS  += mainwindow.h\
            welcome.h \
     mainpicdialog.h \
     markingtools.h \
     shape.h \
-    storage.h
+    storage.h \
+    finder.h
 
 FORMS    += mainwindow.ui\
             welcome.ui \
     mainpicdialog.ui \
-    markingtools.ui
+    markingtools.ui \
+    finder.ui
 
 
 RESOURCES += \

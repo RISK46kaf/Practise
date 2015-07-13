@@ -67,9 +67,14 @@ void Welcome::on_pushButton_clicked()
     //проверка введенного пароля
     QByteArray input_data = ui->lineEdit_3->text().toUtf8();
     QByteArray hash = QCryptographicHash::hash(input_data+salt+salt_local, QCryptographicHash::Sha3_256);
-    if(hash == def_pass)
+    if((hash == def_pass) && ui->comboBox->currentIndex() == 0)
     {
-        emit auth();
+        emit auth_i();
+        this->hide();
+    }
+    if((hash == def_pass) && ui->comboBox->currentIndex() == 1)
+    {
+        emit auth_f();
         this->hide();
     }
 

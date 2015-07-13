@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "welcome.h"
+#include "finder.h"
 
 #include <QApplication>
 
@@ -15,7 +16,13 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     //w.show();
-    QObject::connect(&v, SIGNAL(auth()),
+
+    Finder f;
+
+    QObject::connect(&v, SIGNAL(auth_i()),
                &w, SLOT(show()));
+
+    QObject::connect(&v, SIGNAL(auth_f()),
+               &f, SLOT(show()));
     return a.exec();
 }
