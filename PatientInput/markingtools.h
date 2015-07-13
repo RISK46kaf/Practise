@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MarkingTools_H
+#define MarkingTools_H
 
 #include <QMainWindow>
 #include <QFileDialog>
@@ -18,6 +18,8 @@ class MarkingTools : public QMainWindow
 
 public:
     explicit MarkingTools(QWidget *parent = 0);
+    void setImage(QPixmap);
+
     ~MarkingTools();
 private slots:
     void on_actionOpen_triggered();
@@ -62,4 +64,4 @@ private:
     Ui::MarkingTools *ui;
 };
 
-#endif // MAINWINDOW_H
+#endif // MarkingTools_H

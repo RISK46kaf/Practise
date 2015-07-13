@@ -11,6 +11,7 @@
 #include <QSqlQuery>
 #include <QFileDialog>
 #include <QGraphicsScene>
+#include "markingtools.h"
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +42,8 @@ private slots:
     void on_pushButtonAEP_clicked();
 
     void on_saveButton_clicked();
+
+    void on_addMarkButton_clicked();
 
 private:
     Ui::MainWindow *ui;

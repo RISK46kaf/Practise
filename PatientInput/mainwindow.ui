@@ -628,6 +628,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="addMarkButton">
+           <property name="text">
+            <string>Add Mark</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </widget>

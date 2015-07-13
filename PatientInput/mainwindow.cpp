@@ -160,7 +160,9 @@ void MainWindow::on_actionAdd_triggered()
 
     q.exec("select MAX(idpatient) from patient");
     q.next();
-    int idpatient=q.value(0).toInt() + 1;
+    int idpatient =0;
+    if(q.value(0).toInt()>0)
+        idpatient=q.value(0).toInt() + 1;
 
     QString health_insurance_id = ui->lineEditMI->text();
     QString phone_number = ui->lineEditPh->text();
@@ -203,6 +205,16 @@ void MainWindow::on_actionAdd_triggered()
         q.exec();
         qDebug()<<q.lastError().text();
     }
+
+    q.exec("select MAX(iddiagnoses) from diagnoses");
+    q.next();
+    int iddiagnoses=q.value(0).toInt() + 1;
+    q.prepare("insert into diagnoses values (:iddiagnoses,:name,:idpatient)");
+    q.bindValue(":iddiagnoses",iddiagnoses);
+    q.bindValue(":name",ui->textEdit->toPlainText());
+    q.bindValue(":idpatient",idpatient);
+    q.exec();
+    qDebug()<<q.lastError().text();
 }
 
 void MainWindow::on_loadButton_clicked()
@@ -225,6 +237,8 @@ void MainWindow::on_pushButtonAEP_clicked()
     {
         ui->listWidget->addItem(images_path[i]);
     }
+
+    ui->listWidget->setCurrentRow(0);
 }
 
 void MainWindow::on_saveButton_clicked()
@@ -245,7 +259,8 @@ void MainWindow::on_saveButton_clicked()
 
     q.exec("select MAX(idpatient) from patient");
     q.next();
-    int idpatient=q.value(0).toInt() + 1;
+
+      int  idpatient=q.value(0).toInt() + 1;
 
     QString health_insurance_id = ui->lineEditMI->text();
     QString phone_number = ui->lineEditPh->text();
@@ -274,7 +289,8 @@ void MainWindow::on_saveButton_clicked()
     {
         q.exec("select MAX(idpictures) from pictures");
         q.next();
-        int idpictures=q.value(0).toInt() + 1;
+
+         int  idpictures=q.value(0).toInt()+1;
 
         q.prepare("insert into pictures values (:idpictures,:description, :idpatient)");
         qDebug()<<idpatient;
@@ -289,5 +305,26 @@ void MainWindow::on_saveButton_clicked()
         qDebug()<<q.lastError().text();
     }
 
+    q.exec("select MAX(iddiagnoses) from diagnoses");
+    q.next();
+    int iddiagnoses=q.value(0).toInt() + 1;
+    q.prepare("insert into diagnoses values (:iddiagnoses,:name,:death, :idpatient)");
+    q.bindValue(":iddiagnoses",iddiagnoses);
+    int dr = ui->lineEditDR->text().toInt();
+    q.bindValue(":death",dr);
+    q.bindValue(":name",ui->textEdit->toPlainText());
+    q.bindValue(":idpatient",idpatient);
+    q.exec();
+    qDebug()<<q.lastError().text();
 }
 
+
+void MainWindow::on_addMarkButton_clicked()
+{
+    MarkingTools * mk = new MarkingTools(this);
+    QPixmap pix;
+    pix.load(ui->listWidget->currentItem()->text());
+    mk->setImage(pix);
+    mk->show();
+
+}

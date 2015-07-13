@@ -221,3 +221,10 @@ void MarkingTools::on_checkPartBox_toggled(bool checked)
 //        mainPic.exec();
     }
 }
+
+void MarkingTools::setImage(QPixmap img)
+{
+    _image = img;
+    enableDefineButtons();
+    autoZoom();
+}
