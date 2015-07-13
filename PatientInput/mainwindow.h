@@ -38,11 +38,14 @@ private slots:
 
     void on_loadButton_clicked();
 
+    void on_pushButtonAEP_clicked();
+
 private:
     Ui::MainWindow *ui;
     QSqlDatabase db;
-    QString image_path;
+    QString foto_path;
     QGraphicsScene* scene;
+    QStringList images_path;
 };
 
 #endif // MAINWINDOW_H

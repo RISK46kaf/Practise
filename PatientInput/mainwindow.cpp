@@ -154,7 +154,7 @@ void MainWindow::on_actionAdd_triggered()
         sex = 0;
     else
         sex = 1;
-     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
     uint unique_val=qrand()%10000;
 
 
@@ -169,30 +169,123 @@ void MainWindow::on_actionAdd_triggered()
     uint m = ui->comboBoxM->currentIndex()+1;
     uint d = ui->comboBoxM->currentIndex()+1;
     QDate birth_date = QDate(y,m,d);
-    QFile photo(image_path);
+    QFile photo(foto_path);
     photo.open(QIODevice::ReadOnly);
     QByteArray bytes = photo.readAll();
-    q.prepare("insert into patient(idpatient,fullname,birth_date,sex,health_insurance_id,unique_val,phone_number,email,photo) values (:idpatient,:fullname,:birth_date,:sex,:health_insurance_id,:unique_val,:phone_number,:email,:photo)");
+    q.prepare("insert into patient(idpatient,fullname,birth_date,sex,health_insurance_id,phone_number,email,photo) values (:idpatient,:fullname,:birth_date,:sex,:health_insurance_id,:phone_number,:email,:photo)");
     q.bindValue(":idpatient",idpatient);
     q.bindValue(":fullname",full_name);
     q.bindValue(":birth_date",birth_date);
     q.bindValue(":sex",sex);
     q.bindValue(":health_insurance_id",health_insurance_id);
-    q.bindValue(":unique_val",unique_val);
+    //q.bindValue(":unique_val",unique_val);
     q.bindValue(":phone_number",phone_number);
     q.bindValue(":email",email);
     q.bindValue(":photo",bytes);
     q.exec();
+    photo.close();
 
+    for(uint i=0;i<images_path.size();++i)
+    {
+        q.exec("select MAX(idpictures) from pictures");
+        q.next();
+        int idpictures=q.value(0).toInt() + 1;
+
+        q.prepare("insert into pictures values (:idpictures,:description, :idpatient)");
+        qDebug()<<idpatient;
+        qDebug()<<images_path[i];
+        QFile img(images_path[i]);
+        img.open(QIODevice::ReadOnly);
+        QByteArray bytesimg = img.readAll();
+        q.bindValue(":idpictures",idpictures);
+        q.bindValue(":idpatient",idpatient);
+        q.bindValue(":description",bytesimg);
+        q.exec();
+        qDebug()<<q.lastError().text();
+    }
 }
 
 void MainWindow::on_loadButton_clicked()
 {
-    image_path = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                 "/home",
-                                 tr("Images (*.png *.xpm *.jpg)"));
+    foto_path = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                             "/home",
+                                             tr("Images (*.png *.xpm *.jpg)"));
     QPixmap img;
-    img.load(image_path,"JPEG");
+    img.load(foto_path,"JPEG");
 
     scene->addPixmap(img);
+}
+
+void MainWindow::on_pushButtonAEP_clicked()
+{
+    images_path = QFileDialog::getOpenFileNames(this, tr("Open File"),
+                                                "/home",
+                                                tr("Images (*.png *.xpm *.jpg)"));
+    for(uint i=0;i<images_path.size();++i)
+    {
+        ui->listWidget->addItem(images_path[i]);
+    }
+}
+
+void MainWindow::on_saveButton_clicked()
+{
+    QSqlQuery q;
+    QString first_name = ui->lineEdit1n->text();
+    QString last_name = ui->lineEdit2n->text();
+    QString patronymic = ui->lineEdit3n->text();
+    QString full_name = first_name+" "+last_name+" "+patronymic;
+    bool sex;
+    if(ui->comboBoxS->currentIndex() == 0)
+        sex = 0;
+    else
+        sex = 1;
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    uint unique_val=qrand()%10000;
+
+
+    q.exec("select MAX(idpatient) from patient");
+    q.next();
+    int idpatient=q.value(0).toInt() + 1;
+
+    QString health_insurance_id = ui->lineEditMI->text();
+    QString phone_number = ui->lineEditPh->text();
+    QString email = ui->lineEditEm->text();
+    uint y = ui->spinBoxYr->value();
+    uint m = ui->comboBoxM->currentIndex()+1;
+    uint d = ui->comboBoxM->currentIndex()+1;
+    QDate birth_date = QDate(y,m,d);
+    QFile photo(foto_path);
+    photo.open(QIODevice::ReadOnly);
+    QByteArray bytes = photo.readAll();
+    q.prepare("insert into patient(idpatient,fullname,birth_date,sex,health_insurance_id,phone_number,email,photo) values (:idpatient,:fullname,:birth_date,:sex,:health_insurance_id,:phone_number,:email,:photo)");
+    q.bindValue(":idpatient",idpatient);
+    q.bindValue(":fullname",full_name);
+    q.bindValue(":birth_date",birth_date);
+    q.bindValue(":sex",sex);
+    q.bindValue(":health_insurance_id",health_insurance_id);
+    //q.bindValue(":unique_val",unique_val);
+    q.bindValue(":phone_number",phone_number);
+    q.bindValue(":email",email);
+    q.bindValue(":photo",bytes);
+    q.exec();
+    photo.close();
+
+    for(uint i=0;i<images_path.size();++i)
+    {
+        q.exec("select MAX(idpictures) from pictures");
+        q.next();
+        int idpictures=q.value(0).toInt() + 1;
+
+        q.prepare("insert into pictures values (:idpictures,:description, :idpatient)");
+        qDebug()<<idpatient;
+        qDebug()<<images_path[i];
+        QFile img(images_path[i]);
+        img.open(QIODevice::ReadOnly);
+        QByteArray bytesimg = img.readAll();
+        q.bindValue(":idpictures",idpictures);
+        q.bindValue(":idpatient",idpatient);
+        q.bindValue(":description",bytesimg);
+        q.exec();
+        qDebug()<<q.lastError().text();
+    }
 }
