@@ -51,11 +51,11 @@ protected:
     virtual void setStrData(FigureType figureType) = 0;
     QString _str_data;
 public:
-    int getEvidenceID()
+    int getEvidenceID() const
     {
         return _evidence_ID;
     }
-    uint getColor()
+    uint getColor() const
     {
         return _color;
     }
@@ -100,6 +100,7 @@ public:
         _figure_type = FigureType::EllipseFigure;
         setStrData(_figure_type);
     }
+//    virtual ~Ellipse();
     explicit Ellipse(QRect coordinates):_coordinates(coordinates)
     {
         _figure_type = FigureType::EllipseFigure;
@@ -112,7 +113,7 @@ public:
         setStrData(_figure_type);
     }
 
-    QRect getCoordinates()
+    QRect getCoordinates() const
     {
         return _coordinates;
     }
@@ -146,6 +147,7 @@ public:
         _figure_type = FigureType::RectFigure;
         setStrData(_figure_type);
     }
+//    virtual ~Rect(){}
 
     explicit Rect(QRect coordinates):_coordinates(coordinates)
     {
@@ -160,7 +162,7 @@ public:
         setStrData(_figure_type);
     }
 
-    QRect getCoordinates()
+    QRect getCoordinates() const
     {
         return _coordinates;
     }
@@ -218,6 +220,9 @@ public:
         setter();
     }
 
+//    virtual ~Shape()
+//    {}
+
     explicit Shape(T coordinates):_coordinates(coordinates)
     {
         setter();
@@ -229,7 +234,7 @@ public:
         setter();
     }
 
-    T getCoordinates()
+    T getCoordinates() const
     {
         return _coordinates;
     }
