@@ -6,8 +6,12 @@ Viewer::Viewer(QWidget *parent) :
     ui(new Ui::Viewer)
 {
     ui->setupUi(this);
+    ui->centralWidget->setLayout(ui->verticalLayout);
+    ui->frameTools->setLayout(ui->verticalLayoutInfo);
+    defaultToolsWidth = ui->frameTools->maximumWidth();
+    defaultPreviewHeight = ui->listWidget->maximumHeight();
     view_label = new QLabel();
-    ui->scrollArea->setWidget(view_label);
+//    ui->scrollAreaLeft->setWidget(view_label);
 }
 
 Viewer::~Viewer()
@@ -41,7 +45,47 @@ void Viewer::on_actionOpen_triggered()
 
 void Viewer::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-    QPixmap img;
-    img.load(item->text());
+    ///что за трэш ???
+//    QPixmap img;
+//    img.load(item->text());
+    ///
     //дальшеэто изображение выводить на экран
+}
+
+void Viewer::on_actionHide_ShowRight_triggered()
+{
+    QList< int > _sizes = ui->splitter_2->sizes() ;
+    if(!_sizes.last())
+    {
+        ui->actionHide_ShowRight->setIcon(QIcon(":/icons/Right_arrow_fold_button_32.png"));
+        _sizes.first() -= defaultToolsWidth;
+        _sizes.last() += defaultToolsWidth;
+        ui->splitter_2->setSizes(_sizes);
+    }
+    else
+    {
+        ui->actionHide_ShowRight->setIcon(QIcon(":/icons/Left_arrow_fold_button_32.png"));
+        _sizes.first() += _sizes.last() ;
+        _sizes.last() = 0;
+        ui->splitter_2->setSizes(_sizes);
+    }
+}
+
+void Viewer::on_actionHide_ShowBottom_triggered()
+{
+    QList< int > _sizes = ui->splitter_3->sizes() ;
+    if(!_sizes.last())
+    {
+        ui->actionHide_ShowBottom->setIcon(QIcon(":/icons/Down_arrow_fold_button_32.png"));
+        _sizes.first() -= defaultPreviewHeight;
+        _sizes.last() += defaultPreviewHeight;
+        ui->splitter_3->setSizes(_sizes);
+    }
+    else
+    {
+        ui->actionHide_ShowBottom->setIcon(QIcon(":/icons/Up_arrow_fold_button_32.png"));
+        _sizes.first() += _sizes.last();
+        _sizes.last() = 0;
+        ui->splitter_3->setSizes(_sizes);
+    }
 }

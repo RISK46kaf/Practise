@@ -33,7 +33,7 @@ class Storage : public QLabel
     QList<Arrow> *_arrow_list;
     QList<Rect> *_rect_list;
     QList<Ellipse> *_ellipse_list;
-    QList<Polygon> *_polygon_list;
+    QList<Polygon > *_polygon_list;
     QStringList *_praparation_list;
     QStringList *_dye_list;
     Tool tool_;
@@ -111,7 +111,7 @@ public:
     bool repaint_needed_;
     int keyboard_modifier_;
     QScrollArea *scroll_area_;
-
+    bool confirmSelection();
     qreal arrow_size_;
     QPolygonF arrow_top_;
     void setScrollArea(QScrollArea *aPointer);

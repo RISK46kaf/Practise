@@ -38,6 +38,10 @@ private slots:
 
     void on_checkPartBox_toggled(bool checked);
 
+    void on_actionVeiwFigures_triggered();
+
+    void on_actionConfirm_triggered();
+
 private:
     Storage *storage_;
     QSize storage_size_;

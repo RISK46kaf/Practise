@@ -5,6 +5,7 @@
 #include <QString>
 #include <QStyleFactory>
 #include "mainpicdialog.h"
+#include "figuresdialog.h"
 
 MarkingTools::MarkingTools(QWidget *parent) :
     QMainWindow(parent),
@@ -235,4 +236,16 @@ void MarkingTools::on_checkPartBox_toggled(bool checked)
 //        MainPicDialog mainPic(db,publicPatientId);
 //        mainPic.exec();
     }
+}
+
+void MarkingTools::on_actionVeiwFigures_triggered()
+{
+    FiguresDialog fd;
+    fd.setList(_arrow_list,_rect_list,_ellipse_list,_polygon_list);
+    fd.exec();
+}
+
+void MarkingTools::on_actionConfirm_triggered()
+{
+    qDebug() << storage_->confirmSelection();
 }

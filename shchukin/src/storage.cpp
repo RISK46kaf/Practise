@@ -202,8 +202,7 @@ void Storage::mousePressEvent(QMouseEvent *anEvent)
 }
 
 
-void
-Storage::mouseReleaseEvent(QMouseEvent *anEvent)
+void Storage::mouseReleaseEvent(QMouseEvent *anEvent)
 {
     Q_UNUSED(anEvent)
 
@@ -233,8 +232,7 @@ Storage::mouseReleaseEvent(QMouseEvent *anEvent)
 //    }
 }
 
-void
-Storage::triggerBoundBox(
+void Storage::triggerBoundBox(
     const QPoint &aNewPos,
     const QPoint &anOldPos,
     Rect &aNewRect
@@ -253,8 +251,7 @@ Storage::triggerBoundBox(
     repaint_needed_ = 1;
 }
 
-void
-Storage::triggerEllipse(
+void Storage::triggerEllipse(
     const QPoint &aNewPos,
     const QPoint &anOldPos,
     Ellipse &aNewEll
@@ -510,8 +507,7 @@ void Storage::mouseMoveEvent(QMouseEvent *anEvent)
     }
 }
 
-void
-Storage::paintEvent(QPaintEvent *anEvent)
+void Storage::paintEvent(QPaintEvent *anEvent)
 {
     QLabel::paintEvent(anEvent);
 
@@ -521,8 +517,8 @@ Storage::paintEvent(QPaintEvent *anEvent)
     QPen pen;
 
     if (NoTool != tool_) {
-        pen.setWidth(1);
-        pen.setColor(QColor(Qt::black));
+        pen.setWidth(5);
+        pen.setColor(QColor(Qt::white));
         pen.setStyle(Qt::DashLine);
         painter.setPen(pen);
 
@@ -539,7 +535,7 @@ Storage::paintEvent(QPaintEvent *anEvent)
         }
         else if (EllipseTool == tool_) {
             /* с учётом масштаба */
-            QRect elli = ell.getCoordinates();
+            QRect elli = ell.getCoordinates().normalized();
             QPoint ellTopLeft = elli.topLeft() * scale_;
             QPoint ellBottomRight = elli.bottomRight() * scale_;
 
@@ -610,8 +606,7 @@ Storage::paintEvent(QPaintEvent *anEvent)
 /*!
  * Шаг 6 в выделении области
  */
-void
-Storage::drawBoundingBoxes(
+void Storage::drawBoundingBoxes(
     QPainter *aPainter,
     QPen *aPen
 ) const
@@ -644,12 +639,12 @@ Storage::drawBoundingBoxes(
 //        }
 
         /* масштабируем */
-        QRect rec = _rect_list->at(i).getCoordinates().normalized();// list_bounding_box_->at(i)->rect.normalized();
-        QPoint topLeft = rec.topLeft() * scale_;
-        QPoint bottomRight = rec.bottomRight() * scale_;
+        QRect _rec = _rect_list->at(i).getCoordinates().normalized();// list_bounding_box_->at(i)->rect.normalized();
+        QPoint topLeft = _rec.topLeft() * scale_;
+        QPoint bottomRight = _rec.bottomRight() * scale_;
 
-        rec.setTopLeft(topLeft);
-        rec.setBottomRight(bottomRight);
+        _rec.setTopLeft(topLeft);
+        _rec.setBottomRight(bottomRight);
 //        if (focused_selection_ == i &&
 //            focused_selection_type_ == RectFigure) {
 //            QPen circPen;
@@ -720,15 +715,15 @@ Storage::drawBoundingBoxes(
 //        qDebug() << *label_ID_;
         aPainter->setPen(*aPen);
 
-        aPainter->drawRect(rec);
+        aPainter->drawRect(_rec);
 
         /*подписываем ID*/
         QString labelIDText =
             QString("%1").arg(labelID);
 
         aPainter->drawText(
-            rec.left() + 5,
-            rec.top() + 5,
+            _rec.left() + 5,
+            _rec.top() + 5,
             20,
             20,
             Qt::AlignLeft,
@@ -742,13 +737,12 @@ Storage::drawBoundingBoxes(
 /*!
  * Шаг 6 в выделении области
  */
-void
-Storage::drawPolygons(
+void Storage::drawPolygons(
     QPainter *aPainter,
     QPen *aPen
 ) const
 {
-    if (NULL == list_polygon_)
+    if (NULL == _polygon_list)
     {
         return;
         /* NOTREACHED */
@@ -757,95 +751,91 @@ Storage::drawPolygons(
     Qt::PenStyle penStyle = Qt::SolidLine;
     int width = 2;
     /* рисуем все многоугольники */
-    for (int i = 0; i < list_polygon_->size(); i++) {
+    for (int i = 0; i < _polygon_list->size(); i++) {
         penStyle = Qt::SolidLine;
-        int labelID = list_polygon_->at(i)->label_ID_;
+        int labelID = _polygon_list->operator [](i).getEvidenceID();
 
         /* настраиваем цвет для лкйбла к которому относится выделенная область */
-        if (labelID < list_label_color_->count())
-            aPen->setColor(QColor(list_label_color_->at(labelID)));
-        /* в случае если нет цвета для текущего лейбла */
-        else
-            aPen->setColor(QColor(Qt::white));
+        aPen->setColor(QColor(_polygon_list->operator [](i).getColor()));
 
         /* меняем стиль линии и толщину если текущая область выбрана(для изменения) */
-        if (PolyFigure == focused_selection_type_ &&
-            focused_selection_ == i) {
-            penStyle = Qt::DotLine;
-            width = 3;
-        }
+//        if (PolyFigure == focused_selection_type_ &&
+//            focused_selection_ == i) {
+//            penStyle = Qt::DotLine;
+//            width = 3;
+//        }
 
         QPoint point;
-        QPolygon poly = list_polygon_->at(i)->poly;
-        for (int j = 0; j < poly.size(); j++) {
-            point.setX(poly.at(j).x());
-            point.setY(poly.at(j).y());
+        QPolygon _pol = _polygon_list->operator [](i).getCoordinates();
+        for (int j = 0; j < _pol.size(); j++) {
+            point.setX(_pol.at(j).x());
+            point.setY(_pol.at(j).y());
             /* масштабируем */
             point *= scale_;
-            poly.remove(j);
-            poly.insert(j, point);
+            _pol.remove(j);
+            _pol.insert(j, point);
 
 
-            if (focused_selection_ == i &&
-                focused_selection_type_ == PolyFigure) {
-                QPen circPen;
-                circPen.setWidth(2);
-                circPen.setStyle(Qt::SolidLine);
-                circPen.setColor(aPen->color());
-                aPainter->setPen(circPen);
-                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
-                if ((j == hovered_point_.pointID &&
-                    i == hovered_point_.figureID &&
-                    PolyFigure == hovered_point_.figure) ||
-                    j == selected_point_) {
-                    QBrush brush;
-                    brush.setColor(aPen->color());
-                    brush.setStyle(Qt::SolidPattern);
-                    aPainter->setBrush(brush);
-                }
-                aPainter->drawEllipse(point, point_radius_, point_radius_);
-                aPainter->setBrush(Qt::NoBrush);
-            }
+//            if (focused_selection_ == i &&
+//                focused_selection_type_ == PolyFigure) {
+//                QPen circPen;
+//                circPen.setWidth(2);
+//                circPen.setStyle(Qt::SolidLine);
+//                circPen.setColor(aPen->color());
+//                aPainter->setPen(circPen);
+//                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
+//                if ((j == hovered_point_.pointID &&
+//                    i == hovered_point_.figureID &&
+//                    PolyFigure == hovered_point_.figure) ||
+//                    j == selected_point_) {
+//                    QBrush brush;
+//                    brush.setColor(aPen->color());
+//                    brush.setStyle(Qt::SolidPattern);
+//                    aPainter->setBrush(brush);
+//                }
+//                aPainter->drawEllipse(point, point_radius_, point_radius_);
+//                aPainter->setBrush(Qt::NoBrush);
+//            }
         }
 
-        if(set_label_width_)
-        {
-            qDebug() <<list_width_->size();
-            for(int j=0; j<list_width_->size();++j)
-            {
-                if(list_width_->at(j).label_ID_== labelID)
-                {
-                    width = list_width_->at(j).new_width_;
-                }
-            }
-        }
+//        if(set_label_width_)
+//        {
+//            qDebug() <<list_width_->size();
+//            for(int j=0; j<list_width_->size();++j)
+//            {
+//                if(list_width_->at(j).label_ID_== labelID)
+//                {
+//                    width = list_width_->at(j).new_width_;
+//                }
+//            }
+//        }
         aPen->setWidth(width);
         aPen->setStyle(penStyle);
-        if(!view_labels_)
-        {
-            qDebug() << "лейблы не видны?";
-            aPen->setStyle(Qt::NoPen);
-        }
-//        qDebug() << view_current_l_;
-        if(view_current_l_)
-        {
-            if(labelID!= *label_ID_)
-            {
-                qDebug() << "лейблы не видны?";
-                aPen->setStyle(Qt::NoPen);
-            }
-            qDebug() << "ok?";
-        }
+//        if(!view_labels_)
+//        {
+//            qDebug() << "лейблы не видны?";
+//            aPen->setStyle(Qt::NoPen);
+//        }
+////        qDebug() << view_current_l_;
+//        if(view_current_l_)
+//        {
+//            if(labelID!= *label_ID_)
+//            {
+//                qDebug() << "лейблы не видны?";
+//                aPen->setStyle(Qt::NoPen);
+//            }
+//            qDebug() << "ok?";
+//        }
 //        qDebug() << *label_ID_;
         aPainter->setPen(*aPen);
 
-        aPainter->drawPolygon(poly);
+        aPainter->drawPolygon(_pol);
         /*подписываем ID*/
         QString labelIDText =
             QString("%1").arg(labelID);
-        QRect rect = poly.boundingRect();
-        int x = rect.center().x();
-        int y = rect.center().y();
+        QRect _rect = _pol.boundingRect();
+        int x = _rect.center().x();
+        int y = _rect.center().y();
 
         aPainter->drawText(
             x,
@@ -864,13 +854,12 @@ Storage::drawPolygons(
 /*!
  * Шаг 6 в выделении области
  */
-void
-Holder::drawEllipses(
+void Storage::drawEllipses(
     QPainter *aPainter,
     QPen *aPen
 ) const
 {
-    if (0 == list_ellipse_)
+    if (0 == _ellipse_list)
     {
         return;
         /* NOTREACHED */
@@ -879,110 +868,112 @@ Holder::drawEllipses(
     Qt::PenStyle penStyle;
     int width = 2;
     /* рисуем все эллипсы */
-    for (int i = 0; i < list_ellipse_->size(); i++) {
+    for (int i = 0; i < _ellipse_list->size(); i++) {
         penStyle = Qt::SolidLine;
-        int labelID = list_ellipse_->at(i)->label_ID_;
+        int labelID = _ellipse_list->operator [](i).getEvidenceID();
 
         /* настраиваем цвет для лкйбла к которому относится выделенная область */
-        if (labelID < list_label_color_->count())
-            aPen->setColor(QColor(list_label_color_->at(labelID)));
-        /* в случае если нет цвета для текущего лейбла */
-        else
-            aPen->setColor(QColor(Qt::white));
+//        if (labelID < list_label_color_->count())
+//            aPen->setColor(QColor(list_label_color_->at(labelID)));
+//        /* в случае если нет цвета для текущего лейбла */
+//        else
+//            aPen->setColor(QColor(Qt::white));
+        _ellipse_list->operator [](i).getColor();
 
         /* меняем стиль линии и толщину если текущая область выбрана(для изменения) */
-        if (EllipseFigure == focused_selection_type_ &&
-            focused_selection_ == i) {
-            penStyle = Qt::DotLine;
-            width = 3;
-        }
+//        if (EllipseFigure == focused_selection_type_ &&
+//            focused_selection_ == i) {
+//            penStyle = Qt::DotLine;
+//            width = 3;
+//        }
 
         /* масштабируем */
-        QRect ell = list_ellipse_->at(i)->rect.normalized();
-        QPoint topLeft = ell.topLeft() * scale_;
-        QPoint bottomRight = ell.bottomRight() * scale_;
+        QRect _elli = _ellipse_list->operator [](i).getCoordinates().normalized();
+                //->at(i)->rect.normalized();
+        QPoint topLeft = _elli.topLeft() * scale_;
+        QPoint bottomRight = _elli.bottomRight() * scale_;
 
-        ell.setTopLeft(topLeft);
-        ell.setBottomRight(bottomRight);
-        if (focused_selection_ == i &&
-            focused_selection_type_ == EllipseFigure) {
-            QPen circPen;
-            circPen.setWidth(2);
-            circPen.setStyle(Qt::SolidLine);
-            circPen.setColor(aPen->color());
-            aPainter->setPen(circPen);
-            for (int j = 0; j < 4; j++) {
-                QPoint point;
-                /* по номеру точки записаннму при кликах получаем вершины прямоугольника */
-                if (!j) {
-                    point = ell.topLeft();
-                }
-                else if (1 == j)
-                {
-                    point = ell.topRight();
-                }
-                else if (2 == j)
-                {
-                    point = ell.bottomRight();
-                }
-                else if (3 == j)
-                {
-                    point = ell.bottomLeft();
-                }
-                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
-                if (i == hovered_point_.figureID &&
-                    j == hovered_point_.pointID &&
-                    EllipseFigure == hovered_point_.figure) {
-                    QBrush brush;
-                    brush.setColor(aPen->color());
-                    brush.setStyle(Qt::SolidPattern);
-                    aPainter->setBrush(brush);
-                }
-                aPainter->drawEllipse(point, point_radius_, point_radius_);
-                aPainter->setBrush(Qt::NoBrush);
-            }
-        }
-        if(set_label_width_)
-        {
-            qDebug() <<list_width_->size();
-            for(int j=0; j<list_width_->size();++j)
-            {
-                if(list_width_->at(j).label_ID_== labelID)
-                {
-                    width = list_width_->at(j).new_width_;
-                }
-            }
-        }
+        _elli.setTopLeft(topLeft);
+        _elli.setBottomRight(bottomRight);
+//        if (focused_selection_ == i &&
+//            focused_selection_type_ == EllipseFigure) {
+//            QPen circPen;
+//            circPen.setWidth(2);
+//            circPen.setStyle(Qt::SolidLine);
+//            circPen.setColor(aPen->color());
+//            aPainter->setPen(circPen);
+//            for (int j = 0; j < 4; j++) {
+//                QPoint point;
+//                /* по номеру точки записаннму при кликах получаем вершины прямоугольника */
+//                if (!j) {
+//                    point = ell.topLeft();
+//                }
+//                else if (1 == j)
+//                {
+//                    point = ell.topRight();
+//                }
+//                else if (2 == j)
+//                {
+//                    point = ell.bottomRight();
+//                }
+//                else if (3 == j)
+//                {
+//                    point = ell.bottomLeft();
+//                }
+//                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
+//                if (i == hovered_point_.figureID &&
+//                    j == hovered_point_.pointID &&
+//                    EllipseFigure == hovered_point_.figure) {
+//                    QBrush brush;
+//                    brush.setColor(aPen->color());
+//                    brush.setStyle(Qt::SolidPattern);
+//                    aPainter->setBrush(brush);
+//                }
+//                aPainter->drawEllipse(point, point_radius_, point_radius_);
+//                aPainter->setBrush(Qt::NoBrush);
+//            }
+//        }
+//        if(set_label_width_)
+//        {
+//            qDebug() <<list_width_->size();
+//            for(int j=0; j<list_width_->size();++j)
+//            {
+//                if(list_width_->at(j).label_ID_== labelID)
+//                {
+//                    width = list_width_->at(j).new_width_;
+//                }
+//            }
+//        }
 
         aPen->setWidth(width);
         aPen->setStyle(penStyle);
-        if(!view_labels_)
-        {
-            qDebug() << "лейблы не видны?";
-            aPen->setStyle(Qt::NoPen);
-        }
-//        qDebug() << view_current_l_;
-        if(view_current_l_)
-        {
-            if(labelID!= *label_ID_)
-            {
-                qDebug() << "лейблы не видны?";
-                aPen->setStyle(Qt::NoPen);
-            }
-            qDebug() << "ok?";
-        }
+//        if(!view_labels_)
+//        {
+//            qDebug() << "лейблы не видны?";
+//            aPen->setStyle(Qt::NoPen);
+//        }
+////        qDebug() << view_current_l_;
+//        if(view_current_l_)
+//        {
+//            if(labelID!= *label_ID_)
+//            {
+//                qDebug() << "лейблы не видны?";
+//                aPen->setStyle(Qt::NoPen);
+//            }
+//            qDebug() << "ok?";
+//        }
 //        qDebug() << *label_ID_;
         aPainter->setPen(*aPen);
 
-        aPainter->drawEllipse(ell);
+        aPainter->drawEllipse(_elli);
 
         /*подписываем ID*/
         QString labelIDText =
             QString("%1").arg(labelID);
 
         aPainter->drawText(
-            ell.left() + 5,
-            ell.top() + 5,
+            _elli.left() + 5,
+            _elli.top() + 5,
             20,
             20,
             Qt::AlignLeft,
@@ -993,12 +984,12 @@ Holder::drawEllipses(
 }
 
 void
-Holder::drawArrows(
+Storage::drawArrows(
     QPainter *aPainter,
     QPen *aPen
 ) const
 {
-    if (0 == list_arrow_)
+    if (0 == _arrow_list)
     {
         return;
         /* NOTREACHED */
@@ -1007,111 +998,112 @@ Holder::drawArrows(
     Qt::PenStyle penStyle;
     int width = 2;
     /* рисуем все эллипсы */
-    for (int i = 0; i < list_arrow_->size(); i++) {
+    for (int i = 0; i < _arrow_list->size(); i++) {
         penStyle = Qt::SolidLine;
-        int labelID = list_arrow_->at(i)->label_ID_;
+        int labelID = _arrow_list->operator [](i).getEvidenceID();
 
         /* настраиваем цвет для лкйбла к которому относится выделенная область */
-        if (labelID < list_label_color_->count())
-            aPen->setColor(QColor(list_label_color_->at(labelID)));
-        /* в случае если нет цвета для текущего лейбла */
-        else
-            aPen->setColor(QColor(Qt::white));
+//        if (labelID < list_label_color_->count())
+//            aPen->setColor(QColor(list_label_color_->at(labelID)));
+//        /* в случае если нет цвета для текущего лейбла */
+//        else
+//            aPen->setColor(QColor(Qt::white));
+        aPen->setColor(QColor(_arrow_list->operator [](i).getColor()));
 
         /* меняем стиль линии и толщину если текущая область выбрана(для изменения) */
-        if (ArrowFigure == focused_selection_type_ &&
-            focused_selection_ == i) {
-            penStyle = Qt::DotLine;
-            width = 3;
-        }
+//        if (ArrowFigure == focused_selection_type_ &&
+//            focused_selection_ == i) {
+//            penStyle = Qt::DotLine;
+//            width = 3;
+//        }
 
         /* масштабируем */
-        QLineF line = list_arrow_->at(i)->line;//.unitVector();
-        QPointF p1 = line.p1() * scale_;
-        QPointF p2 = line.p2() * scale_;
+        QLineF _line = _arrow_list->operator [](i).getCoordinates();
+        QPointF p1 = _line.p1() * scale_;
+        QPointF p2 = _line.p2() * scale_;
 
-        line.setP1(p1);
-        line.setP2(p2);
-        if (focused_selection_ == i &&
-            focused_selection_type_ == ArrowFigure) {
-            QPen circPen;
-            circPen.setWidth(2);
-            circPen.setStyle(Qt::SolidLine);
-            circPen.setColor(aPen->color());
-            aPainter->setPen(circPen);
-            for (int j = 0; j < 2; j++) {
-                QPointF point;
-                /* по номеру точки записаннму при кликах получаем вершины прямоугольника */
-                if (!j) {
-                    point = line.p1();
-                }
-                else if (1 == j)
-                {
-                    point = line.p2();
-                }
-                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
-                if (i == hovered_point_.figureID &&
-                    j == hovered_point_.pointID &&
-                    ArrowFigure == hovered_point_.figure) {
-                    QBrush brush;
-                    brush.setColor(aPen->color());
-                    brush.setStyle(Qt::SolidPattern);
-                    aPainter->setBrush(brush);
-                }
-                aPainter->drawEllipse(point, point_radius_, point_radius_);
-                aPainter->setBrush(Qt::NoBrush);
-            }
-        }
-        if(set_label_width_)
-        {
-            qDebug() <<list_width_->size();
-            for(int j=0; j<list_width_->size();++j)
-            {
-                if(list_width_->at(j).label_ID_== labelID)
-                {
-                    width = list_width_->at(j).new_width_;
-                }
-            }
-        }
+        _line.setP1(p1);
+        _line.setP2(p2);
+//        if (focused_selection_ == i &&
+//            focused_selection_type_ == ArrowFigure) {
+//            QPen circPen;
+//            circPen.setWidth(2);
+//            circPen.setStyle(Qt::SolidLine);
+//            circPen.setColor(aPen->color());
+//            aPainter->setPen(circPen);
+//            for (int j = 0; j < 2; j++) {
+//                QPointF point;
+//                /* по номеру точки записаннму при кликах получаем вершины прямоугольника */
+//                if (!j) {
+//                    point = line.p1();
+//                }
+//                else if (1 == j)
+//                {
+//                    point = line.p2();
+//                }
+//                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
+//                if (i == hovered_point_.figureID &&
+//                    j == hovered_point_.pointID &&
+//                    ArrowFigure == hovered_point_.figure) {
+//                    QBrush brush;
+//                    brush.setColor(aPen->color());
+//                    brush.setStyle(Qt::SolidPattern);
+//                    aPainter->setBrush(brush);
+//                }
+//                aPainter->drawEllipse(point, point_radius_, point_radius_);
+//                aPainter->setBrush(Qt::NoBrush);
+//            }
+//        }
+//        if(set_label_width_)
+//        {
+//            qDebug() <<list_width_->size();
+//            for(int j=0; j<list_width_->size();++j)
+//            {
+//                if(list_width_->at(j).label_ID_== labelID)
+//                {
+//                    width = list_width_->at(j).new_width_;
+//                }
+//            }
+//        }
 
         aPen->setWidth(width);
         aPen->setStyle(penStyle);
-        if(!view_labels_)
-        {
-            qDebug() << "лейблы не видны?";
-            aPen->setStyle(Qt::NoPen);
-        }
-//        qDebug() << view_current_l_;
-        if(view_current_l_)
-        {
-            if(labelID!= *label_ID_)
-            {
-                qDebug() << "лейблы не видны?";
-                aPen->setStyle(Qt::NoPen);
-            }
-            qDebug() << "ok?";
-        }
+//        if(!view_labels_)
+//        {
+//            qDebug() << "лейблы не видны?";
+//            aPen->setStyle(Qt::NoPen);
+//        }
+////        qDebug() << view_current_l_;
+//        if(view_current_l_)
+//        {
+//            if(labelID!= *label_ID_)
+//            {
+//                qDebug() << "лейблы не видны?";
+//                aPen->setStyle(Qt::NoPen);
+//            }
+//            qDebug() << "ok?";
+//        }
 //        qDebug() << *label_ID_;
         aPainter->setPen(*aPen);
 
 //        aPainter->drawEllipse(line);
         ///222
 
-        double angle = ::acos(line.dx() / line.length());
+        double angle = ::acos(_line.dx() / _line.length());
         qreal Pi = atan(1)*4;
-        if (line.dy() >= 0)
+        if (_line.dy() >= 0)
             angle = (Pi * 2) - angle;
 
-        QPointF arrowP1 = line.p1() + QPointF(sin(angle + Pi / 3) * arrow_size_,
+        QPointF arrowP1 = _line.p1() + QPointF(sin(angle + Pi / 3) * arrow_size_,
                                         cos(angle + Pi / 3) * arrow_size_);
-        QPointF arrowP2 = line.p1() + QPointF(sin(angle + Pi - Pi / 3) * arrow_size_,
+        QPointF arrowP2 = _line.p1() + QPointF(sin(angle + Pi - Pi / 3) * arrow_size_,
                                         cos(angle + Pi - Pi / 3) * arrow_size_);
 
         QPolygonF arrowTop;
         arrowTop.clear();
-        arrowTop << line.p1() << arrowP1 << arrowP2;
+        arrowTop << _line.p1() << arrowP1 << arrowP2;
 
-        aPainter->drawLine(line);
+        aPainter->drawLine(_line);
         qDebug() << "arrow_top_" << arrow_top_;
         aPainter->drawPolygon(arrowTop);
 
@@ -1120,8 +1112,8 @@ Holder::drawArrows(
             QString("%1").arg(labelID);
 
         aPainter->drawText(
-            line.p2().x() + 5,
-            line.p2().y() + 5,
+            _line.p2().x() + 5,
+            _line.p2().y() + 5,
             20,
             20,
             Qt::AlignLeft,
@@ -1131,269 +1123,46 @@ Holder::drawArrows(
 
 }
 
-void
-Holder::drawEllipses(
-    QPainter *aPainter,
-    QPen *aPen
-) const
+bool Storage::confirmSelection()
 {
-    if (0 == list_ellipse_)
-    {
-        return;
-        /* NOTREACHED */
+    if (BoundingBoxTool == tool_) {
+        Rect *_bbox = new Rect;
+        rect.setCoordinates(rect.getCoordinates().normalized());
+        *_bbox = rect;
+        _rect_list->append(*_bbox);
+        rect.setCoordinates(QRect(-1, -1, 0, 0));
+        state_ = StandBy;
+        update();
+        return true;
+
     }
-
-    Qt::PenStyle penStyle;
-    int width = 2;
-    /* рисуем все эллипсы */
-    for (int i = 0; i < list_ellipse_->size(); i++) {
-        penStyle = Qt::SolidLine;
-        int labelID = list_ellipse_->at(i)->label_ID_;
-
-        /* настраиваем цвет для лкйбла к которому относится выделенная область */
-        if (labelID < list_label_color_->count())
-            aPen->setColor(QColor(list_label_color_->at(labelID)));
-        /* в случае если нет цвета для текущего лейбла */
-        else
-            aPen->setColor(QColor(Qt::white));
-
-        /* меняем стиль линии и толщину если текущая область выбрана(для изменения) */
-        if (EllipseFigure == focused_selection_type_ &&
-            focused_selection_ == i) {
-            penStyle = Qt::DotLine;
-            width = 3;
-        }
-
-        /* масштабируем */
-        QRect ell = list_ellipse_->at(i)->rect.normalized();
-        QPoint topLeft = ell.topLeft() * scale_;
-        QPoint bottomRight = ell.bottomRight() * scale_;
-
-        ell.setTopLeft(topLeft);
-        ell.setBottomRight(bottomRight);
-        if (focused_selection_ == i &&
-            focused_selection_type_ == EllipseFigure) {
-            QPen circPen;
-            circPen.setWidth(2);
-            circPen.setStyle(Qt::SolidLine);
-            circPen.setColor(aPen->color());
-            aPainter->setPen(circPen);
-            for (int j = 0; j < 4; j++) {
-                QPoint point;
-                /* по номеру точки записаннму при кликах получаем вершины прямоугольника */
-                if (!j) {
-                    point = ell.topLeft();
-                }
-                else if (1 == j)
-                {
-                    point = ell.topRight();
-                }
-                else if (2 == j)
-                {
-                    point = ell.bottomRight();
-                }
-                else if (3 == j)
-                {
-                    point = ell.bottomLeft();
-                }
-                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
-                if (i == hovered_point_.figureID &&
-                    j == hovered_point_.pointID &&
-                    EllipseFigure == hovered_point_.figure) {
-                    QBrush brush;
-                    brush.setColor(aPen->color());
-                    brush.setStyle(Qt::SolidPattern);
-                    aPainter->setBrush(brush);
-                }
-                aPainter->drawEllipse(point, point_radius_, point_radius_);
-                aPainter->setBrush(Qt::NoBrush);
-            }
-        }
-        if(set_label_width_)
-        {
-            qDebug() <<list_width_->size();
-            for(int j=0; j<list_width_->size();++j)
-            {
-                if(list_width_->at(j).label_ID_== labelID)
-                {
-                    width = list_width_->at(j).new_width_;
-                }
-            }
-        }
-
-        aPen->setWidth(width);
-        aPen->setStyle(penStyle);
-        if(!view_labels_)
-        {
-            qDebug() << "лейблы не видны?";
-            aPen->setStyle(Qt::NoPen);
-        }
-//        qDebug() << view_current_l_;
-        if(view_current_l_)
-        {
-            if(labelID!= *label_ID_)
-            {
-                qDebug() << "лейблы не видны?";
-                aPen->setStyle(Qt::NoPen);
-            }
-            qDebug() << "ok?";
-        }
-//        qDebug() << *label_ID_;
-        aPainter->setPen(*aPen);
-
-        aPainter->drawEllipse(ell);
-
-        /*подписываем ID*/
-        QString labelIDText =
-            QString("%1").arg(labelID);
-
-        aPainter->drawText(
-            ell.left() + 5,
-            ell.top() + 5,
-            20,
-            20,
-            Qt::AlignLeft,
-            labelIDText
-            );
+    else if (PolygonTool == tool_) {
+        Polygon *_pol = new Polygon;
+        *_pol = poly;
+        _polygon_list->append(*_pol);
+        poly.setCoordinates(QPolygon());
+        state_ = StandBy;
+        update();
+        return true;
     }
-
-}
-
-void
-Holder::drawArrows(
-    QPainter *aPainter,
-    QPen *aPen
-) const
-{
-    if (0 == list_arrow_)
-    {
-        return;
-        /* NOTREACHED */
+    else if (EllipseTool == tool_) {
+        Ellipse *_ell = new Ellipse;
+        ell.setCoordinates(ell.getCoordinates().normalized());
+        *_ell = ell;
+        _ellipse_list->append(*_ell);
+        ell.setCoordinates(QRect(-1, -1, 0, 0));
+        state_ = StandBy;
+        update();
+        return true;
     }
-
-    Qt::PenStyle penStyle;
-    int width = 2;
-    /* рисуем все эллипсы */
-    for (int i = 0; i < list_arrow_->size(); i++) {
-        penStyle = Qt::SolidLine;
-        int labelID = list_arrow_->at(i)->label_ID_;
-
-        /* настраиваем цвет для лкйбла к которому относится выделенная область */
-        if (labelID < list_label_color_->count())
-            aPen->setColor(QColor(list_label_color_->at(labelID)));
-        /* в случае если нет цвета для текущего лейбла */
-        else
-            aPen->setColor(QColor(Qt::white));
-
-        /* меняем стиль линии и толщину если текущая область выбрана(для изменения) */
-        if (ArrowFigure == focused_selection_type_ &&
-            focused_selection_ == i) {
-            penStyle = Qt::DotLine;
-            width = 3;
-        }
-
-        /* масштабируем */
-        QLineF line = list_arrow_->at(i)->line;//.unitVector();
-        QPointF p1 = line.p1() * scale_;
-        QPointF p2 = line.p2() * scale_;
-
-        line.setP1(p1);
-        line.setP2(p2);
-        if (focused_selection_ == i &&
-            focused_selection_type_ == ArrowFigure) {
-            QPen circPen;
-            circPen.setWidth(2);
-            circPen.setStyle(Qt::SolidLine);
-            circPen.setColor(aPen->color());
-            aPainter->setPen(circPen);
-            for (int j = 0; j < 2; j++) {
-                QPointF point;
-                /* по номеру точки записаннму при кликах получаем вершины прямоугольника */
-                if (!j) {
-                    point = line.p1();
-                }
-                else if (1 == j)
-                {
-                    point = line.p2();
-                }
-                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
-                if (i == hovered_point_.figureID &&
-                    j == hovered_point_.pointID &&
-                    ArrowFigure == hovered_point_.figure) {
-                    QBrush brush;
-                    brush.setColor(aPen->color());
-                    brush.setStyle(Qt::SolidPattern);
-                    aPainter->setBrush(brush);
-                }
-                aPainter->drawEllipse(point, point_radius_, point_radius_);
-                aPainter->setBrush(Qt::NoBrush);
-            }
-        }
-        if(set_label_width_)
-        {
-            qDebug() <<list_width_->size();
-            for(int j=0; j<list_width_->size();++j)
-            {
-                if(list_width_->at(j).label_ID_== labelID)
-                {
-                    width = list_width_->at(j).new_width_;
-                }
-            }
-        }
-
-        aPen->setWidth(width);
-        aPen->setStyle(penStyle);
-        if(!view_labels_)
-        {
-            qDebug() << "лейблы не видны?";
-            aPen->setStyle(Qt::NoPen);
-        }
-//        qDebug() << view_current_l_;
-        if(view_current_l_)
-        {
-            if(labelID!= *label_ID_)
-            {
-                qDebug() << "лейблы не видны?";
-                aPen->setStyle(Qt::NoPen);
-            }
-            qDebug() << "ok?";
-        }
-//        qDebug() << *label_ID_;
-        aPainter->setPen(*aPen);
-
-//        aPainter->drawEllipse(line);
-        ///222
-
-        double angle = ::acos(line.dx() / line.length());
-        qreal Pi = atan(1)*4;
-        if (line.dy() >= 0)
-            angle = (Pi * 2) - angle;
-
-        QPointF arrowP1 = line.p1() + QPointF(sin(angle + Pi / 3) * arrow_size_,
-                                        cos(angle + Pi / 3) * arrow_size_);
-        QPointF arrowP2 = line.p1() + QPointF(sin(angle + Pi - Pi / 3) * arrow_size_,
-                                        cos(angle + Pi - Pi / 3) * arrow_size_);
-
-        QPolygonF arrowTop;
-        arrowTop.clear();
-        arrowTop << line.p1() << arrowP1 << arrowP2;
-
-        aPainter->drawLine(line);
-        qDebug() << "arrow_top_" << arrow_top_;
-        aPainter->drawPolygon(arrowTop);
-
-        /*подписываем ID*/
-        QString labelIDText =
-            QString("%1").arg(labelID);
-
-        aPainter->drawText(
-            line.p2().x() + 5,
-            line.p2().y() + 5,
-            20,
-            20,
-            Qt::AlignLeft,
-            labelIDText
-            );
+    else if (ArrowTool == tool_) {
+        Arrow *_arrow = new Arrow;
+        *_arrow = arrow;
+        _arrow_list->append(*_arrow);
+        arrow.setCoordinates(QLineF(-1, -1, -2, -2));
+        state_ = StandBy;
+        update();
+        return true;
     }
-
+    return false;
 }

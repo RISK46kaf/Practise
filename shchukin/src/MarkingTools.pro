@@ -20,17 +20,20 @@ SOURCES += main.cpp\
     storage.cpp \
     shape.cpp \
     mainpicdialog.cpp \
-    markingtools.cpp
+    markingtools.cpp \
+    figuresdialog.cpp
 
 HEADERS  += \
     storage.h \
     shape.h \
     mainpicdialog.h \
-    markingtools.h
+    markingtools.h \
+    figuresdialog.h
 
 FORMS    += \
     mainpicdialog.ui \
-    markingtools.ui
+    markingtools.ui \
+    figuresdialog.ui
 
 RESOURCES += \
     ../resources/resources.qrc

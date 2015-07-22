@@ -30,11 +30,17 @@ private slots:
 
     void on_listWidget_itemClicked(QListWidgetItem *item);
 
+    void on_actionHide_ShowRight_triggered();
+
+    void on_actionHide_ShowBottom_triggered();
+
 private:
     Ui::Viewer *ui;
     QStringList fileNames;
     vector<QListWidgetItem*> items;
     QLabel* view_label;
+    int defaultToolsWidth;
+    int defaultPreviewHeight;
 };
 
 #endif // VIEWER_H

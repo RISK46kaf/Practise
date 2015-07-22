@@ -22,5 +22,9 @@
         <file>icons/Save_Disk_32.png</file>
         <file>icons/Search_32.png</file>
         <file>icons/Zoom_out_32.png</file>
+        <file>icons/Right_arrow_fold_button_32.png</file>
+        <file>icons/Up_arrow_fold_button_32.png</file>
+        <file>icons/Left_arrow_fold_button_32.png</file>
+        <file>icons/Down_arrow_fold_button_32.png</file>
     </qresource>
 </RCC>

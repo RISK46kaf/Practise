@@ -46,11 +46,18 @@ class ShapeBase
 protected:
     int _evidence_ID;
     uint _color;
-    QStringList _str_list = {"NoF","Arr","Ell","Pen","Pol","Rec"};
+    QStringList _str_list/* = {"NoF","Arr","Ell","Pen","Pol","Rec"}*/;
     FigureType _figure_type;
     virtual void setStrData(FigureType figureType) = 0;
     QString _str_data;
 public:
+    ShapeBase():_evidence_ID(-1),_color(0xFFFFFFFF),_str_list({"NoF","Arr","Ell","Pen","Pol","Rec"}),
+        _figure_type(FigureType::NoFigure),_str_data("")
+    {
+        ;
+    }
+    virtual ~ShapeBase()
+    {}
     int getEvidenceID() const
     {
         return _evidence_ID;
@@ -139,7 +146,7 @@ class Rect: public ShapeBase
         _str_data.append(";");
         _str_data.append(serialize(_coordinates).toBase64());
         _str_data.append(";");
-        _str_data.append(QByteArray().append(QString("Color:%1").arg(_color)).toBase64());
+//        _str_data.append(QByteArray().append(QString("Color:%1").arg(_color)).toBase64());
     }
 public:
     Rect()
@@ -188,7 +195,7 @@ class Shape: public ShapeBase
         _str_data.append(";");
         _str_data.append(serialize(_coordinates).toBase64());
         _str_data.append(";");
-        _str_data.append(QByteArray().append(QString("Color:%1").arg(_color)).toBase64());
+//        _str_data.append(QByteArray().append(QString("Color:%1").arg(_color)).toBase64());
     }
     inline void setter()
     {
