@@ -8,6 +8,7 @@
 #include <QListWidget>
 #include <QLabel>
 #include <QPixmap>
+#include <QStyleFactory>
 
 
 using namespace std;
