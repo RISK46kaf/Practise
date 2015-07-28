@@ -46,16 +46,23 @@ class ShapeBase
 protected:
     int _evidence_ID;
     uint _color;
-    QStringList _str_list = {"NoF","Arr","Ell","Pen","Pol","Rec"};
+    QStringList _str_list/* = {"NoF","Arr","Ell","Pen","Pol","Rec"}*/;
     FigureType _figure_type;
     virtual void setStrData(FigureType figureType) = 0;
     QString _str_data;
 public:
-    int getEvidenceID()
+    ShapeBase():_evidence_ID(-1),_color(0xFFFFFFFF),_str_list({"NoF","Arr","Ell","Pen","Pol","Rec"}),
+        _figure_type(FigureType::NoFigure),_str_data("")
+    {
+        ;
+    }
+    virtual ~ShapeBase()
+    {}
+    int getEvidenceID() const
     {
         return _evidence_ID;
     }
-    uint getColor()
+    uint getColor() const
     {
         return _color;
     }
@@ -100,6 +107,7 @@ public:
         _figure_type = FigureType::EllipseFigure;
         setStrData(_figure_type);
     }
+//    virtual ~Ellipse();
     explicit Ellipse(QRect coordinates):_coordinates(coordinates)
     {
         _figure_type = FigureType::EllipseFigure;
@@ -112,7 +120,7 @@ public:
         setStrData(_figure_type);
     }
 
-    QRect getCoordinates()
+    QRect getCoordinates() const
     {
         return _coordinates;
     }
@@ -138,7 +146,7 @@ class Rect: public ShapeBase
         _str_data.append(";");
         _str_data.append(serialize(_coordinates).toBase64());
         _str_data.append(";");
-        _str_data.append(QByteArray().append(QString("Color:%1").arg(_color)).toBase64());
+//        _str_data.append(QByteArray().append(QString("Color:%1").arg(_color)).toBase64());
     }
 public:
     Rect()
@@ -146,6 +154,7 @@ public:
         _figure_type = FigureType::RectFigure;
         setStrData(_figure_type);
     }
+//    virtual ~Rect(){}
 
     explicit Rect(QRect coordinates):_coordinates(coordinates)
     {
@@ -160,7 +169,7 @@ public:
         setStrData(_figure_type);
     }
 
-    QRect getCoordinates()
+    QRect getCoordinates() const
     {
         return _coordinates;
     }
@@ -186,7 +195,7 @@ class Shape: public ShapeBase
         _str_data.append(";");
         _str_data.append(serialize(_coordinates).toBase64());
         _str_data.append(";");
-        _str_data.append(QByteArray().append(QString("Color:%1").arg(_color)).toBase64());
+//        _str_data.append(QByteArray().append(QString("Color:%1").arg(_color)).toBase64());
     }
     inline void setter()
     {
@@ -218,6 +227,9 @@ public:
         setter();
     }
 
+//    virtual ~Shape()
+//    {}
+
     explicit Shape(T coordinates):_coordinates(coordinates)
     {
         setter();
@@ -229,7 +241,7 @@ public:
         setter();
     }
 
-    T getCoordinates()
+    T getCoordinates() const
     {
         return _coordinates;
     }

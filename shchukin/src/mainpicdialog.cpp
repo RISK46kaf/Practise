@@ -10,8 +10,8 @@
 //}
 
 MainPicDialog::MainPicDialog(QSqlDatabase &DB, int publicID, QWidget *parent) :
-     db(DB), idpublic_info(publicID),QDialog(parent),
-    ui(new Ui::MainPicDialog)
+     QDialog(parent), ui(new Ui::MainPicDialog), db(DB),
+     idpublic_info(publicID)
 {
     col_count = 5;
     ui->setupUi(this);

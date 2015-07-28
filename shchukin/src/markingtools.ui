@@ -158,7 +158,7 @@
          <rect>
           <x>10</x>
           <y>0</y>
-          <width>249</width>
+          <width>317</width>
           <height>841</height>
          </rect>
         </property>
@@ -480,6 +480,37 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <property name="leftMargin">
+            <number>10</number>
+           </property>
+           <property name="rightMargin">
+            <number>10</number>
+           </property>
+           <item>
+            <widget class="QRadioButton" name="radioButton">
+             <property name="text">
+              <string>Selected</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioButton_2">
+             <property name="text">
+              <string>Nothing</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioButton_3">
+             <property name="text">
+              <string>All</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
           <widget class="QTreeWidget" name="treeWidget">
            <property name="maximumSize">
             <size>
@@ -592,6 +623,8 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionPolygon"/>
    <addaction name="separator"/>
    <addaction name="actionConfirm"/>
+   <addaction name="actionVeiwFigures"/>
+   <addaction name="separator"/>
    <addaction name="actionClear"/>
    <addaction name="actionSave"/>
   </widget>
@@ -747,6 +780,19 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="toolTip">
     <string>Clear Unconfirmed Selections</string>
+   </property>
+  </action>
+  <action name="actionVeiwFigures">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Geometric_shapes_group_with_down_arrow_32.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>veiwFigures</string>
+   </property>
+   <property name="toolTip">
+    <string>Veiw confirmed figures</string>
    </property>
   </action>
  </widget>

@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/MyFiles">
+        <file>icons/add_image_ico.png</file>
+        <file>icons/add_info_ico.png</file>
+        <file>icons/del_info_ico.png</file>
+        <file>icons/diagnosis_ico.png</file>
+        <file>icons/edit_ico.png</file>
+        <file>icons/photo_ico.png</file>
+        <file>icons/personal_ico.png</file>
+        <file>icons/save_ico.png</file>
+        <file>icons/update_ico.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>icons/Arrow_pointing_to_right_32.png</file>
+        <file>icons/Check_mark_32.png</file>
+        <file>icons/Cross_remove_sign_32.png</file>
+        <file>icons/Ellipse_outline_shape_variant_32.png</file>
+        <file>icons/open_image_file_32.png</file>
+        <file>icons/Pentagon__32.png</file>
+        <file>icons/Plus_zoom_or_search_symbol_of_interface_32.png</file>
+        <file>icons/Rectangular_shape_outline_32.png</file>
+        <file>icons/Save_Disk_32.png</file>
+        <file>icons/Search_32.png</file>
+        <file>icons/Zoom_out_32.png</file>
+        <file>icons/Right_arrow_fold_button_32.png</file>
+        <file>icons/Up_arrow_fold_button_32.png</file>
+        <file>icons/Left_arrow_fold_button_32.png</file>
+        <file>icons/Down_arrow_fold_button_32.png</file>
+    </qresource>
+</RCC>

@@ -5,6 +5,7 @@
 #include <QString>
 #include <QStyleFactory>
 #include "mainpicdialog.h"
+#include "figuresdialog.h"
 
 MarkingTools::MarkingTools(QWidget *parent) :
     QMainWindow(parent),
@@ -48,6 +49,11 @@ MarkingTools::MarkingTools(QWidget *parent) :
     _rect_list = new QList<Rect>;
     _ellipse_list = new QList<Ellipse>;
     _polygon_list = new QList<Polygon>;
+    storage_->setArrows(_arrow_list);
+    storage_->setRects(_rect_list);
+    storage_->setEllipses(_ellipse_list);
+    storage_->setPolygons(_polygon_list);
+    storage_->setScrollArea(ui->scrollArea);
     ////
     QRect r(1,2,3,4);
     QByteArray ba = serialize(r);
@@ -176,6 +182,8 @@ void MarkingTools::on_actionEllipse_toggled(bool arg1)
     //    ui->actionEllipse->setChecked(false);
         ui->actionPolygon->setChecked(false);
         ui->actionRect->setChecked(false);
+        storage_->setFocus();
+        storage_->setTool(EllipseTool);
     }
 }
 
@@ -187,6 +195,8 @@ void MarkingTools::on_actionRect_toggled(bool arg1)
         ui->actionEllipse->setChecked(false);
         ui->actionPolygon->setChecked(false);
 //        ui->actionRect->setChecked(false);
+        storage_->setFocus();
+        storage_->setTool(BoundingBoxTool);
     }
 }
 
@@ -198,6 +208,8 @@ void MarkingTools::on_actionPolygon_toggled(bool arg1)
         ui->actionEllipse->setChecked(false);
 //        ui->actionPolygon->setChecked(false);
         ui->actionRect->setChecked(false);
+        storage_->setFocus();
+        storage_->setTool(PolygonTool);
     }
 }
 
@@ -209,6 +221,8 @@ void MarkingTools::on_actionArrow_toggled(bool arg1)
         ui->actionEllipse->setChecked(false);
         ui->actionPolygon->setChecked(false);
         ui->actionRect->setChecked(false);
+        storage_->setFocus();
+        storage_->setTool(ArrowTool);
     }
 }
 
@@ -217,7 +231,21 @@ void MarkingTools::on_checkPartBox_toggled(bool checked)
     if(checked)
     {
         qDebug() << "lalal";
-//        MainPicDialog mainPic;
+//        QSqlDatabase db;
+//        int publicPatientId(0);
+//        MainPicDialog mainPic(db,publicPatientId);
 //        mainPic.exec();
     }
+}
+
+void MarkingTools::on_actionVeiwFigures_triggered()
+{
+    FiguresDialog fd;
+    fd.setList(_arrow_list,_rect_list,_ellipse_list,_polygon_list);
+    fd.exec();
+}
+
+void MarkingTools::on_actionConfirm_triggered()
+{
+    qDebug() << storage_->confirmSelection();
 }
