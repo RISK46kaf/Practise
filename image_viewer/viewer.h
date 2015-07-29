@@ -31,6 +31,7 @@ private slots:
     void viewResized();
 
     void viewChanged();
+
 signals:
     void centralPointEvent(QPointF);
 private:
@@ -42,8 +43,14 @@ private:
     QRect r;
     TileMap* map;
     QGraphicsPixmapItem *centralItem;
+    QStringList paths;
 
     void drawTiles(QStringList paths, QSize size);
+    void deleteTopStrip(QStringList paths, QSize size);
+    void createBottomStrip(QStringList paths, QSize size);
+    QSize map_size;
+    QSize tile_palte_size;
+    QRect rect;
 };
 
 #endif // VIEWER_H
