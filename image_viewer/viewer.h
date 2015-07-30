@@ -5,7 +5,7 @@
 #include "cutter.h"
 #include "tilemap.h"
 #include "mygraphicsview.h"
-#include <QFileDialog>n
+#include <QFileDialog>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QDebug>
@@ -39,8 +39,6 @@ private:
     Cutter cutter;
     MyGraphicsView* view;
     QGraphicsScene* scene;
-    vector<QGraphicsPixmapItem*> items;
-    QRect r;
     TileMap* map;
     QGraphicsPixmapItem *centralItem;
     QStringList paths;
@@ -48,9 +46,6 @@ private:
     void drawTiles(QStringList paths, QSize size);
     void deleteTopStrip(QStringList paths, QSize size);
     void createBottomStrip(QStringList paths, QSize size);
-    QSize map_size;
-    QSize tile_palte_size;
-    QRect rect;
 };
 
 #endif // VIEWER_H

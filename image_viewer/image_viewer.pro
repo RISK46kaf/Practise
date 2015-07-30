@@ -16,11 +16,13 @@ SOURCES += main.cpp\
         viewer.cpp \
     cutter.cpp \
     mygraphicsview.cpp \
-    tilemap.cpp
+    tilemap.cpp \
+    tile.cpp
 
 HEADERS  += viewer.h \
     cutter.h \
     mygraphicsview.h \
-    tilemap.h
+    tilemap.h \
+    tile.h
 
 FORMS    += viewer.ui

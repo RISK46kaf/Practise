@@ -15,15 +15,15 @@ Viewer::Viewer(QWidget *parent) :
     connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
     connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
 
-    map_size = QSize(40,18);
-    tile_palte_size = QSize(3,3);
+
 }
 
 Viewer::~Viewer()
 {
     delete ui;
-    for(uint i=0;i<items.size();++i)
-        delete items[i];
+    delete scene;
+    delete view;
+    delete map;
 }
 
 void Viewer::on_actionPrepare_Image_triggered()
@@ -37,26 +37,15 @@ void Viewer::on_actionPrepare_Image_triggered()
 void Viewer::on_actionLoad_Images_triggered()
 {
     paths = QFileDialog::getOpenFileNames(this,tr("Open"),tr(""),tr("Files(*.jpg *.jpeg)"));
-    /*
-    for(uint i=0;i<paths.size();++i)
-    {
-        QPixmap pix;
-        pix.load(paths[i],"JPEG");
-        QGraphicsPixmapItem *pixmapItem = new QGraphicsPixmapItem(pix);
-        items.push_back(pixmapItem);
-        pixmapItem->setPos(0,i*256);
-        scene->addItem(pixmapItem);
-    }
-*/
+
     scene->setSceneRect(0,0,40*256,18*256);
     map = new TileMap();
     connect(this, SIGNAL(centralPointEvent(QPointF)), map, SLOT(centralPointChanged(QPointF)));
     centralItem = new QGraphicsPixmapItem();
     map->load(paths);
-    scene->addItem(centralItem);
-    drawTiles(paths,tile_palte_size);
+    map->setScene(scene);
+    map->init();
 
-    rect.setBottomRight(QPoint(tile_palte_size.width(),tile_palte_size.height()));
 }
 
 void Viewer::viewResized()
@@ -67,52 +56,23 @@ void Viewer::viewResized()
     qDebug()<<scene->sceneRect();
     qDebug()<<"Центр:";
     QPointF pnt = view->mapToScene(QPoint(view->size().width()/2,view->size().height()/2)); //Координаты центра видимой области
-    //qDebug()<<pnt;
 
 }
 
 void Viewer::viewChanged()
 {
-    QPointF pnt = view->mapToScene(QPoint(0,0)); //Координаты центра видимой области
-    qDebug()<<pnt;
-    if(pnt.y()>(rect.bottom()*256))
-        createBottomStrip(paths,QSize(3,3));
-    emit centralPointEvent(pnt);
+
 }
 
 
 void Viewer::drawTiles(QStringList paths, QSize size)
 {
-    for(uint y=0;y<size.height();++y)
-    {
-        for(uint x=0;x<size.width();++x)
-        {
-            QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
-            items.push_back(item);
-            QPixmap pix;
-            qDebug()<<QPoint(x,y);
-            qDebug()<<paths[x+y*map_size.width()];
-            pix.load(paths[x+y*map_size.width()],"JPEG");
-            item->setPixmap(pix);
-            scene->addItem(item);
-            item->moveBy(x*256,y*256);
-        }
-    }
-    rect.setTopLeft(QPoint(0,0));
-    rect.setBottomRight(QPoint(size.width(),size.height()));
+
 }
+
+
 
 void Viewer::createBottomStrip(QStringList paths, QSize size)
 {
 
-    for(uint x=0;x<size.width();++x)
-    {
-        QGraphicsPixmapItem* item = new QGraphicsPixmapItem();
-        items.push_back(item);
-        QPixmap pix;
-        pix.load(paths[x+rect.bottom()*tile_palte_size.width()],"JPEG");
-        scene->addItem(item);
-        item->moveBy(x*256,rect.bottom()*256);
-    }
-    rect.setBottom(rect.bottom()+1);
 }

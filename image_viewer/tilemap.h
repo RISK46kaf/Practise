@@ -4,22 +4,31 @@
 #include <QStringList>
 #include <QObject>
 #include <QDebug>
+#include "tile.h"
+#include <QQueue>
+#include <QGraphicsScene>
+#include <QStack>
+
 
 class TileMap: public QObject
 {
     Q_OBJECT
 public:
     explicit TileMap(QObject *parent = 0);
-    explicit TileMap(QStringList img_paths);
+    explicit TileMap(QStringList img_paths, QGraphicsScene* scene);
 
     void setCentralPoint(QPoint pnt);
     QString getResult(QPoint pnt);
     void setMapSize(QSize size);
     void setTileSize(QSize size);
+    void setScene(QGraphicsScene* s);
     void load(QStringList img_paths);
+    void init();
+    Tile madeTile(QPoint pnt);
 
+    QGraphicsScene* scene;
     QStringList paths;
-    QStringList result;
+    QList<QList<Tile*> > storage;
 
     QPoint centralTile;
     QString centralPath;
@@ -30,11 +39,15 @@ private:
     QSize view_size;
     QSize tile_size;
     QSize map_size;
-    QRect resultRect;
     QSize result_size;
+    QRect rect;
+
 
     void update();
     uint coordinatesToIndex(QPoint pnt);
+    void addBottom();
+    void deleteBottom();
+    QString getPath(QPoint pnt);
 public slots:
     void viewSizeChanged(QSize size);
     void centralPointChanged(QPointF pnt);
