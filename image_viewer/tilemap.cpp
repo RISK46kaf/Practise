@@ -108,6 +108,7 @@ void TileMap::deleteBottom()
         scene->removeItem(storage[storage.size()-1][x]->img);
         delete storage[storage.size()-1][x];
     }
+    storage.removeLast();
     rect.setBottom(rect.bottom()-1);
 }
 
