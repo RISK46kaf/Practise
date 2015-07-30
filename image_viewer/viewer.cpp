@@ -61,18 +61,10 @@ void Viewer::viewResized()
 
 void Viewer::viewChanged()
 {
-
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    map->viewFieldChanged(view_field);
 }
 
 
-void Viewer::drawTiles(QStringList paths, QSize size)
-{
-
-}
-
-
-
-void Viewer::createBottomStrip(QStringList paths, QSize size)
-{
-
-}

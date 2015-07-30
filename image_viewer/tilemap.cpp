@@ -7,6 +7,7 @@ TileMap::TileMap(QObject *parent) :
     tile_size = QSize(256,256);
     result_size = QSize(3,3);
     rect = QRect(QPoint(0,0),QPoint(3,0));
+    qDebug()<<rect;
 }
 
 TileMap::TileMap(QStringList img_paths, QGraphicsScene *scene)
@@ -26,11 +27,29 @@ void TileMap::load(QStringList img_paths)
     paths = img_paths;
 }
 
-Tile TileMap::madeTile(QPoint pnt)
+Tile TileMap::makeTile(QPoint pnt)
 {
     QPixmap pix;
     pix.load(getPath(pnt),"JPEG");
     return Tile(pix,pnt);
+}
+
+void TileMap::viewFieldChanged(QRect r)
+{
+
+    qDebug()<<"r top: "<<r.top()/256;
+    qDebug()<<"r bottom: "<<r.bottom()/256;
+    qDebug()<<"rect top: "<<rect.top();
+    qDebug()<<"rect bottom: "<<rect.bottom();
+
+    if((r.bottom()>(rect.bottom()*256))&&((r.bottom())<map_size.height()*256))
+    {
+        addBottom();
+    }
+    if(r.top()/256 > rect.top())
+   {
+       deleteTop();
+   }
 }
 
 void TileMap::update()
@@ -42,7 +61,7 @@ void TileMap::init()
     addBottom();
     addBottom();
     addBottom();
-    deleteBottom();
+   // deleteBottom();
 }
 
 void TileMap::viewSizeChanged(QSize size)
@@ -66,6 +85,7 @@ uint TileMap::coordinatesToIndex(QPoint pnt)
 void TileMap::addBottom()
 {
     QList<Tile*> strip;
+    qDebug()<<rect;
     for(uint x=rect.left();x<rect.right();++x)
     {
         QPixmap pix;
@@ -77,6 +97,8 @@ void TileMap::addBottom()
     }
     storage.push_back(strip);
     rect.setBottom(rect.bottom()+1);
+    qDebug()<<rect; ////////////////////////////////////////////
+
 }
 
 void TileMap::deleteBottom()
@@ -85,11 +107,20 @@ void TileMap::deleteBottom()
     {
         scene->removeItem(storage[storage.size()-1][x]->img);
         delete storage[storage.size()-1][x];
-
     }
+    rect.setBottom(rect.bottom()-1);
 }
 
-
+void TileMap::deleteTop()
+{
+    for(uint x=0;x<storage[0].size();++x)
+    {
+        scene->removeItem(storage[0][x]->img);
+        delete storage[0][x];
+    }
+    storage.removeFirst();
+    rect.setTop(rect.top()+1);
+}
 
 QString TileMap::getPath(QPoint pnt)
 {

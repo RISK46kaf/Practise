@@ -43,9 +43,6 @@ private:
     QGraphicsPixmapItem *centralItem;
     QStringList paths;
 
-    void drawTiles(QStringList paths, QSize size);
-    void deleteTopStrip(QStringList paths, QSize size);
-    void createBottomStrip(QStringList paths, QSize size);
 };
 
 #endif // VIEWER_H

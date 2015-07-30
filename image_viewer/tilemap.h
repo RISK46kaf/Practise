@@ -24,7 +24,8 @@ public:
     void setScene(QGraphicsScene* s);
     void load(QStringList img_paths);
     void init();
-    Tile madeTile(QPoint pnt);
+    Tile makeTile(QPoint pnt);
+    void viewFieldChanged(QRect r);
 
     QGraphicsScene* scene;
     QStringList paths;
@@ -47,6 +48,7 @@ private:
     uint coordinatesToIndex(QPoint pnt);
     void addBottom();
     void deleteBottom();
+    void deleteTop();
     QString getPath(QPoint pnt);
 public slots:
     void viewSizeChanged(QSize size);
