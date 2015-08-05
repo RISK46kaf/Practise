@@ -25,7 +25,13 @@ public:
     void load(QStringList img_paths);
     void init();
     Tile makeTile(QPoint pnt);
-    void viewFieldChanged(QRect r);
+    //void viewFieldChanged(QRect r);
+    void drawUp(QRect r);
+    void drawDown(QRect r);
+    void drawLeft(QRect r);
+    void drawRight(QRect r);
+
+    void viewSizeChanged(QRect r);
 
     QGraphicsScene* scene;
     QStringList paths;
@@ -47,11 +53,15 @@ private:
     void update();
     uint coordinatesToIndex(QPoint pnt);
     void addBottom();
+    void addTop();
     void deleteBottom();
     void deleteTop();
+    void addRight();
+    void deleteRight();
     QString getPath(QPoint pnt);
+    void deleteLeft();
+    void addLeft();
 public slots:
-    void viewSizeChanged(QSize size);
     void centralPointChanged(QPointF pnt);
 };
 

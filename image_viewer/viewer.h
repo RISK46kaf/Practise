@@ -32,6 +32,11 @@ private slots:
 
     void viewChanged();
 
+    void scrolledVertical(int value);
+
+    void scrolledHorizontal(int value);
+
+
 signals:
     void centralPointEvent(QPointF);
 private:
@@ -42,6 +47,9 @@ private:
     TileMap* map;
     QGraphicsPixmapItem *centralItem;
     QStringList paths;
+    uint oldValueHorizontal;
+    uint oldValueVertical;
+    bool l;
 
 };
 

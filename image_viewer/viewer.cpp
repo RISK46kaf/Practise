@@ -12,9 +12,11 @@ Viewer::Viewer(QWidget *parent) :
     view->setScene(scene);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
-    connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
-    connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
+    //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
+    connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
+    connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
 
+    l=false;
 
 }
 
@@ -45,17 +47,23 @@ void Viewer::on_actionLoad_Images_triggered()
     map->load(paths);
     map->setScene(scene);
     map->init();
+    l=true;
 
 }
 
 void Viewer::viewResized()
 {
+    if(l)
+    {
     qDebug()<<"Размер MyGraphicsView:";
     qDebug()<<view->size();
     qDebug()<<"Размер QGraphicsScene:";
     qDebug()<<scene->sceneRect();
-    qDebug()<<"Центр:";
-    QPointF pnt = view->mapToScene(QPoint(view->size().width()/2,view->size().height()/2)); //Координаты центра видимой области
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    map->viewSizeChanged(view_field);
+    }
 
 }
 
@@ -64,7 +72,40 @@ void Viewer::viewChanged()
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    map->viewFieldChanged(view_field);
+    map->viewSizeChanged(view_field);
+}
+
+void Viewer::scrolledVertical(int value)
+{
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+
+    if(oldValueVertical > value) //up
+    {
+        map->drawUp(view_field);
+    }
+    if(oldValueVertical < value) //down
+    {
+        map->drawDown(view_field);
+    }
+    oldValueVertical = value;
+}
+
+void Viewer::scrolledHorizontal(int value)
+{
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    if(oldValueHorizontal < value) //right
+    {
+        map->drawRight(view_field);
+    }
+    if(oldValueHorizontal > value) //left
+    {
+        map->drawLeft(view_field);
+    }
+    oldValueHorizontal = value;
 }
 
 
