@@ -56,7 +56,10 @@ MainWindow::MainWindow(QWidget *parent) :
     if (db.open())
         qDebug() << "OK!";
     else
+    {
+        qDebug() << db.lastError();
         qDebug() << "error db!";
+    }
     scene = new QGraphicsScene();
     ui->graphicsView->setScene(scene);
 

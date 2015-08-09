@@ -1,14 +1,18 @@
 #include "viewer.h"
 #include "ui_viewer.h"
+//#include <QSizePolicy>
 
 Viewer::Viewer(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Viewer)
 {
     ui->setupUi(this);
+    ui->frame->setLayout(ui->verticalLayout);
+    map = NULL;
     view = new MyGraphicsView();
     scene = new QGraphicsScene();
     ui->gridLayout->addWidget(view);
+    view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     view->setScene(scene);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
@@ -22,10 +26,10 @@ Viewer::Viewer(QWidget *parent) :
 
 Viewer::~Viewer()
 {
-    delete ui;
+    delete map;
     delete scene;
     delete view;
-    delete map;
+    delete ui;
 }
 
 void Viewer::on_actionPrepare_Image_triggered()
@@ -38,9 +42,10 @@ void Viewer::on_actionPrepare_Image_triggered()
 
 void Viewer::on_actionLoad_Images_triggered()
 {
-    paths = QFileDialog::getOpenFileNames(this,tr("Open"),tr(""),tr("Files(*.jpg *.jpeg)"));
+    paths = QFileDialog::getOpenFileNames(this,tr("Open"),tr(""),tr("Files(*.jpg *.jpeg *.png)"));
 
     scene->setSceneRect(0,0,40*256,18*256);
+    if(map != NULL) delete map;
     map = new TileMap();
     connect(this, SIGNAL(centralPointEvent(QPointF)), map, SLOT(centralPointChanged(QPointF)));
     centralItem = new QGraphicsPixmapItem();
@@ -81,11 +86,11 @@ void Viewer::scrolledVertical(int value)
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
 
-    if(oldValueVertical > value) //up
+    if((int)oldValueVertical > value) //up
     {
         map->drawUp(view_field);
     }
-    if(oldValueVertical < value) //down
+    if((int)oldValueVertical < value) //down
     {
         map->drawDown(view_field);
     }
@@ -97,11 +102,11 @@ void Viewer::scrolledHorizontal(int value)
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    if(oldValueHorizontal < value) //right
+    if((int)oldValueHorizontal < value) //right
     {
         map->drawRight(view_field);
     }
-    if(oldValueHorizontal > value) //left
+    if((int)oldValueHorizontal > value) //left
     {
         map->drawLeft(view_field);
     }
