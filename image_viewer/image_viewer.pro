@@ -11,18 +11,34 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = image_viewer
 TEMPLATE = app
 
+#QMAKE_CXXFLAGS += -std=c++11
+CONFIG += c++11
 
 SOURCES += main.cpp\
         viewer.cpp \
     cutter.cpp \
     mygraphicsview.cpp \
     tilemap.cpp \
-    tile.cpp
+    tile.cpp \
+    Figures/shapebase.cpp \
+    Figures/ellipse.cpp \
+    Figures/rect.cpp \
+    Figures/arrow.cpp \
+    Figures/polygon.cpp
 
 HEADERS  += viewer.h \
     cutter.h \
     mygraphicsview.h \
     tilemap.h \
-    tile.h
+    tile.h \
+    Figures/ellipse.h \
+    Figures/rect.h \
+    Figures/arrow.h \
+    Figures/shapebase.h \
+    Figures/polygon.h
 
 FORMS    += viewer.ui
+
+DISTFILES += \
+    NewForm.ui.qml \
+    New.qml
