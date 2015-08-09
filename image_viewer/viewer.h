@@ -38,6 +38,8 @@ private slots:
     void scrolledHorizontal(int value);
 
 
+    void on_zoomOutButton_clicked();
+
 signals:
     void centralPointEvent(QPointF);
 private:

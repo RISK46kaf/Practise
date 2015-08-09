@@ -35,30 +35,40 @@ Viewer::Viewer(QWidget *parent) :
         {
             QXmlStreamReader::TokenType token = xml.readNext();
             att = xml.attributes();
-            for(uint i=0;i<att.size();++i)
+            if(att.size() != 0)
             {
-                qDebug()<<att[i].name().toString();
-                qDebug()<<att[i].value().toString();
+                QSize size;
+                if(att[1].name().toString() == "width")
+                {
+                    size.setWidth(att[1].value().toInt());
+                }
+                if(att[2].name().toString() == "height")
+                {
+                    size.setHeight(att[2].value().toInt());
+                }
+                qDebug()<<size;
+                scaleList.push_back(size);
             }
 
         }
+        //
+        scene->setSceneRect(0,0,scaleList[0].width()*256,scaleList[0].height()*256);
+
+
+        QRect view_field;
+        view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+        view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+
+        map = new TileMap();
+        map->setScene(scene);
+        map->setScale(scaleList[0],scale);
+        map->drawViewField(view_field);
+
+        view->horizontalScrollBar()->setSingleStep(5);
+        oldValueHorizontal = 0;
+        oldValueVertical = 0;
+        //view->horizontalScrollBar()->setMouseTracking(false);
     }
-    //
-    scene->setSceneRect(0,0,40*256,18*256);
-
-
-    QRect view_field;
-    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-
-    map = new TileMap();
-    map->setScene(scene);
-    map->drawViewField(view_field);
-
-    view->horizontalScrollBar()->setSingleStep(5);
-    oldValueHorizontal = 0;
-    oldValueVertical = 0;
-    //view->horizontalScrollBar()->setMouseTracking(false);
 }
 
 Viewer::~Viewer()
@@ -154,3 +164,16 @@ void Viewer::scrolledHorizontal(int value)
 }
 
 
+
+void Viewer::on_zoomOutButton_clicked()
+{
+    if(scale < (scaleList.size()))
+    {
+        ++scale;
+        map->setScale(scaleList[scale-1],scale);
+        QRect view_field;
+        view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+        view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+        map->drawViewField(view_field);
+    }
+}

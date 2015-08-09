@@ -19,8 +19,7 @@ class TileMap: public QObject
     Q_OBJECT
 public:
     explicit TileMap(QObject *parent = 0);
-    explicit TileMap(QGraphicsScene* s);
-
+    //explicit TileMap(QGraphicsScene* s);
     QQueue<Tile*> storage;
     QVector<QVector<bool> > matrix;
 
@@ -32,6 +31,7 @@ public:
     void drawFromToRight(QRect from, QRect to);
     void init();
     void setScene(QGraphicsScene *s);
+    void setScale(QSize size, uint s);
     void viewSizeChanged(QRect r);
     void clear(QRect r);
     void clearAll();
@@ -43,6 +43,7 @@ private:
     QSize result_size;
     QRect rect;
     QGraphicsScene* scene;
+    uint scale;
 
 };
 

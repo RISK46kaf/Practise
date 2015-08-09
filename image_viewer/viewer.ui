@@ -53,8 +53,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>115</width>
-          <height>342</height>
+          <width>112</width>
+          <height>382</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -172,6 +172,20 @@
       </widget>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="zoomInButton">
+      <property name="text">
+       <string>+</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QPushButton" name="zoomOutButton">
+      <property name="text">
+       <string>-</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -180,7 +194,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

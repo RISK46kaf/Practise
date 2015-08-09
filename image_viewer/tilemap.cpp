@@ -18,21 +18,12 @@ inline void memStatus()
 TileMap::TileMap(QObject *parent) :
     QObject(parent)
 {
-    map_size = QSize(40,18);
     tile_size = QSize(256,256);
     result_size = QSize(3,3);
     rect = QRect(QPoint(0,0),QPoint(3,0));
     qDebug()<<rect;
 
-    for(uint y=0;y<map_size.height();++y)
-    {
-        QVector<bool> v;
-        matrix.push_back(v);
-        for(uint x=0;x<map_size.width();++x)
-        {
-            matrix[y].push_back(0);
-        }
-    }
+
 }
 
 void TileMap::drawTop(QRect r)
@@ -50,7 +41,7 @@ void TileMap::drawTop(QRect r)
             {
                 qDebug()<<"drawTop"<<"y="<<y<<"x="<<x;
                 matrix[y][x] = true;
-                QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
                 Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
                 storage.push_back(t);
                 scene->addItem(storage.last()->img);
@@ -76,7 +67,7 @@ void TileMap::drawBottom(QRect r)
             {
                 qDebug()<<"drawBottom"<<"y="<<y<<"x="<<x;
                 matrix[y][x] = true;
-                QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
                 Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
                 storage.push_back(t);
                 scene->addItem(storage.last()->img);
@@ -102,7 +93,7 @@ void TileMap::drawRight(QRect r)
             {
                 qDebug()<<"drawRight"<<"y="<<y<<"x="<<x;
                 matrix[y][x] = true;
-                QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
                 Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
                 storage.push_back(t);
                 scene->addItem(storage.last()->img);
@@ -129,7 +120,7 @@ void TileMap::drawLeft(QRect r)
             {
                 qDebug()<<"drawLeft"<<"y="<<y<<"x="<<x;
                 matrix[y][x] = true;
-                QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
                 Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
                 storage.push_back(t);
                 scene->addItem(storage.last()->img);
@@ -155,7 +146,7 @@ void TileMap::drawViewField(QRect r)
                 if(matrix[y][x] == false)
                 {
                     matrix[y][x] = true;
-                    QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                    QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
 
                     Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
                     storage.push_back(t);
@@ -181,7 +172,7 @@ void TileMap::drawFromToRight(QRect from, QRect to)
                 if(matrix[y][x] == false)
                 {
                     matrix[y][x] = true;
-                    QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                    QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
 
                     Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
                     storage.push_back(t);
@@ -195,6 +186,24 @@ void TileMap::drawFromToRight(QRect from, QRect to)
 void TileMap::setScene(QGraphicsScene *s)
 {
     scene = s;
+}
+
+void TileMap::setScale(QSize size, uint s)
+{
+    for(uint i=0;i<matrix.size();++i)
+        matrix[i].clear();
+    matrix.clear();
+    map_size = size;
+    scale = s;
+    for(uint y=0;y<map_size.height();++y)
+    {
+        QVector<bool> v;
+        matrix.push_back(v);
+        for(uint x=0;x<map_size.width();++x)
+        {
+            matrix[y].push_back(0);
+        }
+    }
 }
 
 void TileMap::clear(QRect r)
