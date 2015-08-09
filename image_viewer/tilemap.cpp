@@ -3,12 +3,14 @@
 
 inline void memStatus()
 {
+#ifdef WIN32
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof(statex);
 
     GlobalMemoryStatusEx(&statex);
     //qDebug()<<statex.dwMemoryLoad;
+#endif
 }
 
 

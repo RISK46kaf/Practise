@@ -50,6 +50,11 @@ void Rect::setCoordinates(int left, int top, int width, int height)
     setStrData();
 }
 
+Ellipse Rect::toEllipse()
+{
+    return Ellipse(m_coordinates);
+}
+
 void Rect::setStrData()
 {
     m_str_data = "";
