@@ -55,14 +55,10 @@ Viewer::Viewer(QWidget *parent) :
         scene->setSceneRect(0,0,scaleList[0].width()*256,scaleList[0].height()*256);
 
 
-        QRect view_field;
-        view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-        view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-
         map = new TileMap();
         map->setScene(scene);
         map->setScale(scaleList[0],scale);
-        map->drawViewField(view_field);
+        map->drawViewField(getViewField());
 
         view->horizontalScrollBar()->setSingleStep(5);
         oldValueHorizontal = 0;
@@ -89,10 +85,7 @@ void Viewer::on_actionPrepare_Image_triggered()
 
 void Viewer::on_actionLoad_Images_triggered()
 {
-    QRect view_field;
-    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    map->clear(view_field);
+    map->clear(getViewField());
 }
 
 void Viewer::viewResized()
@@ -101,34 +94,28 @@ void Viewer::viewResized()
     qDebug()<<view->size();
     qDebug()<<"Размер QGraphicsScene:";
     qDebug()<<scene->sceneRect();
-    QRect view_field;
-    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    map->drawViewField(view_field);
+
+    map->drawViewField(getViewField());
 
 }
 
 void Viewer::viewChanged()
 {
-    QRect view_field;
-    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+
 }
 
 void Viewer::scrolledVertical(int value)
 {
     view->horizontalScrollBar()->blockSignals(true);
-    QRect view_field;
-    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+
 
     if((int)oldValueVertical > value) //up
     {
-        map->drawTop(view_field);
+        map->drawTop(getViewField());
     }
     if((int)oldValueVertical < value) //down
     {
-        map->drawBottom(view_field);
+        map->drawBottom(getViewField());
     }
     oldValueVertical = value;
     view->horizontalScrollBar()->blockSignals(false);
@@ -137,9 +124,7 @@ void Viewer::scrolledVertical(int value)
 void Viewer::scrolledHorizontal(int value)
 {
     view->horizontalScrollBar()->blockSignals(true);
-    QRect view_field;
-    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+
     qDebug()<<value;
 
 
@@ -147,19 +132,19 @@ void Viewer::scrolledHorizontal(int value)
     {
         if((oldValueHorizontal+256) < value)
         {
-            map->drawFromToRight(old_view_field, view_field);
+            map->drawFromToRight(old_view_field, getViewField());
         }
         else
         {
-            map->drawRight(view_field);
+            map->drawRight(getViewField());
         }
     }
     if((int)oldValueHorizontal > value) //left
     {
-        map->drawLeft(view_field);
+        map->drawLeft(getViewField());
     }
     oldValueHorizontal = value;
-    old_view_field = view_field;
+    old_view_field = getViewField();
     view->horizontalScrollBar()->blockSignals(false);
 }
 
@@ -171,9 +156,24 @@ void Viewer::on_zoomOutButton_clicked()
     {
         ++scale;
         map->setScale(scaleList[scale-1],scale);
-        QRect view_field;
-        view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-        view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-        map->drawViewField(view_field);
+        map->drawViewField(getViewField());
+        scene->setSceneRect(0,0,scaleList[0].width()*256,scaleList[0].height()*256);
     }
 }
+
+QRect Viewer::getViewField()
+{
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    return view_field;
+}
+
+QPoint Viewer::getCentralPoint()
+{
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    return view_field.center();
+}
+

@@ -56,6 +56,8 @@ private:
     uint scale;
     QVector<QSize> scaleList;
     QSize map_size;
+    QRect getViewField();
+    QPoint getCentralPoint();
     bool l;
 
 };
