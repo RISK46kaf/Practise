@@ -10,6 +10,7 @@
 #include <QGraphicsPixmapItem>
 #include <QDebug>
 #include <QScrollBar>
+#include <QXmlStreamReader>
 
 namespace Ui {
 class Viewer;
@@ -49,8 +50,13 @@ private:
     QStringList paths;
     uint oldValueHorizontal;
     uint oldValueVertical;
+    QRect old_view_field;
+    uint scale;
+    QVector<QSize> scaleList;
+    QSize map_size;
     bool l;
 
 };
+
 
 #endif // VIEWER_H

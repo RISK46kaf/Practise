@@ -1,5 +1,18 @@
 #include "tilemap.h"
 
+
+inline void memStatus()
+{
+    MEMORYSTATUSEX statex;
+
+    statex.dwLength = sizeof(statex);
+
+    GlobalMemoryStatusEx(&statex);
+    //qDebug()<<statex.dwMemoryLoad;
+}
+
+
+
 TileMap::TileMap(QObject *parent) :
     QObject(parent)
 {
@@ -8,11 +21,173 @@ TileMap::TileMap(QObject *parent) :
     result_size = QSize(3,3);
     rect = QRect(QPoint(0,0),QPoint(3,0));
     qDebug()<<rect;
+
+    for(uint y=0;y<map_size.height();++y)
+    {
+        QVector<bool> v;
+        matrix.push_back(v);
+        for(uint x=0;x<map_size.width();++x)
+        {
+            matrix[y].push_back(0);
+        }
+    }
 }
 
-TileMap::TileMap(QStringList img_paths, QGraphicsScene *scene)
+void TileMap::drawTop(QRect r)
 {
+    if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    {
+        uint topBorder = r.top()/256;
+        uint bottomBorder = r.bottom()/256;
+        uint leftBorder = r.left()/256;
+        uint rightBorder = r.right()/256 +1;
+        uint y = topBorder;
+        for(uint x=leftBorder;x<rightBorder;++x)
+        {
+            if(matrix[y][x] == false)
+            {
+                qDebug()<<"drawTop"<<"y="<<y<<"x="<<x;
+                matrix[y][x] = true;
+                QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                storage.push_back(t);
+                scene->addItem(storage.last()->img);
+            }
+        }
+        qDebug()<<"#####drawEND";
 
+    }
+}
+
+void TileMap::drawBottom(QRect r)
+{
+    if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    {
+        uint topBorder = r.top()/256;
+        uint bottomBorder = r.bottom()/256;
+        uint leftBorder = r.left()/256;
+        uint rightBorder = r.right()/256 +1;
+        uint y = bottomBorder;
+        for(uint x=leftBorder;x<rightBorder;++x)
+        {
+            if(matrix[y][x] == false)
+            {
+                qDebug()<<"drawBottom"<<"y="<<y<<"x="<<x;
+                matrix[y][x] = true;
+                QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                storage.push_back(t);
+                scene->addItem(storage.last()->img);
+            }
+        }
+        qDebug()<<"#####drawEND";
+        memStatus();
+    }
+}
+
+void TileMap::drawRight(QRect r)
+{
+    if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    {
+        uint topBorder = r.top()/256;
+        uint bottomBorder = r.bottom()/256+1;
+        uint leftBorder = r.left()/256;
+        uint rightBorder = r.right()/256;
+        uint x = rightBorder;
+        for(uint y=topBorder;y<bottomBorder;++y)
+        {
+            if(matrix[y][x] == false)
+            {
+                qDebug()<<"drawRight"<<"y="<<y<<"x="<<x;
+                matrix[y][x] = true;
+                QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                storage.push_back(t);
+                scene->addItem(storage.last()->img);
+            }
+        }
+    }
+    qDebug()<<"#####drawEND";
+
+    memStatus();
+}
+
+void TileMap::drawLeft(QRect r)
+{
+    if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    {
+        uint topBorder = r.top()/256;
+        uint bottomBorder = r.bottom()/256+1;
+        uint leftBorder = r.left()/256;
+        uint rightBorder = r.right()/256;
+        uint x = leftBorder;
+        for(uint y=topBorder;y<bottomBorder;++y)
+        {
+            if(matrix[y][x] == false)
+            {
+                qDebug()<<"drawLeft"<<"y="<<y<<"x="<<x;
+                matrix[y][x] = true;
+                QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                storage.push_back(t);
+                scene->addItem(storage.last()->img);
+            }
+        }
+        qDebug()<<"#####drawEND";
+    }
+    memStatus();
+}
+
+void TileMap::drawViewField(QRect r)
+{
+    if((r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    {
+        uint topBorder = r.top()/256;
+        uint bottomBorder = r.bottom()/256 +1;
+        uint leftBorder = r.left()/256;
+        uint rightBorder = r.right()/256 +1;
+        for(uint y=topBorder;y<bottomBorder;++y)
+        {
+            for(uint x=leftBorder;x<rightBorder;++x)
+            {
+                if(matrix[y][x] == false)
+                {
+                    matrix[y][x] = true;
+                    QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+
+                    Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                    storage.push_back(t);
+                    scene->addItem(storage.last()->img);
+                }
+            }
+        }
+    }
+}
+
+void TileMap::drawFromToRight(QRect from, QRect to)
+{
+    if((to.left()>=0)&&(to.right()<map_size.width()*256))
+    {
+        uint topBorder = from.top()/256;
+        uint bottomBorder = from.bottom()/256 +1;
+        uint leftBorder = from.left()/256;
+        uint rightBorder = to.right()/256 +1;
+        for(uint y=topBorder;y<bottomBorder;++y)
+        {
+            for(uint x=leftBorder;x<rightBorder;++x)
+            {
+                if(matrix[y][x] == false)
+                {
+                    matrix[y][x] = true;
+                    QString path = QString("1/")+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+
+                    Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                    storage.push_back(t);
+                    scene->addItem(storage.last()->img);
+                }
+            }
+        }
+    }
 }
 
 void TileMap::setScene(QGraphicsScene *s)
@@ -20,286 +195,46 @@ void TileMap::setScene(QGraphicsScene *s)
     scene = s;
 }
 
-
-
-void TileMap::load(QStringList img_paths)
+void TileMap::clear(QRect r)
 {
-    paths = img_paths;
-}
+    uint topBorder = r.top()/256;
+    uint bottomBorder = r.bottom()/256;
+    uint leftBorder = r.left()/256;
+    uint rightBorder = r.right()/256 ;
+    qDebug()<<"storage size: "<<storage.size();
 
-Tile TileMap::makeTile(QPoint pnt)
-{
-    QPixmap pix;
-    pix.load(getPath(pnt),"JPEG");
-    return Tile(pix,pnt);
-}
 
-void TileMap::drawUp(QRect r)
-{
-    qDebug()<<"draw UP";
-    if((r.top()>=0)&&(r.bottom()<map_size.height()*256))
+
+    for(uint y=0;y<map_size.height();++y)
     {
-        if(r.top()<((rect.top())*256))
+        for(uint x=0;x<map_size.width();++x)
         {
-            qDebug()<<"addTop";
-            addTop();
-        }
-        if(r.bottom()<((rect.bottom())*256))
-        {
-            qDebug()<<"deleteBottom";
-            deleteBottom();
+            if((matrix[y][x] == true)&&(((y<topBorder)||(y>bottomBorder))||((x<leftBorder)||(x>rightBorder))))
+            {
+                scene->removeItem(storage.first()->img);
+                delete storage.first();
+                storage.removeFirst();
+                matrix[y][x] = false;
+            }
         }
     }
-}
+    qDebug()<<"storage size then: "<<storage.size();
 
-void TileMap::drawDown(QRect r)
-{
-    qDebug()<<"drawDown";
-
-    if((r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    for(uint y=0;y<matrix.size();++y)
     {
-        if(r.bottom()>(rect.bottom()*256))
+        QString s;
+        for(uint x=0;x<matrix[y].size();++x)
         {
-            qDebug()<<"addBottom";
-            addBottom();
+            s += QString::number(matrix[y][x]);
         }
-        if(r.top()>((rect.top())*256))
-        {
-            qDebug()<<"deleteTop";
-            deleteTop();
-        }
+        qDebug()<<s;
     }
 }
 
-
-void TileMap::drawRight(QRect r) /////////////////////
-{
-/*
-    qDebug()<<"r left: "<<r.left()/256;
-    qDebug()<<"r right: "<<r.right()/256;
-    qDebug()<<"rect left: "<<rect.left();
-    qDebug()<<"rect right: "<<rect.right(); */
-
-    qDebug()<<"drawRight";
-
-    if((r.left()>=0)&&(r.right()<map_size.width()*256))
-    {
-        if(r.right()>(rect.right()*256))
-        {
-            qDebug()<<"addRight";
-            addRight();
-        }
-        if(r.left()>((rect.left())*256))
-        {
-            qDebug()<<"deleteLeft";
-            deleteLeft();
-        }
-    }
-}
-
-void TileMap::drawLeft(QRect r)
-{
-    qDebug()<<"drawLeft";
-
-    if((r.left()>=0)&&(r.right()<map_size.width()*256))
-    {
-        if(r.left()<((rect.left())*256))
-        {
-            qDebug()<<"addLeft";
-            addLeft();
-        }
-        if(r.right()<((rect.right())*256))
-        {
-            qDebug()<<"deleteRight";
-            deleteRight();
-        }
-    }
-}
-
-/*
-void TileMap::viewFieldChanged(QRect r)
-{
-
-    qDebug()<<"r top: "<<r.top()/256;
-    qDebug()<<"r bottom: "<<r.bottom()/256;
-    qDebug()<<"rect top: "<<rect.top();
-    qDebug()<<"rect bottom: "<<rect.bottom();
-
-    if((r.top()>=0)&&(r.bottom()<map_size.height()*256))
-    {
-        if(r.bottom()>(rect.bottom()*256))
-        {
-            addBottom();
-        }
-        if(r.bottom()<((rect.bottom()-1)*256))
-        {
-            deleteBottom();
-        }
-        if(r.top()<(rect.top()*256))
-        {
-            addTop();
-        }
-        if(r.top()>=((rect.top()+2)*256))
-        {
-            deleteTop();
-        }
-    }
-}
-*/
-void TileMap::update()
-{
-}
-
-void TileMap::init()
-{
-    addBottom();
-    addBottom();
-    addBottom();
-}
-
-
-void TileMap::centralPointChanged(QPointF pnt)
-{
-    qDebug()<<centralPoint;
-}
-
-uint TileMap::coordinatesToIndex(QPoint pnt)
-{
-    int x = pnt.x()/tile_size.width();
-    int y = pnt.y()/tile_size.height();
-    int index = x+y*map_size.width();
-    return index;
-}
-
-void TileMap::addBottom()
-{
-    QList<Tile*> strip;
-    qDebug()<<rect;
-    for(uint x=rect.left();x<rect.right();++x)
-    {
-        QPixmap pix;
-        pix.load(getPath(QPoint(x,rect.bottom())),"JPEG");
-        Tile* t = new Tile(pix,QPoint(x,rect.bottom()));
-        strip.push_back(t);
-
-        scene->addItem(strip.last()->img);
-    }
-    storage.push_back(strip);
-    rect.setBottom(rect.bottom()+1);
-    qDebug()<<rect; ////////////////////////////////////////////
-
-}
-
-void TileMap::addTop()
-{
-    QList<Tile*> strip;
-    qDebug()<<rect;
-    for(uint x=rect.left();x<rect.right();++x)
-    {
-        QPixmap pix;
-        pix.load(getPath(QPoint(x,rect.top())),"JPEG");
-        Tile* t = new Tile(pix,QPoint(x,rect.top()));
-        strip.push_back(t);
-
-        scene->addItem(strip.last()->img);
-    }
-    storage.push_front(strip);
-    rect.setTop(rect.top()-1);
-    qDebug()<<rect; ////////////////////////////////////////////
-
-}
-
-void TileMap::deleteBottom()
-{
-    for(uint x=0;x<storage[storage.size()-1].size();++x)
-    {
-        scene->removeItem(storage[storage.size()-1][x]->img);
-        delete storage[storage.size()-1][x];
-    }
-    storage.removeLast();
-    rect.setBottom(rect.bottom()-1);
-}
-
-void TileMap::deleteTop()
-{
-    for(uint x=0;x<storage[0].size();++x)
-    {
-        scene->removeItem(storage[0][x]->img);
-        delete storage[0][x];
-    }
-    storage.removeFirst();
-    rect.setTop(rect.top()+1);
-}
-
-void TileMap::addRight()
-{
-    for(uint y=0;y<storage.size();++y)
-    {
-        QPixmap pix;
-        pix.load(getPath(QPoint(rect.right(),y)),"JPEG");
-        Tile* t = new Tile(pix,QPoint(rect.right(),y));
-        storage[y].push_back(t);
-        scene->addItem(storage[y].last()->img);
-    }
-    rect.setRight(rect.right()+1);
-}
-
-void TileMap::addLeft()
-{
-
-    for(uint y=0;y<storage.size();++y)
-    {
-        QPixmap pix;
-        pix.load(getPath(QPoint(rect.left(),y)),"JPEG");
-        Tile* t = new Tile(pix,QPoint(rect.left(),y));
-        storage[y].push_front(t);
-        scene->addItem(storage[y].first()->img);
-    }
-    rect.setLeft(rect.left()-1);
-}
-
-void TileMap::deleteRight()
-{
-    for(uint y=0;y<storage.size();++y)
-    {
-        scene->removeItem(storage[y].last()->img);
-        delete storage[y].last();
-        storage[y].removeLast();
-    }
-    rect.setRight(rect.right()-1);
-}
-
-void TileMap::deleteLeft()
-{
-    for(uint y=0;y<storage.size();++y)
-    {
-        qDebug()<<"storage "<<storage[y][0];
-        scene->removeItem(storage[y].first()->img);
-        delete storage[y].first();
-        storage[y].removeFirst();
-    }
-    qDebug()<<"end";
-    rect.setLeft(rect.left()+1);
-}
-
-QString TileMap::getPath(QPoint pnt)
-{
-    return paths[pnt.x()+pnt.y()*map_size.width()];
-}
 
 
 
 TileMap::~TileMap()
 {
 
-}
-
-void TileMap::viewSizeChanged(QRect r)
-{
-    uint width = r.size().width()/256;
-    uint height = r.size().height()/256;
-    for(uint x=0;x<width;++x)
-        addBottom();
-    for(uint y=0;y<height;++y)
-        addRight();
 }

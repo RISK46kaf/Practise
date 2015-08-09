@@ -1,5 +1,6 @@
 #include "viewer.h"
 #include "ui_viewer.h"
+#include <QXmlStreamStringRef>
 
 Viewer::Viewer(QWidget *parent) :
     QMainWindow(parent),
@@ -16,8 +17,44 @@ Viewer::Viewer(QWidget *parent) :
     connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
     connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
 
-    l=false;
+    scale = 1;
 
+    //
+    //XML
+    QXmlStreamAttributes att;
+    QFile* file = new QFile("image.xml");
+    if (file->open(QIODevice::ReadOnly))
+    {
+
+        QXmlStreamReader xml(file);
+        while (!xml.atEnd() && !xml.hasError())
+        {
+            QXmlStreamReader::TokenType token = xml.readNext();
+            att = xml.attributes();
+            for(uint i=0;i<att.size();++i)
+            {
+                qDebug()<<att[i].name().toString();
+                qDebug()<<att[i].value().toString();
+            }
+
+        }
+    }
+    //
+    scene->setSceneRect(0,0,40*256,18*256);
+
+
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+
+    map = new TileMap();
+    map->setScene(scene);
+    map->drawViewField(view_field);
+
+    view->horizontalScrollBar()->setSingleStep(5);
+    oldValueHorizontal = 0;
+    oldValueVertical = 0;
+    //view->horizontalScrollBar()->setMouseTracking(false);
 }
 
 Viewer::~Viewer()
@@ -38,23 +75,16 @@ void Viewer::on_actionPrepare_Image_triggered()
 
 void Viewer::on_actionLoad_Images_triggered()
 {
-    paths = QFileDialog::getOpenFileNames(this,tr("Open"),tr(""),tr("Files(*.jpg *.jpeg)"));
-
-    scene->setSceneRect(0,0,40*256,18*256);
-    map = new TileMap();
-    connect(this, SIGNAL(centralPointEvent(QPointF)), map, SLOT(centralPointChanged(QPointF)));
-    centralItem = new QGraphicsPixmapItem();
-    map->load(paths);
-    map->setScene(scene);
-    map->init();
-    l=true;
+    //paths = QFileDialog::getOpenFileNames(this,tr("Open"),tr(""),tr("Files(*.jpg *.jpeg)"));
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    map->clear(view_field);
 
 }
 
 void Viewer::viewResized()
 {
-    if(l)
-    {
     qDebug()<<"Размер MyGraphicsView:";
     qDebug()<<view->size();
     qDebug()<<"Размер QGraphicsScene:";
@@ -62,8 +92,7 @@ void Viewer::viewResized()
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    map->viewSizeChanged(view_field);
-    }
+    map->drawViewField(view_field);
 
 }
 
@@ -72,40 +101,53 @@ void Viewer::viewChanged()
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    map->viewSizeChanged(view_field);
 }
 
 void Viewer::scrolledVertical(int value)
 {
+    view->horizontalScrollBar()->blockSignals(true);
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
 
     if(oldValueVertical > value) //up
     {
-        map->drawUp(view_field);
+        map->drawTop(view_field);
     }
     if(oldValueVertical < value) //down
     {
-        map->drawDown(view_field);
+        map->drawBottom(view_field);
     }
     oldValueVertical = value;
+    view->horizontalScrollBar()->blockSignals(false);
 }
 
 void Viewer::scrolledHorizontal(int value)
 {
+    view->horizontalScrollBar()->blockSignals(true);
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    qDebug()<<value;
+
     if(oldValueHorizontal < value) //right
     {
-        map->drawRight(view_field);
+        if((oldValueHorizontal+256) < value)
+        {
+            map->drawFromToRight(old_view_field, view_field);
+        }
+        else
+        {
+            map->drawRight(view_field);
+        }
     }
     if(oldValueHorizontal > value) //left
     {
         map->drawLeft(view_field);
     }
     oldValueHorizontal = value;
+    old_view_field = view_field;
+    view->horizontalScrollBar()->blockSignals(false);
 }
 
 

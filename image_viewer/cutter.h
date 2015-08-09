@@ -2,6 +2,7 @@
 #define CUTTER_H
 #include <QImage>
 #include <vector>
+#include <QDebug>
 
 using namespace std;
 
