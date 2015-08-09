@@ -2,6 +2,7 @@
 #include "ui_viewer.h"
 #include <QXmlStreamStringRef>
 //#include <QSizePolicy>
+#include "Figures/figures.h"
 
 Viewer::Viewer(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +24,12 @@ Viewer::Viewer(QWidget *parent) :
 
     scale = 1;
 
+    Rect r;
+    Ellipse* ptr = (Ellipse*)r.toEllipse();
+
+    qDebug() << ptr->getFigureType() << ptr;
+
+    delete ptr;
     //
     //XML
     QXmlStreamAttributes att;

@@ -1,6 +1,4 @@
-#include "shapebase.h"
-#include "ellipse.h"
-#include "rect.h"
+#include "figures.h"
 
 Ellipse::Ellipse()
 {
@@ -50,9 +48,9 @@ void Ellipse::setCoordinates(int left, int top, int width, int height)
     setStrData();
 }
 
-Rect Ellipse::toRect()
+ShapeBase* Ellipse::toRect()
 {
-    return Rect(m_coordinates);
+    return (ShapeBase*)new Rect(m_coordinates);
 }
 
 void Ellipse::setStrData()

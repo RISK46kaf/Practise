@@ -35,7 +35,8 @@ HEADERS  += viewer.h \
     Figures/rect.h \
     Figures/arrow.h \
     Figures/shapebase.h \
-    Figures/polygon.h
+    Figures/polygon.h \
+    Figures/figures.h
 
 FORMS    += viewer.ui
 

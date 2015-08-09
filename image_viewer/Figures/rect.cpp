@@ -1,6 +1,4 @@
-#include "shapebase.h"
-#include "rect.h"
-#include "ellipse.h"
+#include "figures.h"
 
 Rect::Rect()
 {
@@ -49,12 +47,13 @@ void Rect::setCoordinates(int left, int top, int width, int height)
     m_coordinates = QRect(left,top,width,height);
     setStrData();
 }
-/*
-Ellipse Rect::toEllipse()
+
+
+ShapeBase *Rect::toEllipse()
 {
-    return Ellipse(m_coordinates);
+    return (ShapeBase* )new Ellipse(m_coordinates);
 }
-*/
+
 void Rect::setStrData()
 {
     m_str_data = "";

@@ -1,10 +1,7 @@
 #ifndef RECT_H
 #define RECT_H
-#include "ellipse.h"
 
-
-class ShapeBase;
-class Ellipse;
+#include "shapebase.h"
 
 class Rect: public ShapeBase
 {
@@ -19,7 +16,7 @@ public:
     void setCoordinates(const QPoint &topleft, const QPoint &bottomright);
     void setCoordinates(const QPoint &topleft, const QSize &size);
     void setCoordinates(int left, int top, int width, int height);
-    //Ellipse toEllipse();
+    ShapeBase* toEllipse();
 private:
     QRect m_coordinates;
 
