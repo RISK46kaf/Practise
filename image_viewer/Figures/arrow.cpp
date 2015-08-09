@@ -1,5 +1,4 @@
-#include "shapebase.h"
-#include "arrow.h"
+#include "figures.h"
 
 Arrow::Arrow()
 {

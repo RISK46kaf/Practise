@@ -1,8 +1,7 @@
 #ifndef ELLIPSE_H
 #define ELLIPSE_H
 
-class ShapeBase;
-class Rect;
+#include "shapebase.h"
 
 class Ellipse: public ShapeBase
 {
@@ -15,7 +14,7 @@ public:
     void setCoordinates(const QPoint &topleft, const QPoint &bottomright);
     void setCoordinates(const QPoint &topleft, const QSize &size);
     void setCoordinates(int left, int top, int width, int height);
-    Rect toRect();
+    ShapeBase* toRect();
 private:
     QRect m_coordinates;
 

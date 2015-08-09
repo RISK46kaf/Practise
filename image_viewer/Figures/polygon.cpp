@@ -1,5 +1,4 @@
-#include "shapebase.h"
-#include "polygon.h"
+#include "figures.h"
 
 Polygon::Polygon()
 {

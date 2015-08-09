@@ -1,7 +1,7 @@
 #ifndef ARROW_H
 #define ARROW_H
 
-class ShapeBase;
+#include "shapebase.h"
 
 class Arrow: public ShapeBase
 {

@@ -1,11 +1,7 @@
 #ifndef SHAPEBASE
 #define SHAPEBASE
 
-
 #include <QtGui>
-//#include <QDebug>
-//#include <QRect>
-//#include <QLineF>
 
 enum FigureType
 {
