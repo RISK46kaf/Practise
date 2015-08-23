@@ -56,9 +56,6 @@ public:
     bool confirm();
 private:
     qint64 m_id;
-//    qint64 m_evidence_id;
-//    qint64 m_entry_id;
-//    qint64 m_diagnosis_id;
     Tool m_tool;
     ShapeBase* m_temp_figure;
     QHash< qint64,ShapeBase* > m_figures;
