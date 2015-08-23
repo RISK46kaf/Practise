@@ -624,20 +624,6 @@ void Storage::drawBoundingBoxes(
         penStyle = Qt::SolidLine;
         int labelID = _rect_list->at(i).getEvidenceID();
 
-        /* настраиваем цвет для лкйбла к которому относится выделенная область */
-//        if (_rect_list->at(i).getColor() !=)
-            aPen->setColor(QColor(_rect_list->at(i).getColor()));
-        /* в случае если нет цвета для текущего лейбла */
-//        else
-//            aPen->setColor(QColor(Qt::white));
-
-        /* меняем стиль линии и толщину если текущая область выбрана(для изменения) */
-//        if (RectFigure == focused_selection_type_ &&
-//            focused_selection_ == i) {
-//            penStyle = Qt::DotLine;
-//            width = 3;
-//        }
-
         /* масштабируем */
         QRect _rec = _rect_list->at(i).getCoordinates().normalized();// list_bounding_box_->at(i)->rect.normalized();
         QPoint topLeft = _rec.topLeft() * scale_;
@@ -645,74 +631,9 @@ void Storage::drawBoundingBoxes(
 
         _rec.setTopLeft(topLeft);
         _rec.setBottomRight(bottomRight);
-//        if (focused_selection_ == i &&
-//            focused_selection_type_ == RectFigure) {
-//            QPen circPen;
-//            circPen.setWidth(2);
-//            circPen.setStyle(Qt::SolidLine);
-//            circPen.setColor(aPen->color());
-//            aPainter->setPen(circPen);
-//            for (int j = 0; j < 4; j++) {
-//                QPoint point;
-//                /* по номеру точки записаннму при кликах получаем вершины прямоугольника */
-//                if (!j) {
-//                    point = rect.topLeft();
-//                }
-//                else if (1 == j)
-//                {
-//                    point = rect.topRight();
-//                }
-//                else if (2 == j)
-//                {
-//                    point = rect.bottomRight();
-//                }
-//                else if (3 == j)
-//                {
-//                    point = rect.bottomLeft();
-//                }
-//                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
-//                if (i == hovered_point_.figureID &&
-//                    j == hovered_point_.pointID &&
-//                    RectFigure == hovered_point_.figure) {
-//                    QBrush brush;
-//                    brush.setColor(aPen->color());
-//                    brush.setStyle(Qt::SolidPattern);
-//                    aPainter->setBrush(brush);
-//                }
-//                aPainter->drawEllipse(point, point_radius_, point_radius_);
-//                aPainter->setBrush(Qt::NoBrush);
-//            }
-//        }
-//        if(set_label_width_)
-//        {
-//            qDebug() <<list_width_->size();
-//            for(int j=0; j<list_width_->size();++j)
-//            {
-//                if(list_width_->at(j).label_ID_== labelID)
-//                {
-//                        width = list_width_->at(j).new_width_;
-//                }
-//            }
-//        }
 
         aPen->setWidth(width);
         aPen->setStyle(penStyle);
-//        if(!view_labels_)
-//        {
-//            qDebug() << "лейблы не видны?";
-//            aPen->setStyle(Qt::NoPen);
-//        }
-//        qDebug() << view_current_l_;
-//        if(view_current_l_)
-//        {
-//            if(labelID!= *label_ID_)
-//            {
-//                qDebug() << "лейблы не видны?";
-//                aPen->setStyle(Qt::NoPen);
-//            }
-//            qDebug() << "ok?";
-//        }
-//        qDebug() << *label_ID_;
         aPainter->setPen(*aPen);
 
         aPainter->drawRect(_rec);

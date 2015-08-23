@@ -1,22 +1,32 @@
-#include "figures.h"
+#include "polygon.h"
 
-Polygon::Polygon()
+namespace Figures {
+
+
+Polygon::Polygon(QObject *parent) : ShapeBase(parent)
 {
     m_figure_type = FigureType::PolygonFigure;
     setStrData();
 }
 
-Polygon::Polygon(QPolygon coordinates):m_coordinates(coordinates)
+Polygon::Polygon(QPolygon coordinates, QObject *parent): ShapeBase(parent),
+    m_coordinates(coordinates)
 {
     m_figure_type = FigureType::PolygonFigure;
     setStrData();
 }
 
-Polygon::Polygon(QPolygon coordinates, uint color):m_coordinates(coordinates)
+Polygon::Polygon(QPolygon coordinates, uint color, QObject *parent): ShapeBase(parent),
+    m_coordinates(coordinates)
 {
     m_color = color;
     m_figure_type = FigureType::PolygonFigure;
 }
+
+Polygon::~Polygon()
+{
+}
+
 
 QPolygon Polygon::getCoordinates() const
 {
@@ -51,4 +61,6 @@ void Polygon::setStrData()
     m_str_data.append(serialize(m_coordinates).toBase64());
     m_str_data.append(";");
     m_str_data.append(QString("Color:#%1").arg(QString::number(m_color,16)));
+}
+
 }

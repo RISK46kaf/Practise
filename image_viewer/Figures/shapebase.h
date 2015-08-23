@@ -1,19 +1,19 @@
-#ifndef SHAPEBASE
-#define SHAPEBASE
+#ifndef MYSHAPEBASE_H
+#define MYSHAPEBASE_H
 
 #include <QtGui>
+#include <QObject>
+
+namespace Figures {
 
 enum FigureType
 {
     NoFigure,
     ArrowFigure,
     EllipseFigure,
-    PenFigure,
     PolygonFigure,
     RectFigure,
 };
-
-class Rect;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,28 +38,42 @@ T deserialize(QByteArray& ba)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class ShapeBase
+class ShapeBase: public QObject
 {
+    Q_OBJECT
 public:
-    ShapeBase();
+    ShapeBase(QObject* parent = 0);
     virtual ~ShapeBase();
-    int getID() const;
-    int getEvidenceID() const;
+    qint64 getID() const;
+    qint64 getEvidenceID() const;
+    qint64 getEntryID() const;
+    qint64 getDiagnosisID() const;
+    int getWidth() const;
+
     uint getColor() const;
     FigureType getFigureType() const;
     const QString& getStrData() const;
 
-    void setID(int ID);
-    void setEvidenceID(int ID);
+    void setID(qint64 ID);
+    void setEvidenceID(qint64 ID);
+    void setEntryID(qint64 ID);
+    void setDiagnosisID(qint64 ID);
+    void setWidth(int width);
+
     void setColor(uint Color);
 protected:
-    int m_ID;
-    int m_evidence_ID;
+    qint64 m_ID;
+    qint64 m_evidence_ID;
+    qint64 m_entry_ID;
+    qint64 m_diagnosis_ID;
+    int m_width;
+
     uint m_color;
     QStringList m_str_list/* = {"NoF","Arr","Ell","Pen","Pol","Rec"}*/;
     FigureType m_figure_type;
-    virtual void setStrData() = 0;
+    virtual void setStrData();
     QString m_str_data;
 };
-#endif // SHAPEBASE
+}
+#endif // MYSHAPEBASE
 

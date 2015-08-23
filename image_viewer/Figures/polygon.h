@@ -1,14 +1,19 @@
-#ifndef POLYGON_H
-#define POLYGON_H
+#ifndef MYPOLYGON_H
+#define MYPOLYGON_H
 
 #include "shapebase.h"
 
+namespace Figures {
+
 class Polygon: public ShapeBase
 {
+    Q_OBJECT
 public:
-    Polygon();
-    explicit Polygon(QPolygon coordinates);
-    Polygon(QPolygon coordinates, uint color);
+    explicit Polygon(QObject *parent = 0);
+    explicit Polygon(QPolygon coordinates, QObject *parent = 0);
+    Polygon(QPolygon coordinates, uint color, QObject *parent = 0);
+
+    virtual ~Polygon();
 
     QPolygon getCoordinates() const;
 
@@ -19,7 +24,7 @@ private:
     QPolygon m_coordinates;
 
 private:
-    void setStrData();
+    void setStrData() final;
 };
-
-#endif // POLYGON_H
+}
+#endif // MYPOLYGON_H
