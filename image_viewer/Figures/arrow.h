@@ -26,6 +26,7 @@ public:
     void setCoordinates(const QPointF &pt1, const QPointF &pt2);
     void setCoordinates(qreal x1, qreal y1, qreal x2, qreal y2);
     void setCoordinates(const QLine &line);
+    FigureType clearFigure();
 private:
     QLineF m_coordinates;
     qreal m_arrow_scale;

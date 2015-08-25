@@ -41,6 +41,7 @@ void Ellipse::setCoordinates(const QRect &coordinates)
 void Ellipse::setCoordinates(const QPoint &topleft, const QPoint &bottomright)
 {
     m_coordinates = QRect(topleft,bottomright);
+    m_coordinates =  m_coordinates.normalized();
     setStrData();
 }
 
@@ -54,6 +55,15 @@ void Ellipse::setCoordinates(int left, int top, int width, int height)
 {
     m_coordinates = QRect(left,top,width,height);
     setStrData();
+}
+
+FigureType Ellipse::clearFigure()
+{
+    ShapeBase::clear();
+    m_coordinates = QRect();
+    m_figure_type = FigureType::EllipseFigure;
+    setStrData();
+    return m_figure_type;
 }
 
 void Ellipse::setStrData()

@@ -20,6 +20,7 @@ public:
     void setCoordinates(const QPoint &topleft, const QPoint &bottomright);
     void setCoordinates(const QPoint &topleft, const QSize &size);
     void setCoordinates(int left, int top, int width, int height);
+    FigureType clearFigure();
 private:
     QRect m_coordinates;
 

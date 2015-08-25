@@ -41,6 +41,7 @@ void Rect::setCoordinates(const QRect &coordinates)
 void Rect::setCoordinates(const QPoint &topleft, const QPoint &bottomright)
 {
     m_coordinates = QRect(topleft,bottomright);
+    m_coordinates = m_coordinates.normalized();
     setStrData();
 }
 
@@ -54,6 +55,14 @@ void Rect::setCoordinates(int left, int top, int width, int height)
 {
     m_coordinates = QRect(left,top,width,height);
     setStrData();
+}
+
+FigureType Rect::clearFigure()
+{
+    ShapeBase::clear();
+    m_coordinates = QRect();
+    m_figure_type = FigureType::RectFigure;
+    return m_figure_type;
 }
 
 void Rect::setStrData()

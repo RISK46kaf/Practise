@@ -9,18 +9,22 @@
 #include <math.h>
 #include <QPainter>
 #include <QPen>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QPainter>
 
 
 namespace Figures {
 
 
 FiguresManager::FiguresManager(QObject *parent) : QObject(parent),
-    m_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL)
+    m_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL), m_new_selection(0), m_scroll_area(NULL)
 {
 }
 
 FiguresManager::FiguresManager(const FiguresManager &other) : QObject(0),
-    m_id(other.m_id), m_tool(other.m_tool), m_temp_figure(NULL), m_figures(other.m_figures)
+    m_id(other.m_id), m_tool(other.m_tool), m_temp_figure(NULL), m_figures(other.m_figures),
+    m_new_selection(other.m_new_selection), m_scroll_area(other.m_scroll_area)
 {
 }
 
@@ -34,7 +38,14 @@ FiguresManager& FiguresManager::operator =(const FiguresManager& other)
     m_tool = other.m_tool;
     m_temp_figure = NULL;
     m_figures = other.m_figures;
+    m_new_selection = other.m_new_selection;
+    m_scroll_area = other.m_scroll_area;
     return (*this);
+}
+
+void FiguresManager::setScrollArea(const QScrollArea *scrollArea)
+{
+    m_scroll_area = scrollArea;
 }
 
 ShapeBase* FiguresManager::value(qint64 id) const
@@ -52,6 +63,11 @@ qint64 FiguresManager::addValue(ShapeBase *value)
 
 void FiguresManager::clear()
 {
+    m_id = -1;
+    m_tool = NoTool;
+    m_prev_cursor = QPoint();
+    if(m_temp_figure != NULL)
+        m_temp_figure->deleteLater();
     m_figures.clear();
 }
 
@@ -110,6 +126,140 @@ void FiguresManager::drawer(QPainter *painter, QPen *pen, qreal scale) const
         }
     }
     this->drawFigures(painter, pen, scale);
+}
+
+void FiguresManager::musePress(QWidget *widget, QMouseEvent *event, qreal scale)
+{
+    bool nothingDraw = false;
+
+    m_prev_cursor = event->pos() / scale;
+
+    if(m_new_selection && event->buttons() & Qt::LeftButton)
+    {
+        switch (m_tool) {
+        case ArrowTool:
+            if(m_temp_figure == NULL)
+                m_temp_figure = new Arrow(this);
+            else if(m_temp_figure->clearFigure() != FigureType::ArrowFigure)
+            {
+                m_temp_figure->deleteLater();
+                m_temp_figure = new Arrow(this);
+            }
+            break;
+        case EllipseTool:
+            if(m_temp_figure == NULL)
+                m_temp_figure = new Ellipse(this);
+            else if(m_temp_figure->clearFigure() != FigureType::EllipseFigure)
+            {
+                m_temp_figure->deleteLater();
+                m_temp_figure = new Ellipse(this);
+            }
+            break;
+        case PolygonTool:
+            if(m_temp_figure == NULL)
+                m_temp_figure = new Polygon(this);
+            else if(m_temp_figure->clearFigure() != FigureType::PolygonFigure)
+            {
+                m_temp_figure->deleteLater();
+                Polygon* pol = new Polygon(this);
+                pol->setCoordinates(pol->getCoordinates() << m_prev_cursor << m_prev_cursor);
+                m_temp_figure = pol;
+            }
+            break;
+        case RectTool:
+            if(m_temp_figure == NULL)
+                m_temp_figure = new Rect(this);
+            else if(m_temp_figure->clearFigure() != FigureType::RectFigure)
+            {
+                m_temp_figure->deleteLater();
+                m_temp_figure = new Rect(this);
+            }
+            break;
+        default:
+            if(m_temp_figure != NULL)
+            {
+                m_temp_figure->deleteLater();
+                m_temp_figure = NULL;
+            }
+            nothingDraw = true;
+            break;
+        }
+        if(!nothingDraw)
+            widget->update();
+    }
+}
+
+void FiguresManager::mouseMove(QWidget *widget, QMouseEvent *event, qreal scale)
+{
+    QPoint pos = event->pos() / scale;
+    bool nothingDraw = false;
+    /*some fix
+    if (event->pos().x() < 0)
+        pos.setX(0);
+
+    if (width() < event->pos().x())
+        pos.setX(widget->width() - 1);
+
+    if (anEvent->pos().y() < 0)
+        pos.setY(0);
+
+    if (height() < anEvent->pos().y())
+        pos.setY(widget->height() - 1);*/
+    if(m_new_selection && event->buttons() && Qt::LeftButton)
+    {
+        Arrow* arr;
+        Ellipse* ell;
+        Polygon* pol;
+        Rect* rec;
+        QPolygon tmp;
+        switch (m_tool) {
+        case ArrowTool:
+            arr = qobject_cast<Arrow*>(m_temp_figure);
+            arr->setCoordinates(m_prev_cursor,pos);
+            break;
+        case EllipseTool:
+            ell = qobject_cast<Ellipse*>(m_temp_figure);
+            ell->setCoordinates(m_prev_cursor,pos);
+            break;
+        case Tool::PolygonTool:
+            pol = qobject_cast<Polygon*>(m_temp_figure);
+            tmp = pol->getCoordinates();
+            tmp.setPoint(tmp.count() - 1, pos);
+            pol->setCoordinates(tmp);
+            break;
+        case RectTool:
+            rec = qobject_cast<Rect*>(m_temp_figure);
+            rec->setCoordinates(m_prev_cursor,pos);
+            break;
+        case NoTool:
+            nothingDraw = true;
+            break;
+        }
+    } else ///??? mb NOT working
+        nothingDraw = true;
+    /* когда изображение слишком большое(необходима прокрутка) */
+    if(event->buttons() & Qt::MiddleButton &&
+       (m_scroll_area->size().height() < widget->size().height() ||
+        m_scroll_area->size().width() < widget->size().width()))
+    {
+        QPoint globPos = widget->mapToGlobal(pos);
+        QPoint prev = widget->mapToGlobal(m_prev_cursor);
+        int horValue = m_scroll_area->horizontalScrollBar()->value();
+//        scroll_area_->horizontalScrollBar()
+        int verValue = m_scroll_area->verticalScrollBar()->value();
+
+
+        QPoint delta = globPos - prev;
+        m_prev_cursor = pos;
+
+        horValue += delta.x();
+        verValue += delta.y();
+
+        m_scroll_area->horizontalScrollBar()->setValue(horValue);
+        m_scroll_area->verticalScrollBar()->setValue(verValue);
+    }
+    if(!nothingDraw)
+        widget->update();
 }
 
 void FiguresManager::drawArrow(QPainter *painter,QPen *pen, Arrow *arrowObj, qreal scale) const
@@ -242,5 +392,7 @@ void FiguresManager::drawFigures(QPainter *painter, QPen *pen, qreal scale) cons
         }
     }
 }
+
+
 
 }

@@ -51,6 +51,20 @@ void Polygon::setCoordinates(const QRect &r, bool closed)
     setStrData();
 }
 
+void Polygon::appendPoint(const QPoint &newPoint)
+{
+    m_coordinates << newPoint;
+    setStrData();
+}
+
+FigureType Polygon::clearFigure()
+{
+    ShapeBase::clear();
+    m_coordinates = QPolygon();
+    m_figure_type = FigureType::PolygonFigure;
+    return m_figure_type;
+}
+
 void Polygon::setStrData()
 {
     m_str_data = "";

@@ -4,7 +4,10 @@
 #include <QObject>
 #include <QWidget>
 #include <QHash>
-#include <QPainter>
+
+class QWidget;
+class QPainter;
+class QScrollArea;
 
 namespace Figures {
 
@@ -37,6 +40,8 @@ public:
 
     FiguresManager& operator=(const FiguresManager& other);
 
+    void setScrollArea(const QScrollArea* scrollArea);
+
     ShapeBase* value(qint64 id) const;
 
     qint64 addValue(ShapeBase* value);
@@ -48,8 +53,8 @@ public:
     void drawer(QPainter *aPainter,
                  QPen *aPen, qreal scale) const;
 
-    void musePress(QMouseEvent *anEvent);
-    void mouseMove(QMouseEvent *anEvent);
+    void musePress(QWidget* widget, QMouseEvent *event, qreal scale);
+    void mouseMove(QWidget* widget, QMouseEvent *event, qreal scale);
 
     void magic(QMouseEvent *anEvent);
 
@@ -59,6 +64,9 @@ private:
     Tool m_tool;
     ShapeBase* m_temp_figure;
     QHash< qint64,ShapeBase* > m_figures;
+    QPoint m_prev_cursor;
+    bool m_new_selection;
+    const QScrollArea* m_scroll_area;
 
 private:
     void drawArrow(QPainter *painter,

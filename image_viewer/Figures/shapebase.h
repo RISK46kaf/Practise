@@ -61,6 +61,8 @@ public:
     void setWidth(int width);
 
     void setColor(uint Color);
+
+    virtual FigureType clearFigure() = 0;
 protected:
     qint64 m_ID;
     qint64 m_evidence_ID;
@@ -71,8 +73,11 @@ protected:
     uint m_color;
     QStringList m_str_list/* = {"NoF","Arr","Ell","Pen","Pol","Rec"}*/;
     FigureType m_figure_type;
-    virtual void setStrData();
     QString m_str_data;
+
+protected:
+    virtual void setStrData();
+    void clear();
 };
 }
 #endif // MYSHAPEBASE

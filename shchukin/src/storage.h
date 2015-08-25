@@ -103,6 +103,7 @@ public:
     void setDyes(QStringList *);
     void setTool(Tool aTool);
     QPoint prev_cursor_pos_;
+    bool m_last_poly;
     Arrow arrow;
     Rect rect;
     Ellipse ell;

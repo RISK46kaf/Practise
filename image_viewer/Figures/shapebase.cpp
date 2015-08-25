@@ -90,6 +90,19 @@ void ShapeBase::setColor(uint Color)
     setStrData();
 }
 
+void ShapeBase::clear()
+{
+    m_ID = -1;
+    m_evidence_ID = -1;
+    m_entry_ID = -1;
+    m_diagnosis_ID = -1;
+    m_width = 2;
+    m_color = 0xFFFFFFFF;
+    m_str_list = QStringList({"NoF","Arr","Ell","Pol","Rec"});
+    m_figure_type = FigureType::NoFigure;
+    m_str_data = QString();
+}
+
 void ShapeBase::setStrData()
 {
 

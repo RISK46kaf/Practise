@@ -80,6 +80,16 @@ void Arrow::setCoordinates(const QLine &line)
     setStrData();
 }
 
+FigureType Arrow::clearFigure()
+{
+    ShapeBase::clear();
+    m_figure_type = FigureType::ArrowFigure;
+    m_coordinates = QLineF();
+    m_arrow_scale = 20;
+    setStrData();
+    return m_figure_type;
+}
+
 void Arrow::setStrData()
 {
     m_str_data = "";

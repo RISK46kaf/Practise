@@ -20,6 +20,8 @@ public:
     void setCoordinates(const QPolygon& coordinates);
     void setCoordinates(const QVector<QPoint> &coordinates);
     void setCoordinates(const QRect &r, bool closed=false);
+    void appendPoint(const QPoint& newPoint);
+    FigureType clearFigure();
 private:
     QPolygon m_coordinates;
 
