@@ -1,5 +1,6 @@
 #include "viewer.h"
 #include "ui_viewer.h"
+#include <QtGui>
 #include <QXmlStreamStringRef>
 //#include <QSizePolicy>
 #include "Figures/figuresmanager.h"
@@ -15,7 +16,6 @@ Viewer::Viewer(QWidget *parent) :
     scene = new QGraphicsScene();
     ui->gridLayout->addWidget(view);
     view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-    view->setScene(scene);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
     //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
@@ -24,12 +24,21 @@ Viewer::Viewer(QWidget *parent) :
 
     scale = 1;
 
+<<<<<<< HEAD
+    Rect r;
+    //Ellipse* ptr = (Ellipse*)r.toEllipse();
+
+    //qDebug() << ptr->getFigureType() << ptr;
+
+    //delete ptr;
+=======
 //    Rect r;
 //    Ellipse* ptr = (Ellipse*)r.toEllipse();
 
 //    qDebug() << ptr->getFigureType() << ptr;
 
 //    delete ptr;
+>>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
     //
     //XML
     QXmlStreamAttributes att;
@@ -60,7 +69,6 @@ Viewer::Viewer(QWidget *parent) :
 
         }
         //
-        scene->setSceneRect(0,0,scaleList[0].width()*256,scaleList[0].height()*256);
 
 
         map = new TileMap();
@@ -68,10 +76,17 @@ Viewer::Viewer(QWidget *parent) :
         map->setScale(scaleList[0],scale);
         map->drawViewField(getViewField());
 
-        view->horizontalScrollBar()->setSingleStep(5);
+        //view->horizontalScrollBar()->setSingleStep(5);
+        //view->setRenderHint(QPainter::Antialiasing, false);
+
+        //view->fitInView(scene->itemsBoundingRect() ,Qt::KeepAspectRatio);
         oldValueHorizontal = 0;
         oldValueVertical = 0;
+        view->setScene(scene);
+        scene->setSceneRect(0,0,scaleList[0].width()*256,scaleList[0].height()*256);
         //view->horizontalScrollBar()->setMouseTracking(false);
+        view->verticalScrollBar()->setSingleStep(1);
+        //view->verticalScrollBar()->setMaximumHeight(4352);
     }
 }
 
@@ -96,15 +111,24 @@ void Viewer::on_actionLoad_Images_triggered()
     map->clear(getViewField());
 }
 
-void Viewer::viewResized()
+void Viewer::viewResized()//////////////////////////////
 {
+    view->verticalScrollBar()->setSingleStep(1);
+    //view->verticalScrollBar()->setMaximumHeight(4352);
+    qDebug()<<"МАХ скролл-бар: "<<view->verticalScrollBar()->maximum();
     qDebug()<<"Размер MyGraphicsView:";
     qDebug()<<view->size();
     qDebug()<<"Размер QGraphicsScene:";
     qDebug()<<scene->sceneRect();
-
     map->drawViewField(getViewField());
-
+    view->horizontalScrollBar()->setValue(0);
+    view->verticalScrollBar()->setValue(0);
+    scene->setSceneRect(0,0,scaleList[0].width()*256,scaleList[0].height()*256);
+    view->horizontalScrollBar()->setMaximum((scaleList[0].width())*256);
+    uint s  =scaleList[0].height()*256;
+    qDebug()<<s;
+    int ps = view->verticalScrollBar()->pageStep();
+    //view->verticalScrollBar()->setMaximum(4096-ps);
 }
 
 void Viewer::viewChanged()
@@ -127,6 +151,7 @@ void Viewer::scrolledVertical(int value)
     }
     oldValueVertical = value;
     view->horizontalScrollBar()->blockSignals(false);
+    qDebug()<<value;
 }
 
 void Viewer::scrolledHorizontal(int value)
@@ -165,7 +190,7 @@ void Viewer::on_zoomOutButton_clicked()
         ++scale;
         map->setScale(scaleList[scale-1],scale);
         map->drawViewField(getViewField());
-        scene->setSceneRect(0,0,scaleList[0].width()*256,scaleList[0].height()*256);
+        //scene->setSceneRect(0,0,scaleList[scale-1].width()*256,scaleList[scale-1].height()*256);
     }
 }
 
