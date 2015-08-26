@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QHash>
 
+
+class QSqlDatabase;
 class QWidget;
 class QPainter;
 class QScrollArea;
@@ -56,9 +58,14 @@ public:
     void musePress(QWidget* widget, QMouseEvent *event, qreal scale);
     void mouseMove(QWidget* widget, QMouseEvent *event, qreal scale);
 
-    void magic(QMouseEvent *anEvent);
+//    void magic(QMouseEvent *anEvent);
 
     bool confirm();
+
+    void insertData(QSqlDatabase& db = QSqlDatabase());
+
+    void selectData();
+
 private:
     qint64 m_id;
     Tool m_tool;
@@ -66,7 +73,7 @@ private:
     QHash< qint64,ShapeBase* > m_figures;
     QPoint m_prev_cursor;
     bool m_new_selection;
-    const QScrollArea* m_scroll_area;
+    QScrollArea* m_scroll_area;
 
 private:
     void drawArrow(QPainter *painter,

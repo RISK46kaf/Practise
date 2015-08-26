@@ -12,7 +12,8 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QPainter>
-
+#include <QSqlDatabase>
+#include "Tables/defaultnames.h"
 
 namespace Figures {
 
@@ -260,6 +261,31 @@ void FiguresManager::mouseMove(QWidget *widget, QMouseEvent *event, qreal scale)
     }
     if(!nothingDraw)
         widget->update();
+}
+
+void FiguresManager::insertData(QSqlDatabase& db,
+                                QString& host,
+                                QString& user,
+                                QByteArray& pass)
+{
+    if(!db.isOpen())
+    {
+        db = QSqlDatabase::addDatabase("QMYSQL");
+        db.setHostName(host);
+        db.setUserName(user);
+        db.setPassword(decodePass(pass));
+        if(!db.open())
+        {
+            qDebug() << tr("conection error: ").arg(db.lastError());
+            return;
+        } else if(!db.isOpen())
+        {
+            qDebug() << tr("conection error: ").arg(db.lastError());
+            return;
+        }
+    }
+    /// do smth
+
 }
 
 void FiguresManager::drawArrow(QPainter *painter,QPen *pen, Arrow *arrowObj, qreal scale) const
