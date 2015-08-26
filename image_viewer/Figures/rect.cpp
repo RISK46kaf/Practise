@@ -51,7 +51,7 @@ void Rect::setCoordinates(int left, int top, int width, int height)
 
 ShapeBase *Rect::toEllipse()
 {
-    return (ShapeBase* )new Ellipse(m_coordinates);
+//    return (ShapeBase* )new Ellipse(m_coordinates);
 }
 
 void Rect::setStrData()

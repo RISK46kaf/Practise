@@ -29,6 +29,7 @@ public:
     void drawLeft(QRect r);
     void drawViewField(QRect r);
     void drawFromToRight(QRect from, QRect to);
+    void drawFromToLeft(QRect from, QRect to);
     void init();
     void setScene(QGraphicsScene *s);
     void setScale(QSize size, uint s);

@@ -80,7 +80,7 @@ void TileMap::drawBottom(QRect r)
 
 void TileMap::drawRight(QRect r)
 {
-    if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    if((r.left()>=0)&&(r.right()<=map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
     {
         uint topBorder = r.top()/256;
         uint bottomBorder = r.bottom()/256+1;
@@ -107,7 +107,7 @@ void TileMap::drawRight(QRect r)
 
 void TileMap::drawLeft(QRect r)
 {
-    if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    if((r.left()>=0)&&(r.right()<=map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<=map_size.height()*256))
     {
         uint topBorder = r.top()/256;
         uint bottomBorder = r.bottom()/256+1;
@@ -168,6 +168,32 @@ void TileMap::drawFromToRight(QRect from, QRect to)
         for(uint y=topBorder;y<bottomBorder;++y)
         {
             for(uint x=leftBorder;x<rightBorder;++x)
+            {
+                if(matrix[y][x] == false)
+                {
+                    matrix[y][x] = true;
+                    QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+
+                    Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                    storage.push_back(t);
+                    scene->addItem(storage.last()->img);
+                }
+            }
+        }
+    }
+}
+
+void TileMap::drawFromToLeft(QRect from, QRect to)
+{
+    if((to.left()>=0)&&(to.right()<map_size.width()*256))
+    {
+        uint topBorder = from.top()/256;
+        uint bottomBorder = from.bottom()/256 +1;
+        uint leftBorder = from.left()/256;
+        uint rightBorder = to.right()/256 +1;
+        for(uint y=topBorder;y<bottomBorder;++y)
+        {
+            for(uint x=rightBorder;x<lestBorder;++x)
             {
                 if(matrix[y][x] == false)
                 {
