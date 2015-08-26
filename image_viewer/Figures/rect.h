@@ -1,27 +1,30 @@
-#ifndef RECT_H
-#define RECT_H
+#ifndef MYRECT_H
+#define MYRECT_H
 
 #include "shapebase.h"
+namespace Figures {
 
 class Rect: public ShapeBase
 {
+    Q_OBJECT
 public:
-    Rect();
-    explicit Rect(QRect coordinates);
+    explicit Rect(QObject *parent = 0);
+    explicit Rect(QRect coordinates, QObject *parent = 0);
     Rect(QRect coordinates, uint color);
 
-    QRect getCoordinates() const;
+    virtual ~Rect();
 
+    QRect getCoordinates() const;
     void setCoordinates(const QRect& coordinates);
     void setCoordinates(const QPoint &topleft, const QPoint &bottomright);
     void setCoordinates(const QPoint &topleft, const QSize &size);
     void setCoordinates(int left, int top, int width, int height);
-    ShapeBase* toEllipse();
+    FigureType clearFigure();
 private:
     QRect m_coordinates;
 
 private:
-    void setStrData();
+    void setStrData() final;
 };
-
-#endif // RECT_H
+}
+#endif // MYRECT_H

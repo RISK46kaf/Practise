@@ -21,6 +21,7 @@ Storage::Storage(QWidget *parent) :
     tool_ = NoTool;
     state_ = StandBy;
     keyboard_modifier_ = Qt::NoModifier;
+    m_last_poly = true;
 
 //    focused_selection_ = -1;
 //    focused_label_ID_selection_ = -1;
@@ -177,7 +178,10 @@ void Storage::mousePressEvent(QMouseEvent *anEvent)
 
             poly.setCoordinates(QPolygon());
             if (PolygonTool == tool_) {
-                poly.setCoordinates(poly.getCoordinates() << prev_cursor_pos_);
+//                QPolygon tP = poly.getCoordinates();
+//                tP  ;
+
+                poly.setCoordinates(poly.getCoordinates() << prev_cursor_pos_ << pos);
 //                polygon_.poly << prev_cursor_pos_;
             }
         }
@@ -292,6 +296,16 @@ void Storage::triggerArrow(
 void Storage::mouseMoveEvent(QMouseEvent *anEvent)
 {
     QPoint pos = anEvent->pos() / scale_;
+//    QPolygon tPoly(poly.getCoordinates());
+//    int tInt;
+//    if(1 < (tInt = tPoly.count()) )
+//    {
+//        if(m_last_poly)
+//            tPoly.append(pos);
+//        tPoly.setPoint(tInt,pos);
+//        poly.setCoordinates(tPoly);
+//        update();
+//    }
     if (anEvent->pos().x() < 0)
         pos.setX(0);
 
@@ -341,144 +355,8 @@ void Storage::mouseMoveEvent(QMouseEvent *anEvent)
         tmp.setPoint(tmp.count() - 1, pos);
         poly.setCoordinates(tmp);
         repaint_needed_ = 1;
+        m_last_poly = true;
     }
-
-//    if (-1 != focused_selection_ &&
-//        !(anEvent->buttons() & Qt::LeftButton)) {
-//        checkForPoints(&pos);
-//    }
-//here now 2
-    /* изменяем многоульник */
-//    if (-1 != hovered_point_.figureID &&
-//        !list_polygon_->isEmpty() &&
-//        PolyFigure == hovered_point_.figure &&
-//        (anEvent->buttons() & Qt::LeftButton) &&
-//        hovered_point_.figureID == focused_selection_)
-//    {
-//        polygon_.poly.clear();
-//        polygon_.label_ID_ = *label_ID_/*focused_label_ID_selection_*/;
-//        Polygon *poly = list_polygon_->at(hovered_point_.figureID);
-
-//        poly->poly.setPoint(hovered_point_.pointID, pos);
-
-//        for(int i=0;i< list_polygon_->at(hovered_point_.figureID)->poly.count();++i)
-//        {
-//            if(i!=hovered_point_.pointID)
-//                polygon_.poly  << list_polygon_->at(hovered_point_.figureID)->poly.point(i);
-//            else
-//                polygon_.poly << pos;
-//        }
-//        qDebug() << "polygon_.poly =" << polygon_.poly;
-
-//        repaint_needed_ = 1;
-//    }
-
-    /* изменяем прямоульник */
-//    if (-1 != hovered_point_.figureID &&
-//        !list_bounding_box_->isEmpty() &&
-//        RectFigure == hovered_point_.figure &&
-//        (anEvent->buttons() & Qt::LeftButton))
-//    {
-//        bounding_box_.label_ID_ = *label_ID_/*focused_label_ID_selection_*/;
-
-//        bounding_box_.rect.setTopLeft(list_bounding_box_->at(hovered_point_.figureID)->rect.topLeft());
-//        bounding_box_.rect.setTopRight(list_bounding_box_->at(hovered_point_.figureID)->rect.topRight());
-//        bounding_box_.rect.setBottomRight(list_bounding_box_->at(hovered_point_.figureID)->rect.bottomRight());
-//        bounding_box_.rect.setBottomLeft(list_bounding_box_->at(hovered_point_.figureID)->rect.bottomLeft());
-//        BoundingBox *rect = list_bounding_box_->at(hovered_point_.figureID);
-//        if (0 == hovered_point_.pointID)
-//        {
-//            rect->rect.setTopLeft(pos);
-//            bounding_box_.rect.setTopLeft(pos);
-//            qDebug() << "rect->rect.topLeft" << rect->rect.topLeft();
-//        }
-//        else if (1 == hovered_point_.pointID)
-//        {
-//            rect->rect.setTopRight(pos);
-//            bounding_box_.rect.setTopRight(pos);
-//            qDebug() << "rect->rect.topRight" << rect->rect.topRight();
-//        }
-//        else if (2 == hovered_point_.pointID)
-//        {
-//            rect->rect.setBottomRight(pos);
-//            bounding_box_.rect.setBottomRight(pos);
-//            qDebug() << "rect->rect.bottomRight" << rect->rect.bottomRight();
-//        }
-//        else if (3 == hovered_point_.pointID)
-//        {
-//            rect->rect.setBottomLeft(pos);
-//            bounding_box_.rect.setBottomLeft(pos);
-//            qDebug() << "rect->rect.bottomLeft" << rect->rect.bottomLeft();
-//        }
-//        repaint_needed_ = 1;
-//    }
-
-//    /* изменяем эллипс */
-//    if (-1 != hovered_point_.figureID &&
-//        !list_ellipse_->isEmpty() &&
-//        EllipseFigure == hovered_point_.figure &&
-//        (anEvent->buttons() & Qt::LeftButton))
-//    {
-//        ellipse_.label_ID_ = *label_ID_/*focused_label_ID_selection_*/;
-
-//        ellipse_.rect.setTopLeft(list_ellipse_->at(hovered_point_.figureID)->rect.topLeft());
-//        ellipse_.rect.setTopRight(list_ellipse_->at(hovered_point_.figureID)->rect.topRight());
-//        ellipse_.rect.setBottomRight(list_ellipse_->at(hovered_point_.figureID)->rect.bottomRight());
-//        ellipse_.rect.setBottomLeft(list_ellipse_->at(hovered_point_.figureID)->rect.bottomLeft());
-//        Ellipse *ell = list_ellipse_->at(hovered_point_.figureID);
-//        if (0 == hovered_point_.pointID)
-//        {
-//            ell->rect.setTopLeft(pos);
-//            ellipse_.rect.setTopLeft(pos);
-//            qDebug() << "rect->rect.topLeft" << ell->rect.topLeft();
-//        }
-//        else if (1 == hovered_point_.pointID)
-//        {
-//            ell->rect.setTopRight(pos);
-//            ellipse_.rect.setTopRight(pos);
-//            qDebug() << "rect->rect.topRight" << ell->rect.topRight();
-//        }
-//        else if (2 == hovered_point_.pointID)
-//        {
-//            ell->rect.setBottomRight(pos);
-//            ellipse_.rect.setBottomRight(pos);
-//            qDebug() << "rect->rect.bottomRight" << ell->rect.bottomRight();
-//        }
-//        else if (3 == hovered_point_.pointID)
-//        {
-//            ell->rect.setBottomLeft(pos);
-//            ellipse_.rect.setBottomLeft(pos);
-//            qDebug() << "rect->rect.bottomLeft" << ell->rect.bottomLeft();
-//        }
-//        repaint_needed_ = 1;
-//    }
-
-//    /* изменяем стрелу */
-//    if (-1 != hovered_point_.figureID &&
-//        !list_arrow_->isEmpty() &&
-//        ArrowFigure == hovered_point_.figure &&
-//        (anEvent->buttons() & Qt::LeftButton))
-//    {
-//        arrow_.label_ID_ = *label_ID_/*focused_label_ID_selection_*/;
-
-//        arrow_.line.setP1(list_arrow_->at(hovered_point_.figureID)->line.p1());
-//        arrow_.line.setP2(list_arrow_->at(hovered_point_.figureID)->line.p2());
-//        Arrow *arrow = list_arrow_->at(hovered_point_.figureID);
-//        if (0 == hovered_point_.pointID)
-//        {
-//            arrow->line.setP1(pos);
-//            arrow_.line.setP1(pos);
-//            qDebug() << "arrow->line.p1" << arrow->line.p1();
-//        }
-//        else if (1 == hovered_point_.pointID)
-//        {
-//            arrow->line.setP2(pos);
-//            arrow_.line.setP2(pos);
-//            qDebug() << "arrow->line.p2" << arrow->line.p2();
-//        }
-//        repaint_needed_ = 1;
-//    }
-
     /* когда изображение слишком большое(необходима прокрутка) */
     if ((anEvent->buttons() & Qt::MiddleButton) &&
         (scroll_area_->size().height() < size().height() ||
@@ -624,20 +502,6 @@ void Storage::drawBoundingBoxes(
         penStyle = Qt::SolidLine;
         int labelID = _rect_list->at(i).getEvidenceID();
 
-        /* настраиваем цвет для лкйбла к которому относится выделенная область */
-//        if (_rect_list->at(i).getColor() !=)
-            aPen->setColor(QColor(_rect_list->at(i).getColor()));
-        /* в случае если нет цвета для текущего лейбла */
-//        else
-//            aPen->setColor(QColor(Qt::white));
-
-        /* меняем стиль линии и толщину если текущая область выбрана(для изменения) */
-//        if (RectFigure == focused_selection_type_ &&
-//            focused_selection_ == i) {
-//            penStyle = Qt::DotLine;
-//            width = 3;
-//        }
-
         /* масштабируем */
         QRect _rec = _rect_list->at(i).getCoordinates().normalized();// list_bounding_box_->at(i)->rect.normalized();
         QPoint topLeft = _rec.topLeft() * scale_;
@@ -645,74 +509,9 @@ void Storage::drawBoundingBoxes(
 
         _rec.setTopLeft(topLeft);
         _rec.setBottomRight(bottomRight);
-//        if (focused_selection_ == i &&
-//            focused_selection_type_ == RectFigure) {
-//            QPen circPen;
-//            circPen.setWidth(2);
-//            circPen.setStyle(Qt::SolidLine);
-//            circPen.setColor(aPen->color());
-//            aPainter->setPen(circPen);
-//            for (int j = 0; j < 4; j++) {
-//                QPoint point;
-//                /* по номеру точки записаннму при кликах получаем вершины прямоугольника */
-//                if (!j) {
-//                    point = rect.topLeft();
-//                }
-//                else if (1 == j)
-//                {
-//                    point = rect.topRight();
-//                }
-//                else if (2 == j)
-//                {
-//                    point = rect.bottomRight();
-//                }
-//                else if (3 == j)
-//                {
-//                    point = rect.bottomLeft();
-//                }
-//                /* если точка неподтвержденная(меняем область) то делаем ее стиллистически заметной */
-//                if (i == hovered_point_.figureID &&
-//                    j == hovered_point_.pointID &&
-//                    RectFigure == hovered_point_.figure) {
-//                    QBrush brush;
-//                    brush.setColor(aPen->color());
-//                    brush.setStyle(Qt::SolidPattern);
-//                    aPainter->setBrush(brush);
-//                }
-//                aPainter->drawEllipse(point, point_radius_, point_radius_);
-//                aPainter->setBrush(Qt::NoBrush);
-//            }
-//        }
-//        if(set_label_width_)
-//        {
-//            qDebug() <<list_width_->size();
-//            for(int j=0; j<list_width_->size();++j)
-//            {
-//                if(list_width_->at(j).label_ID_== labelID)
-//                {
-//                        width = list_width_->at(j).new_width_;
-//                }
-//            }
-//        }
 
         aPen->setWidth(width);
         aPen->setStyle(penStyle);
-//        if(!view_labels_)
-//        {
-//            qDebug() << "лейблы не видны?";
-//            aPen->setStyle(Qt::NoPen);
-//        }
-//        qDebug() << view_current_l_;
-//        if(view_current_l_)
-//        {
-//            if(labelID!= *label_ID_)
-//            {
-//                qDebug() << "лейблы не видны?";
-//                aPen->setStyle(Qt::NoPen);
-//            }
-//            qDebug() << "ok?";
-//        }
-//        qDebug() << *label_ID_;
         aPainter->setPen(*aPen);
 
         aPainter->drawRect(_rec);

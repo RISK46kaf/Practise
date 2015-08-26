@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     Figures/ellipse.cpp \
     Figures/rect.cpp \
     Figures/arrow.cpp \
-    Figures/polygon.cpp
+    Figures/polygon.cpp \
+    Figures/figuresmanager.cpp
 
 HEADERS  += viewer.h \
     cutter.h \
@@ -36,7 +37,7 @@ HEADERS  += viewer.h \
     Figures/arrow.h \
     Figures/shapebase.h \
     Figures/polygon.h \
-    Figures/figures.h
+    Figures/figuresmanager.h
 
 FORMS    += viewer.ui
 

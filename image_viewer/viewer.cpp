@@ -3,7 +3,7 @@
 #include <QtGui>
 #include <QXmlStreamStringRef>
 //#include <QSizePolicy>
-#include "Figures/figures.h"
+#include "Figures/figuresmanager.h"
 
 Viewer::Viewer(QWidget *parent) :
     QMainWindow(parent),
@@ -24,12 +24,21 @@ Viewer::Viewer(QWidget *parent) :
 
     scale = 1;
 
+<<<<<<< HEAD
     Rect r;
     //Ellipse* ptr = (Ellipse*)r.toEllipse();
 
     //qDebug() << ptr->getFigureType() << ptr;
 
     //delete ptr;
+=======
+//    Rect r;
+//    Ellipse* ptr = (Ellipse*)r.toEllipse();
+
+//    qDebug() << ptr->getFigureType() << ptr;
+
+//    delete ptr;
+>>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
     //
     //XML
     QXmlStreamAttributes att;
@@ -41,6 +50,7 @@ Viewer::Viewer(QWidget *parent) :
         while (!xml.atEnd() && !xml.hasError())
         {
             QXmlStreamReader::TokenType token = xml.readNext();
+            Q_UNUSED(token)  // если 'token' используется убрать
             att = xml.attributes();
             if(att.size() != 0)
             {
@@ -153,7 +163,7 @@ void Viewer::scrolledHorizontal(int value)
 
     if((int)oldValueHorizontal < value) //right
     {
-        if((oldValueHorizontal+256) < value)
+        if((int)(oldValueHorizontal+256) < value)
         {
             map->drawFromToRight(old_view_field, getViewField());
         }
@@ -175,7 +185,7 @@ void Viewer::scrolledHorizontal(int value)
 
 void Viewer::on_zoomOutButton_clicked()
 {
-    if(scale < (scaleList.size()))
+    if((int)scale < (scaleList.size()))
     {
         ++scale;
         map->setScale(scaleList[scale-1],scale);

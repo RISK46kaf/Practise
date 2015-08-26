@@ -1,22 +1,32 @@
-#include "figures.h"
+#include "polygon.h"
 
-Polygon::Polygon()
+namespace Figures {
+
+
+Polygon::Polygon(QObject *parent) : ShapeBase(parent)
 {
     m_figure_type = FigureType::PolygonFigure;
     setStrData();
 }
 
-Polygon::Polygon(QPolygon coordinates):m_coordinates(coordinates)
+Polygon::Polygon(QPolygon coordinates, QObject *parent): ShapeBase(parent),
+    m_coordinates(coordinates)
 {
     m_figure_type = FigureType::PolygonFigure;
     setStrData();
 }
 
-Polygon::Polygon(QPolygon coordinates, uint color):m_coordinates(coordinates)
+Polygon::Polygon(QPolygon coordinates, uint color, QObject *parent): ShapeBase(parent),
+    m_coordinates(coordinates)
 {
     m_color = color;
     m_figure_type = FigureType::PolygonFigure;
 }
+
+Polygon::~Polygon()
+{
+}
+
 
 QPolygon Polygon::getCoordinates() const
 {
@@ -41,6 +51,20 @@ void Polygon::setCoordinates(const QRect &r, bool closed)
     setStrData();
 }
 
+void Polygon::appendPoint(const QPoint &newPoint)
+{
+    m_coordinates << newPoint;
+    setStrData();
+}
+
+FigureType Polygon::clearFigure()
+{
+    ShapeBase::clear();
+    m_coordinates = QPolygon();
+    m_figure_type = FigureType::PolygonFigure;
+    return m_figure_type;
+}
+
 void Polygon::setStrData()
 {
     m_str_data = "";
@@ -51,4 +75,6 @@ void Polygon::setStrData()
     m_str_data.append(serialize(m_coordinates).toBase64());
     m_str_data.append(";");
     m_str_data.append(QString("Color:#%1").arg(QString::number(m_color,16)));
+}
+
 }

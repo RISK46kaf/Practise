@@ -7,6 +7,7 @@ MyGraphicsView::MyGraphicsView() :
 
 void MyGraphicsView::resizeEvent(QResizeEvent *event)
 {
+    Q_UNUSED(event)
     emit resized();
 }
 

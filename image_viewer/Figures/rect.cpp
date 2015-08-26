@@ -1,12 +1,16 @@
-#include "figures.h"
+#include "rect.h"
 
-Rect::Rect()
+
+namespace Figures {
+
+Rect::Rect(QObject *parent) : ShapeBase(parent)
 {
     m_figure_type = FigureType::RectFigure;
     setStrData();
 }
 
-Rect::Rect(QRect coordinates):m_coordinates(coordinates)
+Rect::Rect(QRect coordinates, QObject *parent): ShapeBase(parent),
+    m_coordinates(coordinates)
 {
     m_figure_type = FigureType::RectFigure;
     setStrData();
@@ -19,20 +23,25 @@ Rect::Rect(QRect coordinates, uint color):m_coordinates(coordinates)
     setStrData();
 }
 
-//QRect Rect::getCoordinates() const
-//{
-//    return m_coordinates;
-//}
+Rect::~Rect()
+{
+}
 
-//void Rect::setCoordinates(const QRect &coordinates)
-//{
-//    m_coordinates = coordinates;
-//    setStrData();
-//}
+QRect Rect::getCoordinates() const
+{
+    return m_coordinates;
+}
+
+void Rect::setCoordinates(const QRect &coordinates)
+{
+    m_coordinates = coordinates;
+    setStrData();
+}
 
 void Rect::setCoordinates(const QPoint &topleft, const QPoint &bottomright)
 {
     m_coordinates = QRect(topleft,bottomright);
+    m_coordinates = m_coordinates.normalized();
     setStrData();
 }
 
@@ -48,10 +57,16 @@ void Rect::setCoordinates(int left, int top, int width, int height)
     setStrData();
 }
 
-
-ShapeBase *Rect::toEllipse()
+FigureType Rect::clearFigure()
 {
+<<<<<<< HEAD
 //    return (ShapeBase* )new Ellipse(m_coordinates);
+=======
+    ShapeBase::clear();
+    m_coordinates = QRect();
+    m_figure_type = FigureType::RectFigure;
+    return m_figure_type;
+>>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
 }
 
 void Rect::setStrData()
@@ -64,4 +79,6 @@ void Rect::setStrData()
     m_str_data.append(serialize(m_coordinates).toBase64());
     m_str_data.append(";");
     m_str_data.append(QString("Color:#%1").arg(QString::number(m_color,16)));
+}
+
 }

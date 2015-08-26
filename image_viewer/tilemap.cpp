@@ -32,6 +32,7 @@ void TileMap::drawTop(QRect r)
     {
         uint topBorder = r.top()/256;
         uint bottomBorder = r.bottom()/256;
+        Q_UNUSED(bottomBorder)
         uint leftBorder = r.left()/256;
         uint rightBorder = r.right()/256 +1;
         uint y = topBorder;
@@ -57,6 +58,7 @@ void TileMap::drawBottom(QRect r)
     if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
     {
         uint topBorder = r.top()/256;
+        Q_UNUSED(topBorder)
         uint bottomBorder = r.bottom()/256;
         uint leftBorder = r.left()/256;
         uint rightBorder = r.right()/256 +1;
@@ -85,6 +87,7 @@ void TileMap::drawRight(QRect r)
         uint topBorder = r.top()/256;
         uint bottomBorder = r.bottom()/256+1;
         uint leftBorder = r.left()/256;
+        Q_UNUSED(leftBorder)
         uint rightBorder = r.right()/256;
         uint x = rightBorder;
         for(uint y=topBorder;y<bottomBorder;++y)
@@ -113,6 +116,7 @@ void TileMap::drawLeft(QRect r)
         uint bottomBorder = r.bottom()/256+1;
         uint leftBorder = r.left()/256;
         uint rightBorder = r.right()/256;
+        Q_UNUSED(rightBorder)
         uint x = leftBorder;
         for(uint y=topBorder;y<bottomBorder;++y)
         {
@@ -216,16 +220,16 @@ void TileMap::setScene(QGraphicsScene *s)
 
 void TileMap::setScale(QSize size, uint s)
 {
-    for(uint i=0;i<matrix.size();++i)
+    for(int i=0;i<matrix.size();++i)
         matrix[i].clear();
     matrix.clear();
     map_size = size;
     scale = s;
-    for(uint y=0;y<map_size.height();++y)
+    for(int y=0;y<map_size.height();++y)
     {
         QVector<bool> v;
         matrix.push_back(v);
-        for(uint x=0;x<map_size.width();++x)
+        for(int x=0;x<map_size.width();++x)
         {
             matrix[y].push_back(0);
         }
@@ -234,17 +238,17 @@ void TileMap::setScale(QSize size, uint s)
 
 void TileMap::clear(QRect r)
 {
-    uint topBorder = r.top()/256;
-    uint bottomBorder = r.bottom()/256;
-    uint leftBorder = r.left()/256;
-    uint rightBorder = r.right()/256 ;
+    int topBorder = r.top()/256;
+    int bottomBorder = r.bottom()/256;
+    int leftBorder = r.left()/256;
+    int rightBorder = r.right()/256 ;
     qDebug()<<"storage size: "<<storage.size();
 
 
 
-    for(uint y=0;y<map_size.height();++y)
+    for(int y=0;y<map_size.height();++y)
     {
-        for(uint x=0;x<map_size.width();++x)
+        for(int x=0;x<map_size.width();++x)
         {
             if((matrix[y][x] == true)&&(((y<topBorder)||(y>bottomBorder))||((x<leftBorder)||(x>rightBorder))))
             {
@@ -257,10 +261,10 @@ void TileMap::clear(QRect r)
     }
     qDebug()<<"storage size then: "<<storage.size();
 
-    for(uint y=0;y<matrix.size();++y)
+    for(int y=0;y<matrix.size();++y)
     {
         QString s;
-        for(uint x=0;x<matrix[y].size();++x)
+        for(int x=0;x<matrix[y].size();++x)
         {
             s += QString::number(matrix[y][x]);
         }
