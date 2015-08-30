@@ -209,6 +209,7 @@ void Storage::mousePressEvent(QMouseEvent *anEvent)
 void Storage::mouseReleaseEvent(QMouseEvent *anEvent)
 {
     Q_UNUSED(anEvent)
+    last_tool_ = tool_;
 
 //    confirm_nothing_tools_ = false;
 //    if (-1 != hovered_point_.figureID)
@@ -924,7 +925,7 @@ Storage::drawArrows(
 
 bool Storage::confirmSelection()
 {
-    if (BoundingBoxTool == tool_) {
+    if (BoundingBoxTool == last_tool_) {
         Rect *_bbox = new Rect;
         rect.setCoordinates(rect.getCoordinates().normalized());
         *_bbox = rect;
@@ -933,9 +934,8 @@ bool Storage::confirmSelection()
         state_ = StandBy;
         update();
         return true;
-
     }
-    else if (PolygonTool == tool_) {
+    else if (PolygonTool == last_tool_) {
         Polygon *_pol = new Polygon;
         *_pol = poly;
         _polygon_list->append(*_pol);
@@ -944,7 +944,7 @@ bool Storage::confirmSelection()
         update();
         return true;
     }
-    else if (EllipseTool == tool_) {
+    else if (EllipseTool == last_tool_) {
         Ellipse *_ell = new Ellipse;
         ell.setCoordinates(ell.getCoordinates().normalized());
         *_ell = ell;
@@ -954,7 +954,7 @@ bool Storage::confirmSelection()
         update();
         return true;
     }
-    else if (ArrowTool == tool_) {
+    else if (ArrowTool == last_tool_) {
         Arrow *_arrow = new Arrow;
         *_arrow = arrow;
         _arrow_list->append(*_arrow);

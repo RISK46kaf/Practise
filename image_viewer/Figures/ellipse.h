@@ -21,11 +21,12 @@ public:
     void setCoordinates(const QPoint &topleft, const QSize &size);
     void setCoordinates(int left, int top, int width, int height);
     FigureType clearFigure();
+    virtual bool hasDefaultCoordinates() final;
 private:
     QRect m_coordinates;
 
 private:
-    void setStrData() final;
+    virtual void setStrData() final;
 };
 
 }

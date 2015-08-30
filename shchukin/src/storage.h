@@ -37,6 +37,7 @@ class Storage : public QLabel
     QStringList *_praparation_list;
     QStringList *_dye_list;
     Tool tool_;
+    Tool last_tool_;
     void triggerPolygon(
         const QPoint &aPoint,
         Polygon &aNewPoly

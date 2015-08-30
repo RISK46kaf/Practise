@@ -32,7 +32,7 @@ public:
     void drawFromToLeft(QRect from, QRect to);
     void init();
     void setScene(QGraphicsScene *s);
-    void setScale(QSize size, uint s);
+    void setScale(QSize &size, uint s);
     void viewSizeChanged(QRect r);
     void clear(QRect r);
     void clearAll();

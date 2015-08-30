@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QHash>
 
+#include "DB/defaultnames.h"
+#include <QSqlDatabase>
 
 class QSqlDatabase;
 class QWidget;
@@ -36,17 +38,23 @@ public:
 
     explicit FiguresManager(QObject *parent = 0);
 
+    explicit FiguresManager(QSqlDatabase& dataBase,QObject *parent = 0);
+
     FiguresManager(const FiguresManager& other);
 
     virtual ~FiguresManager();
 
     FiguresManager& operator=(const FiguresManager& other);
 
-    void setScrollArea(const QScrollArea* scrollArea);
+    void setScrollArea(QScrollArea* scrollArea);
 
     ShapeBase* value(qint64 id) const;
 
     qint64 addValue(ShapeBase* value);
+
+    ShapeBase* takeAt(qint64 id);
+
+    int removeAt(qint64 id);
 
     void clear();
 
@@ -57,23 +65,37 @@ public:
 
     void musePress(QWidget* widget, QMouseEvent *event, qreal scale);
     void mouseMove(QWidget* widget, QMouseEvent *event, qreal scale);
+    void mouseRelease();
 
 //    void magic(QMouseEvent *anEvent);
 
     bool confirm();
 
-    void insertData(QSqlDatabase& db = QSqlDatabase());
+    int connectToDb(QSqlDatabase& d,
+                     bool useDefaultParams = false,
+                     const QString& host = DB::DefaultDbSettings::HOST,
+                     const QString& user = DB::DefaultDbSettings::USER,
+                     const QString& pass = DB::DefaultDbSettings::PASS);
 
-    void selectData();
+    bool isDbConnected() const;
+
+    bool insertData();
+
+    bool selectData();
+
+    bool correctLocalData(qint64 corection);
 
 private:
     qint64 m_id;
+    qint64 m_last_mark_id;
     Tool m_tool;
+    Tool m_last_tool;
     ShapeBase* m_temp_figure;
     QHash< qint64,ShapeBase* > m_figures;
     QPoint m_prev_cursor;
     bool m_new_selection;
     QScrollArea* m_scroll_area;
+    QSqlDatabase m_db;
 
 private:
     void drawArrow(QPainter *painter,
@@ -95,6 +117,7 @@ private:
     void drawFigures(QPainter *painter,
                      QPen *pen,
                      qreal scale) const;
+    qint64 getDbLastMarkID();
 };
 
 }

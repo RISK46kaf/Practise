@@ -21,6 +21,7 @@ TileMap::TileMap(QObject *parent) :
     tile_size = QSize(256,256);
     result_size = QSize(3,3);
     rect = QRect(QPoint(0,0),QPoint(3,0));
+    map_size = QSize(0,0);
     qDebug()<<rect;
 
 
@@ -137,6 +138,8 @@ void TileMap::drawLeft(QRect r)
 
 void TileMap::drawViewField(QRect r)
 {
+    qDebug() << "map_size";
+    qDebug() << map_size;
     if((r.top()>=0)&&(r.bottom()<map_size.height()*256))
     {
         uint topBorder = r.top()/256;
@@ -152,7 +155,15 @@ void TileMap::drawViewField(QRect r)
                     matrix[y][x] = true;
                     QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
 
-                    Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                    QPixmap tmp;
+
+//                            (path,"JPEG");
+                    if(!tmp.load(path))
+                    {
+                        qDebug() << tr("nothing to load");
+                        return;
+                    }
+                    Tile * t = new Tile(tmp,QPoint(x,y));
                     storage.push_back(t);
                     scene->addItem(storage.last()->img);
                 }
@@ -189,6 +200,7 @@ void TileMap::drawFromToRight(QRect from, QRect to)
 
 void TileMap::drawFromToLeft(QRect from, QRect to)
 {
+    /*
     if((to.left()>=0)&&(to.right()<map_size.width()*256))
     {
         uint topBorder = from.top()/256;
@@ -197,7 +209,7 @@ void TileMap::drawFromToLeft(QRect from, QRect to)
         uint rightBorder = to.right()/256 +1;
         for(uint y=topBorder;y<bottomBorder;++y)
         {
-            for(uint x=rightBorder;x<lestBorder;++x)
+            for(uint x=rightBorder;x<leftBorder;++x)
             {
                 if(matrix[y][x] == false)
                 {
@@ -210,7 +222,7 @@ void TileMap::drawFromToLeft(QRect from, QRect to)
                 }
             }
         }
-    }
+    }*/
 }
 
 void TileMap::setScene(QGraphicsScene *s)
@@ -218,7 +230,7 @@ void TileMap::setScene(QGraphicsScene *s)
     scene = s;
 }
 
-void TileMap::setScale(QSize size, uint s)
+void TileMap::setScale(QSize& size, uint s)
 {
     for(int i=0;i<matrix.size();++i)
         matrix[i].clear();

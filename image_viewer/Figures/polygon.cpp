@@ -65,6 +65,11 @@ FigureType Polygon::clearFigure()
     return m_figure_type;
 }
 
+bool Polygon::hasDefaultCoordinates()
+{
+    return m_coordinates == QPolygon();
+}
+
 void Polygon::setStrData()
 {
     m_str_data = "";

@@ -90,6 +90,11 @@ FigureType Arrow::clearFigure()
     return m_figure_type;
 }
 
+bool Arrow::hasDefaultCoordinates()
+{
+    return m_coordinates == QLineF();
+}
+
 void Arrow::setStrData()
 {
     m_str_data = "";
