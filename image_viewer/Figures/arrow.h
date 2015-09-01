@@ -27,12 +27,13 @@ public:
     void setCoordinates(qreal x1, qreal y1, qreal x2, qreal y2);
     void setCoordinates(const QLine &line);
     FigureType clearFigure();
+    virtual bool hasDefaultCoordinates() final;
 private:
     QLineF m_coordinates;
     qreal m_arrow_scale;
 
 private:
-    void setStrData() final;
+    virtual void setStrData() final;
 };
 
 }

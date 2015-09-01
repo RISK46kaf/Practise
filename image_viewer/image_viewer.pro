@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     Figures/rect.cpp \
     Figures/arrow.cpp \
     Figures/polygon.cpp \
-    Figures/figuresmanager.cpp
+    Figures/figuresmanager.cpp \
+    DB/defaultnames.cpp
 
 HEADERS  += viewer.h \
     cutter.h \
@@ -37,7 +38,8 @@ HEADERS  += viewer.h \
     Figures/arrow.h \
     Figures/shapebase.h \
     Figures/polygon.h \
-    Figures/figuresmanager.h
+    Figures/figuresmanager.h \
+    DB/defaultnames.h
 
 FORMS    += viewer.ui
 

@@ -66,6 +66,11 @@ FigureType Ellipse::clearFigure()
     return m_figure_type;
 }
 
+bool Ellipse::hasDefaultCoordinates()
+{
+    return m_coordinates == QRect();
+}
+
 void Ellipse::setStrData()
 {
     m_str_data = "";

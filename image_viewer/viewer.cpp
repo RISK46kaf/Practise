@@ -17,28 +17,24 @@ Viewer::Viewer(QWidget *parent) :
     ui->gridLayout->addWidget(view);
     view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
-    connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
-    //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
-    connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
-    connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
 
     scale = 1;
 
-<<<<<<< HEAD
-    Rect r;
+//<<<<<<< HEAD
+//    Rect r;
     //Ellipse* ptr = (Ellipse*)r.toEllipse();
 
     //qDebug() << ptr->getFigureType() << ptr;
 
     //delete ptr;
-=======
+//=======
 //    Rect r;
 //    Ellipse* ptr = (Ellipse*)r.toEllipse();
 
 //    qDebug() << ptr->getFigureType() << ptr;
 
 //    delete ptr;
->>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
+//>>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
     //
     //XML
     QXmlStreamAttributes att;
@@ -67,11 +63,18 @@ Viewer::Viewer(QWidget *parent) :
                 scaleList.push_back(size);
             }
 
+
         }
         //
-
+        connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
+        //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
+        connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
+        connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
 
         map = new TileMap();
+        if(map == NULL || scene == NULL)
+            qDebug() << "surprise ma'faka!";
+        qDebug() << "lol" << map << scene;
         map->setScene(scene);
         map->setScale(scaleList[0],scale);
         map->drawViewField(getViewField());
@@ -108,6 +111,8 @@ void Viewer::on_actionPrepare_Image_triggered()
 
 void Viewer::on_actionLoad_Images_triggered()
 {
+    if(map == NULL)
+        return;
     map->clear(getViewField());
 }
 

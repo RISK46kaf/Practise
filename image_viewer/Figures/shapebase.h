@@ -63,6 +63,8 @@ public:
     void setColor(uint Color);
 
     virtual FigureType clearFigure() = 0;
+
+    virtual bool hasDefaultCoordinates() = 0;
 protected:
     qint64 m_ID;
     qint64 m_evidence_ID;

@@ -12,15 +12,28 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QPainter>
-
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include "DB/defaultnames.h"
 
 namespace Figures {
 
 
 FiguresManager::FiguresManager(QObject *parent) : QObject(parent),
-    m_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL), m_new_selection(0), m_scroll_area(NULL)
+    m_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL), m_new_selection(0), m_scroll_area(NULL),m_last_mark_id(-1)
 {
 }
+FiguresManager::FiguresManager(QSqlDatabase &dataBase, QObject *parent) : QObject(parent),
+    m_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL), m_new_selection(0), m_scroll_area(NULL),m_last_mark_id(-1)
+{
+    if(connectToDb(dataBase) == 0)
+    {
+        m_id = getDbLastMarkID();
+        m_last_mark_id = m_id;
+    }
+}
+
 
 FiguresManager::FiguresManager(const FiguresManager &other) : QObject(0),
     m_id(other.m_id), m_tool(other.m_tool), m_temp_figure(NULL), m_figures(other.m_figures),
@@ -43,7 +56,7 @@ FiguresManager& FiguresManager::operator =(const FiguresManager& other)
     return (*this);
 }
 
-void FiguresManager::setScrollArea(const QScrollArea *scrollArea)
+void FiguresManager::setScrollArea(/*const*/ QScrollArea *scrollArea)
 {
     m_scroll_area = scrollArea;
 }
@@ -59,6 +72,16 @@ qint64 FiguresManager::addValue(ShapeBase *value)
 
     const qint64 tmp = m_figures.insert(m_id,value).key();
     return tmp == m_id ? tmp : -1;
+}
+
+ShapeBase *FiguresManager::takeAt(qint64 id)
+{
+    return m_figures.take(id);
+}
+
+int FiguresManager::removeAt(qint64 id)
+{
+    return m_figures.remove(id);
 }
 
 void FiguresManager::clear()
@@ -130,7 +153,7 @@ void FiguresManager::drawer(QPainter *painter, QPen *pen, qreal scale) const
 
 void FiguresManager::musePress(QWidget *widget, QMouseEvent *event, qreal scale)
 {
-    bool nothingDraw = false;
+    bool reDraw = true;
 
     m_prev_cursor = event->pos() / scale;
 
@@ -181,10 +204,10 @@ void FiguresManager::musePress(QWidget *widget, QMouseEvent *event, qreal scale)
                 m_temp_figure->deleteLater();
                 m_temp_figure = NULL;
             }
-            nothingDraw = true;
+            reDraw = false;
             break;
         }
-        if(!nothingDraw)
+        if(reDraw)
             widget->update();
     }
 }
@@ -192,7 +215,7 @@ void FiguresManager::musePress(QWidget *widget, QMouseEvent *event, qreal scale)
 void FiguresManager::mouseMove(QWidget *widget, QMouseEvent *event, qreal scale)
 {
     QPoint pos = event->pos() / scale;
-    bool nothingDraw = false;
+    bool reDraw = true;
     /*some fix
     if (event->pos().x() < 0)
         pos.setX(0);
@@ -232,11 +255,11 @@ void FiguresManager::mouseMove(QWidget *widget, QMouseEvent *event, qreal scale)
             rec->setCoordinates(m_prev_cursor,pos);
             break;
         case NoTool:
-            nothingDraw = true;
+            reDraw = false;
             break;
         }
     } else ///??? mb NOT working
-        nothingDraw = true;
+        reDraw = false;
     /* когда изображение слишком большое(необходима прокрутка) */
     if(event->buttons() & Qt::MiddleButton &&
        (m_scroll_area->size().height() < widget->size().height() ||
@@ -258,8 +281,105 @@ void FiguresManager::mouseMove(QWidget *widget, QMouseEvent *event, qreal scale)
         m_scroll_area->horizontalScrollBar()->setValue(horValue);
         m_scroll_area->verticalScrollBar()->setValue(verValue);
     }
-    if(!nothingDraw)
+    if(reDraw)
         widget->update();
+}
+
+void FiguresManager::mouseRelease()
+{
+    m_last_tool = m_tool;
+}
+
+bool FiguresManager::confirm()
+{
+    bool result = true;
+    if(m_temp_figure->hasDefaultCoordinates())
+        result = false;
+    else
+    {
+        result = 0 < addValue(m_temp_figure);
+        if(result)
+        {
+            m_temp_figure = NULL;
+        }
+    }
+    return result;
+}
+
+int FiguresManager::connectToDb(QSqlDatabase &d, bool useDefaultParams, const QString &host, const QString &user, const QString &pass)
+{
+    int res = 0;
+    bool otherParams = d.hostName().compare(host) || d.userName().compare(user) || d.password().compare(pass);
+    if(!d.isOpen())
+    {
+        if(useDefaultParams)
+        {
+            res = 1;
+        }//
+        else
+        {
+            d = QSqlDatabase::addDatabase("QMYSQL");
+            d.setHostName(host);
+            d.setUserName(user);
+            d.setPassword(pass);
+            if(!d.open())
+            {
+                qDebug() << tr("conection error: ").arg(d.lastError().text());
+                res = 2;
+            } else if(!d.isOpen())
+            {
+                qDebug() << tr("conection error: ").arg(d.lastError().text());
+                res = 3;
+            }
+        }
+    } else if(!useDefaultParams && otherParams)
+    {
+        d = QSqlDatabase::addDatabase("QMYSQL");
+        d.setHostName(host);
+        d.setUserName(user);
+        d.setPassword(pass);
+        if(!d.open())
+        {
+            qDebug() << tr("conection error: ").arg(d.lastError().text());
+            res = 4;
+        } else if(!d.isOpen())
+        {
+            qDebug() << tr("conection error: ").arg(d.lastError().text());
+            res = 5;
+        }
+    }
+    if(res == 0)
+        m_db = d;
+    return res;
+}
+
+bool FiguresManager::isDbConnected() const
+{
+    return m_db.isOpen();
+}
+
+bool FiguresManager::insertData()
+{
+    bool res = true;
+    qint64 correction;
+    if(res = m_db.isOpen() )
+    {
+        correction = (m_last_mark_id - getDbLastMarkID());
+        for(auto it = m_figures.begin(); it != m_figures.end(); ++it)
+        {
+            ///
+        }
+//        ShapeBase* lol;
+//        lol->getID();
+//        lol->getEntryID();
+//        lol->getFigureType();
+//        lol->getColor();
+//        lol->getDiagnosisID();
+//        lol->getEvidenceID();
+        ///do smthng
+//        for(auto it = m_figures.begin(); )
+    }
+    return res;
 }
 
 void FiguresManager::drawArrow(QPainter *painter,QPen *pen, Arrow *arrowObj, qreal scale) const
@@ -393,6 +513,26 @@ void FiguresManager::drawFigures(QPainter *painter, QPen *pen, qreal scale) cons
     }
 }
 
-
+qint64 FiguresManager::getDbLastMarkID()
+{
+    qint64 tmp = -1;
+    if(!m_db.isOpen())
+    {
+        qDebug() << tr("cannot db connection: %1").arg(m_db.lastError().text());
+    }
+    QSqlQuery q;
+    q.exec("SELECT LAST_INSERT_ID();");
+    if(q.next())
+    {
+        bool ok = true;
+        tmp = q.value(0).toInt(&ok);
+        tmp = ok ? tmp : -1;
+    }
+    else
+    {
+        qDebug() << "FiguresManager::getDbLastMarkID()" << q.lastError().text();
+    }
+    return tmp;
+}
 
 }

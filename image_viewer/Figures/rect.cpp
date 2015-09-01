@@ -59,14 +59,15 @@ void Rect::setCoordinates(int left, int top, int width, int height)
 
 FigureType Rect::clearFigure()
 {
-<<<<<<< HEAD
-//    return (ShapeBase* )new Ellipse(m_coordinates);
-=======
     ShapeBase::clear();
     m_coordinates = QRect();
     m_figure_type = FigureType::RectFigure;
     return m_figure_type;
->>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
+}
+
+bool Rect::hasDefaultCoordinates()
+{
+    return m_coordinates == QRect();
 }
 
 void Rect::setStrData()

@@ -22,11 +22,12 @@ public:
     void setCoordinates(const QRect &r, bool closed=false);
     void appendPoint(const QPoint& newPoint);
     FigureType clearFigure();
+    virtual bool hasDefaultCoordinates() final;
 private:
     QPolygon m_coordinates;
 
 private:
-    void setStrData() final;
+    virtual void setStrData() final;
 };
 }
 #endif // MYPOLYGON_H
