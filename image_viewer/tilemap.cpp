@@ -56,7 +56,7 @@ void TileMap::drawTop(QRect r)
 
 void TileMap::drawBottom(QRect r)
 {
-    if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    if((r.left()>=0)&&(r.right()<map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<(map_size.height()*256)))
     {
         uint topBorder = r.top()/256;
         Q_UNUSED(topBorder)
@@ -83,15 +83,17 @@ void TileMap::drawBottom(QRect r)
 
 void TileMap::drawRight(QRect r)
 {
-    if((r.left()>=0)&&(r.right()<=map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<map_size.height()*256))
+    uint topBorder = r.top()/256;
+    uint bottomBorder = r.bottom()/256;
+    uint leftBorder = r.left()/256;
+    uint rightBorder = r.right()/256;
+    if(((r.bottom()/256) <= map_size.height())&&((r.right()/256) < map_size.width()))
     {
-        uint topBorder = r.top()/256;
-        uint bottomBorder = r.bottom()/256+1;
-        uint leftBorder = r.left()/256;
         Q_UNUSED(leftBorder)
-        uint rightBorder = r.right()/256;
         uint x = rightBorder;
-        for(uint y=topBorder;y<bottomBorder;++y)
+        if(bottomBorder == map_size.height())
+            --bottomBorder;
+        for(uint y=topBorder;y<=bottomBorder;++y)
         {
             if(matrix[y][x] == false)
             {
@@ -111,6 +113,7 @@ void TileMap::drawRight(QRect r)
 
 void TileMap::drawLeft(QRect r)
 {
+    qDebug()<<"!!"<<r;
     if((r.left()>=0)&&(r.right()<=map_size.width()*256)&&(r.top()>=0)&&(r.bottom()<=map_size.height()*256))
     {
         uint topBorder = r.top()/256;
