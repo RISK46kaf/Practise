@@ -16,6 +16,7 @@ public:
     virtual ~Ellipse();
 
     QRect getCoordinates() const;
+    virtual QList<QPoint> coordinatesList() const final;
     void setCoordinates(const QRect& coordinates);
     void setCoordinates(const QPoint &topleft, const QPoint &bottomright);
     void setCoordinates(const QPoint &topleft, const QSize &size);

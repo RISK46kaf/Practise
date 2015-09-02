@@ -53,6 +53,7 @@ public:
     uint getColor() const;
     FigureType getFigureType() const;
     const QString& getStrData() const;
+    virtual QList<QPoint> coordinatesList() const = 0;
 
     void setID(qint64 ID);
     void setEvidenceID(qint64 ID);

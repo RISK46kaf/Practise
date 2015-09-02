@@ -7,6 +7,7 @@
 
 #include "DB/defaultnames.h"
 #include <QSqlDatabase>
+#include "Figures/shapebase.h"
 
 class QSqlDatabase;
 class QWidget;
@@ -29,6 +30,15 @@ enum Tool {
     RectTool/*,
     Wizard*/
 };
+
+//enum FigureType
+//{
+//    NoFigure,
+//    ArrowFigure,
+//    EllipseFigure,
+//    PolygonFigure,
+//    RectFigure,
+//};
 
 
 class FiguresManager : public QObject

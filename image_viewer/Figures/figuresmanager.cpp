@@ -19,13 +19,21 @@
 
 namespace Figures {
 
+QMap<FigureType,QString> FigureTypeStr{
+    {FigureType::NoFigure, "nope"},
+    {FigureType::ArrowFigure, "arrow"},
+    {FigureType::EllipseFigure, "ellipse"},
+    {FigureType::PolygonFigure, "polygon"},
+    {FigureType::RectFigure, "rectangle"}
+};
+
 
 FiguresManager::FiguresManager(QObject *parent) : QObject(parent),
-    m_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL), m_new_selection(0), m_scroll_area(NULL),m_last_mark_id(-1)
+    m_id(-1),m_last_mark_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL), m_new_selection(0), m_scroll_area(NULL)
 {
 }
 FiguresManager::FiguresManager(QSqlDatabase &dataBase, QObject *parent) : QObject(parent),
-    m_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL), m_new_selection(0), m_scroll_area(NULL),m_last_mark_id(-1)
+    m_id(-1),m_last_mark_id(-1),m_tool(Tool::NoTool), m_temp_figure(NULL), m_new_selection(0), m_scroll_area(NULL)
 {
     if(connectToDb(dataBase) == 0)
     {
@@ -364,20 +372,40 @@ bool FiguresManager::insertData()
     qint64 correction;
     if(res = m_db.isOpen() )
     {
+        int b4 = getDbLastMarkID();
         correction = (m_last_mark_id - getDbLastMarkID());
         for(auto it = m_figures.begin(); it != m_figures.end(); ++it)
         {
-            ///
+            ShapeBase* val = it.value();
+            QSqlQuery query;
+            query.prepare(QString("INSERT INTO %1 (entry_id,form,color,thickness,diagnosis_id,name_id) VALUES (:entry_id , :form, :color, :thickness, :diagnosis_id, :name_id );")
+                          .arg(DB::DefaulTableNames::MARKER)); // w/o :id at front :morph_id
+            query.bindValue(":entry_id",val->getEntryID());
+            auto it2 = FigureTypeStr.find(val->getFigureType());
+            query.bindValue(":form",it2 == FigureTypeStr.end() ? FigureTypeStr[FigureType::NoFigure] : it2.value());
+            query.bindValue(":color",val->getColor());
+            query.bindValue(":thickness",val->getWidth());
+            query.bindValue(":diagnosis_id",val->getDiagnosisID());
+            query.bindValue(":name_id",val->getEvidenceID());
+            if(!(res &=query.exec()))
+            {
+                qDebug() << DB::DefaulTableNames::MARKER << query.lastError().text();
+            }
+            long long id = query.value("id").toLongLong();
+            QList<QPoint> points = val->coordinatesList();
+            foreach (QPoint point, points) {
+                query.prepare(QString("INSERT INTO %1 (point,mark_id) VALUES (PointFromText('POINT(:x :y)', :mark_id);")
+                              .arg(DB::DefaulTableNames::MARKER_POINTS));
+                query.bindValue(":x",point.x());
+                query.bindValue(":y",point.y());
+                query.bindValue(":mark_id",id);
+                if(!(res &= query.exec()))
+                {
+                    qDebug() << DB::DefaulTableNames::MARKER_POINTS << query.lastError().text();
+                }
+            }
         }
-//        ShapeBase* lol;
-//        lol->getID();
-//        lol->getEntryID();
-//        lol->getFigureType();
-//        lol->getColor();
-//        lol->getDiagnosisID();
-//        lol->getEvidenceID();
-        ///do smthng
-//        for(auto it = m_figures.begin(); )
+        qDebug() << "added" << b4 - getDbLastMarkID() << "markers";
     }
     return res;
 }

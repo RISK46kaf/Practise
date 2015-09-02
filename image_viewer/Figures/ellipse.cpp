@@ -32,6 +32,14 @@ QRect Ellipse::getCoordinates() const
     return m_coordinates;
 }
 
+QList<QPoint> Ellipse::coordinatesList() const
+{
+    QList<QPoint> res;
+    res << m_coordinates.topLeft();
+    res << m_coordinates.bottomRight();
+    return res;
+}
+
 void Ellipse::setCoordinates(const QRect &coordinates)
 {
     m_coordinates = coordinates;
