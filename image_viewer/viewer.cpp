@@ -59,7 +59,6 @@ Viewer::Viewer(QWidget *parent) :
                 {
                     size.setHeight(att[2].value().toInt());
                 }
-                qDebug()<<size;
                 scaleList.push_back(size);
             }
 
@@ -113,11 +112,6 @@ void Viewer::on_actionLoad_Images_triggered()
 void Viewer::viewResized()//////////////////////////////
 {
     view->verticalScrollBar()->setSingleStep(1);
-    qDebug()<<"МАХ скролл-бар: "<<view->verticalScrollBar()->maximum();
-    qDebug()<<"Размер MyGraphicsView:";
-    qDebug()<<view->size();
-    qDebug()<<"Размер QGraphicsScene:";
-    qDebug()<<scene->sceneRect();
     map->drawViewField(getViewField());
     view->horizontalScrollBar()->setValue(0);
     view->verticalScrollBar()->setValue(0);
@@ -138,14 +132,12 @@ void Viewer::scrolledVertical(int value)
 
     oldValueVertical = value;
     view->horizontalScrollBar()->blockSignals(false);
-    qDebug()<<value;
 }
 
 void Viewer::scrolledHorizontal(int value)
 {
     view->horizontalScrollBar()->blockSignals(true);
 
-    qDebug()<<value;
 
 
     map->drawViewField(getViewField());
@@ -184,9 +176,7 @@ void Viewer::zoomOut(QPoint pnt)
 
 void Viewer::zoomIn(QPoint pnt)
 { 
-    qDebug()<<getViewField();
     QPoint npnt = view->mapToScene(pnt).toPoint();
-    qDebug()<<npnt;
     if((int)scale > 1)
     {
         int x = scale*npnt.x()/(scale-1);
@@ -196,7 +186,6 @@ void Viewer::zoomIn(QPoint pnt)
         map->drawViewField(getViewField());
         scene->setSceneRect(0,0,scaleList[scale-1].width()*256,scaleList[scale-1].height()*256);
         view->centerOn(QPoint(x,y));
-        qDebug()<<getViewField();
     }
 }
 

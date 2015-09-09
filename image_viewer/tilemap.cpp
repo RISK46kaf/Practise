@@ -24,7 +24,6 @@ TileMap::TileMap(QObject *parent) :
     result_size = QSize(3,3);
     rect = QRect(QPoint(0,0),QPoint(3,0));
     map_size = QSize(0,0);
-    qDebug()<<rect;
 
 
 }
@@ -33,8 +32,7 @@ TileMap::TileMap(QObject *parent) :
 
 void TileMap::drawViewField(QRect r)
 {
-   // qDebug() << "map_size";
-   // qDebug() << map_size;
+
     if(((r.bottom()/256) <= map_size.height())&&((r.right()/256) <= map_size.width()))
     {
         uint topBorder = r.top()/256;
