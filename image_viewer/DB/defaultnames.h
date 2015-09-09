@@ -7,6 +7,7 @@ namespace DB {
 
 struct DefaulTableNames{
     const static QString MARKER;
+    const static QString MARKER_POINTS;
     const static QString DIAGNOSIS;
     const static QString LOW_DICTIONARY;
     const static QString ENTRIES;

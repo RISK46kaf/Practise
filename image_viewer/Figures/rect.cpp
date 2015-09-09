@@ -32,6 +32,14 @@ QRect Rect::getCoordinates() const
     return m_coordinates;
 }
 
+QList<QPoint> Rect::coordinatesList() const
+{
+    QList<QPoint> res;
+    res << m_coordinates.topLeft();
+    res << m_coordinates.bottomRight();
+    return res;
+}
+
 void Rect::setCoordinates(const QRect &coordinates)
 {
     m_coordinates = coordinates;

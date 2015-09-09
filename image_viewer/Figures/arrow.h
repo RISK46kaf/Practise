@@ -19,6 +19,7 @@ public:
     virtual ~Arrow();
 
     QLineF getCoordinates() const;
+    virtual QList<QPoint> coordinatesList() const final;
     qreal getArrowScale() const;
 
     void setArrowScale(qreal arrowScale);

@@ -51,6 +51,14 @@ QLineF Arrow::getCoordinates() const
     return m_coordinates;
 }
 
+QList<QPoint> Arrow::coordinatesList() const
+{
+    QList<QPoint> res;
+    res << m_coordinates.p1().toPoint();
+    res << m_coordinates.p2().toPoint();
+    return res;
+}
+
 void Arrow::setArrowScale(qreal arrowScale)
 {
     m_arrow_scale = arrowScale;

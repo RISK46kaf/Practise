@@ -5,6 +5,7 @@
 namespace DB {
 
 const QString DefaulTableNames::MARKER = QString("mark");
+const QString DefaulTableNames::MARKER_POINTS = QString("mark_points");
 const QString DefaulTableNames::DIAGNOSIS = QString("diagnosis");
 const QString DefaulTableNames::LOW_DICTIONARY = QString("mark_name");
 const QString DefaulTableNames::ENTRIES = QString("entry");

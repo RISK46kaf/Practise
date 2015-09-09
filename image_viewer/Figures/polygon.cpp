@@ -33,6 +33,11 @@ QPolygon Polygon::getCoordinates() const
     return m_coordinates;
 }
 
+QList<QPoint> Polygon::coordinatesList() const
+{
+    return m_coordinates.toList();
+}
+
 void Polygon::setCoordinates(const QPolygon &coordinates)
 {
     m_coordinates = coordinates;

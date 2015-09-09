@@ -16,6 +16,7 @@ public:
     virtual ~Polygon();
 
     QPolygon getCoordinates() const;
+    virtual QList<QPoint> coordinatesList() const final;
 
     void setCoordinates(const QPolygon& coordinates);
     void setCoordinates(const QVector<QPoint> &coordinates);
