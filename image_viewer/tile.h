@@ -2,13 +2,11 @@
 #define TILE_H
 #include <QGraphicsPixmapItem>
 
-struct Tile
+class Tile : public QGraphicsPixmapItem
 {
-    Tile();
+public:
     Tile(QPixmap i, QPoint p);
-    QGraphicsPixmapItem* img;
     QPoint pnt;
-    ~Tile();
 };
 
 #endif // TILE_H

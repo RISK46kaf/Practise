@@ -39,6 +39,8 @@ private slots:
 
 
     void on_zoomOutButton_clicked();
+    void zoomOut(QPoint);
+    void zoomIn(QPoint);
 
 signals:
     void centralPointEvent(QPointF);
@@ -58,6 +60,7 @@ private:
     QSize map_size;
     QRect getViewField();
     QPoint getCentralPoint();
+    void setMousePos(QPoint pnt);
     bool l;
 
 };

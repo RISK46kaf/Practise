@@ -70,7 +70,8 @@ Viewer::Viewer(QWidget *parent) :
         //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
         connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
         connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
-
+        connect(view, SIGNAL(zoomOut(QPoint)),this,SLOT(zoomOut(QPoint)));
+        connect(view, SIGNAL(zoomIn(QPoint)),this,SLOT(zoomIn(QPoint)));
         map = new TileMap();
 
         map->setScene(scene);
@@ -133,14 +134,8 @@ void Viewer::scrolledVertical(int value)
     view->horizontalScrollBar()->blockSignals(true);
 
 
-    if((int)oldValueVertical > value) //up
-    {
-        map->drawTop(getViewField());
-    }
-    if((int)oldValueVertical < value) //down
-    {
-        map->drawBottom(getViewField());
-    }
+    map->drawViewField(getViewField());
+
     oldValueVertical = value;
     view->horizontalScrollBar()->blockSignals(false);
     qDebug()<<value;
@@ -153,23 +148,7 @@ void Viewer::scrolledHorizontal(int value)
     qDebug()<<value;
 
 
-    if((int)oldValueHorizontal < value) //right
-    {
-        if((int)(oldValueHorizontal+256) < value)
-        {
-            map->drawFromToRight(old_view_field, getViewField());
-        }
-        else
-        {
-            map->drawRight(getViewField());
-        }
-    }
-    if((int)oldValueHorizontal > value) //left
-    {
-        map->drawLeft(getViewField());
-    }
-    oldValueHorizontal = value;
-    old_view_field = getViewField();
+    map->drawViewField(getViewField());
     view->horizontalScrollBar()->blockSignals(false);
 }
 
@@ -179,10 +158,45 @@ void Viewer::on_zoomOutButton_clicked()
 {
     if((int)scale < (scaleList.size()))
     {
+
         ++scale;
         map->setScale(scaleList[scale-1],scale);
         map->drawViewField(getViewField());
         scene->setSceneRect(0,0,scaleList[scale-1].width()*256,scaleList[scale-1].height()*256);
+    }
+}
+
+void Viewer::zoomOut(QPoint pnt)
+{
+    QPoint npnt = view->mapToScene(pnt).toPoint();
+    if((int)scale < (scaleList.size()))
+    {
+        int x = scale*npnt.x()/(scale+1);
+        int y = scale*npnt.y()/(scale+1);
+        ++scale;
+        map->setScale(scaleList[scale-1],scale);
+        map->drawViewField(getViewField());
+        scene->setSceneRect(0,0,scaleList[scale-1].width()*256,scaleList[scale-1].height()*256);
+        view->centerOn(QPoint(x,y));
+
+    }
+}
+
+void Viewer::zoomIn(QPoint pnt)
+{ 
+    qDebug()<<getViewField();
+    QPoint npnt = view->mapToScene(pnt).toPoint();
+    qDebug()<<npnt;
+    if((int)scale > 1)
+    {
+        int x = scale*npnt.x()/(scale-1);
+        int y = scale*npnt.y()/(scale-1);
+        --scale;
+        map->setScale(scaleList[scale-1],scale);
+        map->drawViewField(getViewField());
+        scene->setSceneRect(0,0,scaleList[scale-1].width()*256,scaleList[scale-1].height()*256);
+        view->centerOn(QPoint(x,y));
+        qDebug()<<getViewField();
     }
 }
 
@@ -201,4 +215,12 @@ QPoint Viewer::getCentralPoint()
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
     return view_field.center();
 }
+
+void Viewer::setMousePos(QPoint pnt)
+{
+    QCursor c = cursor();
+    c.setPos(mapToGlobal(pnt));
+    setCursor(c);
+}
+
 
