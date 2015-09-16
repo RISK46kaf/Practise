@@ -12,6 +12,18 @@ void MyGraphicsView::resizeEvent(QResizeEvent *event)
     emit resized();
 }
 
+void MyGraphicsView::wheelEvent(QWheelEvent *event)
+{
+    if(event->delta() >0)
+    {
+        emit zoomIn(event->pos());
+    }
+    if(event->delta() <0)
+    {
+        emit zoomOut(event->pos());
+    }
+}
+
 
 void MyGraphicsView::scrollEvent()
 {

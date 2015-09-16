@@ -39,6 +39,10 @@ private slots:
 
 
     void on_zoomOutButton_clicked();
+    void zoomOut(QPoint);
+    void zoomIn(QPoint);
+
+    void timeout();
 
 signals:
     void centralPointEvent(QPointF);
@@ -54,10 +58,13 @@ private:
     uint oldValueVertical;
     QRect old_view_field;
     uint scale;
-    QVector<QSize> scaleList;
+    QVector<QSize> imgSizes;
+    QVector<QSize> tileAmount;
     QSize map_size;
     QRect getViewField();
     QPoint getCentralPoint();
+    QTimer* t;
+    void setMousePos(QPoint pnt);
     bool l;
 
 };

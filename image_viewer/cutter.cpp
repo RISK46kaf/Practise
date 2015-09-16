@@ -72,8 +72,10 @@ void Cutter::cut(QString image_path)
             }
             stream.writeStartElement("scale"); //xml
             stream.writeAttribute("value",QString::number(i)); //xml
-            stream.writeAttribute("width",QString::number(tile_amount_w)); //xml
-            stream.writeAttribute("height",QString::number(tile_amount_h)); //xml
+            stream.writeAttribute("width",QString::number(scaled_img.size().width())); //xml
+            stream.writeAttribute("height",QString::number(scaled_img.size().height())); //xml
+            stream.writeAttribute("tile_amount_w",QString::number(tile_amount_w)); //xml
+            stream.writeAttribute("tile_amount_h",QString::number(tile_amount_h)); //xml
             stream.writeEndElement();
         }
         stream.writeEndElement();

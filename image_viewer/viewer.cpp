@@ -50,31 +50,47 @@ Viewer::Viewer(QWidget *parent) :
             att = xml.attributes();
             if(att.size() != 0)
             {
-                QSize size;
+                QSize isize;
+                QSize tsize;
                 if(att[1].name().toString() == "width")
                 {
-                    size.setWidth(att[1].value().toInt());
+                    isize.setWidth(att[1].value().toInt());
                 }
                 if(att[2].name().toString() == "height")
                 {
-                    size.setHeight(att[2].value().toInt());
+                    isize.setHeight(att[2].value().toInt());
                 }
-                qDebug()<<size;
-                scaleList.push_back(size);
+                imgSizes.push_back(isize);
+
+                if(att[3].name().toString() == "tile_amount_w")
+                {
+                    tsize.setWidth(att[3].value().toInt());
+                }
+                if(att[4].name().toString() == "tile_amount_h")
+                {
+                    tsize.setHeight(att[4].value().toInt());
+                }
+                tileAmount.push_back(tsize);
             }
 
 
         }
+        t = new QTimer();
+        t->start(60000);
+
         //
         connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
         //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
         connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
         connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
+        connect(view, SIGNAL(zoomOut(QPoint)),this,SLOT(zoomOut(QPoint)));
+        connect(view, SIGNAL(zoomIn(QPoint)),this,SLOT(zoomIn(QPoint)));
+        connect(t, SIGNAL(timeout()),this,SLOT(timeout()));
 
         map = new TileMap();
 
         map->setScene(scene);
-        map->setScale(scaleList[0],scale);
+        map->setScale(tileAmount[0],scale);
         map->drawViewField(getViewField());
 
         oldValueHorizontal = 0;
@@ -92,6 +108,7 @@ Viewer::~Viewer()
     delete scene;
     delete view;
     delete ui;
+    delete t;
 }
 
 void Viewer::on_actionPrepare_Image_triggered()
@@ -112,15 +129,10 @@ void Viewer::on_actionLoad_Images_triggered()
 void Viewer::viewResized()//////////////////////////////
 {
     view->verticalScrollBar()->setSingleStep(1);
-    qDebug()<<"МАХ скролл-бар: "<<view->verticalScrollBar()->maximum();
-    qDebug()<<"Размер MyGraphicsView:";
-    qDebug()<<view->size();
-    qDebug()<<"Размер QGraphicsScene:";
-    qDebug()<<scene->sceneRect();
     map->drawViewField(getViewField());
     view->horizontalScrollBar()->setValue(0);
     view->verticalScrollBar()->setValue(0);
-    scene->setSceneRect(0,0,scaleList[scale-1].width()*256,scaleList[scale-1].height()*256);
+    scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
 }
 
 void Viewer::viewChanged()
@@ -133,43 +145,19 @@ void Viewer::scrolledVertical(int value)
     view->horizontalScrollBar()->blockSignals(true);
 
 
-    if((int)oldValueVertical > value) //up
-    {
-        map->drawTop(getViewField());
-    }
-    if((int)oldValueVertical < value) //down
-    {
-        map->drawBottom(getViewField());
-    }
+    map->drawViewField(getViewField());
+
     oldValueVertical = value;
     view->horizontalScrollBar()->blockSignals(false);
-    qDebug()<<value;
 }
 
 void Viewer::scrolledHorizontal(int value)
 {
     view->horizontalScrollBar()->blockSignals(true);
 
-    qDebug()<<value;
 
 
-    if((int)oldValueHorizontal < value) //right
-    {
-        if((int)(oldValueHorizontal+256) < value)
-        {
-            map->drawFromToRight(old_view_field, getViewField());
-        }
-        else
-        {
-            map->drawRight(getViewField());
-        }
-    }
-    if((int)oldValueHorizontal > value) //left
-    {
-        map->drawLeft(getViewField());
-    }
-    oldValueHorizontal = value;
-    old_view_field = getViewField();
+    map->drawViewField(getViewField());
     view->horizontalScrollBar()->blockSignals(false);
 }
 
@@ -177,13 +165,50 @@ void Viewer::scrolledHorizontal(int value)
 
 void Viewer::on_zoomOutButton_clicked()
 {
-    if((int)scale < (scaleList.size()))
+    if((int)scale < (tileAmount.size()))
     {
+
         ++scale;
-        map->setScale(scaleList[scale-1],scale);
+        map->setScale(tileAmount[scale-1],scale);
         map->drawViewField(getViewField());
-        scene->setSceneRect(0,0,scaleList[scale-1].width()*256,scaleList[scale-1].height()*256);
+        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
     }
+}
+
+void Viewer::zoomOut(QPoint pnt)
+{
+    QPoint npnt = view->mapToScene(pnt).toPoint();
+    if((int)scale < (tileAmount.size()))
+    {
+        int x = scale*npnt.x()/(scale+1);
+        int y = scale*npnt.y()/(scale+1);
+        ++scale;
+        map->setScale(tileAmount[scale-1],scale);
+        map->drawViewField(getViewField());
+        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
+        view->centerOn(QPoint(x,y));
+
+    }
+}
+
+void Viewer::zoomIn(QPoint pnt)
+{ 
+    QPoint npnt = view->mapToScene(pnt).toPoint();
+    if((int)scale > 1)
+    {
+        int x = scale*npnt.x()/(scale-1);
+        int y = scale*npnt.y()/(scale-1);
+        --scale;
+        map->setScale(tileAmount[scale-1],scale);
+        map->drawViewField(getViewField());
+        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
+        view->centerOn(QPoint(x,y));
+    }
+}
+
+void Viewer::timeout()
+{
+    map->drawField(10,10,getCentralPoint());
 }
 
 QRect Viewer::getViewField()
@@ -201,4 +226,12 @@ QPoint Viewer::getCentralPoint()
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
     return view_field.center();
 }
+
+void Viewer::setMousePos(QPoint pnt)
+{
+    QCursor c = cursor();
+    c.setPos(mapToGlobal(pnt));
+    setCursor(c);
+}
+
 

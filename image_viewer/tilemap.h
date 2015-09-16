@@ -10,9 +10,8 @@
 #include <QStack>
 #include <QVector>
 #include <QString>
-#ifdef WIN32
 #include <windows.h>
-#endif
+
 
 class TileMap: public QObject
 {
@@ -23,13 +22,8 @@ public:
     QQueue<Tile*> storage;
     QVector<QVector<bool> > matrix;
 
-    void drawTop(QRect r);
-    void drawBottom(QRect r);
-    void drawRight(QRect r);
-    void drawLeft(QRect r);
+    void drawField(uint width, uint height, QPoint center);
     void drawViewField(QRect r);
-    void drawFromToRight(QRect from, QRect to);
-    void drawFromToLeft(QRect from, QRect to);
     void init();
     void setScene(QGraphicsScene *s);
     void setScale(QSize &size, uint s);
