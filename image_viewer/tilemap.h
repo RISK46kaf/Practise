@@ -22,7 +22,7 @@ public:
     QQueue<Tile*> storage;
     QVector<QVector<bool> > matrix;
 
-
+    void drawField(uint width, uint height, QPoint center);
     void drawViewField(QRect r);
     void init();
     void setScene(QGraphicsScene *s);

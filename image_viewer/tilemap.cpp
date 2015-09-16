@@ -28,6 +28,25 @@ TileMap::TileMap(QObject *parent) :
 
 }
 
+void TileMap::drawField(uint width, uint height, QPoint center)
+{
+    QPoint c(center.x()/256,center.y()/256);
+    for(uint y=(height/256)-(c.y()/2);y<(height/256)+(c.y()/2);++y)
+    {
+        for(uint x=(width/256)+(c.x()/2);x<(width/256)+(c.x()/2);++x)
+        {
+            if(matrix[y][x] == false)
+            {
+                matrix[y][x] = true;
+                QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
+                Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                storage.push_back(t);
+                scene->addItem(storage.last());
+            }
+        }
+    }
+}
+
 
 
 void TileMap::drawViewField(QRect r)
