@@ -132,6 +132,8 @@ void Viewer::viewResized()//////////////////////////////
     map->drawViewField(getViewField());
     view->horizontalScrollBar()->setValue(0);
     view->verticalScrollBar()->setValue(0);
+    ui->progressBar->setValue(map->memStatus());
+
     scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
 }
 
@@ -146,6 +148,7 @@ void Viewer::scrolledVertical(int value)
 
 
     map->drawViewField(getViewField());
+    ui->progressBar->setValue(map->memStatus());
 
     oldValueVertical = value;
     view->horizontalScrollBar()->blockSignals(false);
@@ -155,7 +158,7 @@ void Viewer::scrolledHorizontal(int value)
 {
     view->horizontalScrollBar()->blockSignals(true);
 
-
+    ui->progressBar->setValue(map->memStatus());
 
     map->drawViewField(getViewField());
     view->horizontalScrollBar()->blockSignals(false);

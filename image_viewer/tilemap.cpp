@@ -1,7 +1,7 @@
 #include "tilemap.h"
 
 
-inline int memStatus()
+int TileMap::memStatus()
 {
     MEMORYSTATUSEX statex;
 
@@ -24,8 +24,6 @@ TileMap::TileMap(QObject *parent) :
     result_size = QSize(3,3);
     rect = QRect(QPoint(0,0),QPoint(3,0));
     map_size = QSize(0,0);
-
-
 }
 
 void TileMap::drawField(uint width, uint height, QPoint center)
@@ -78,7 +76,7 @@ void TileMap::drawViewField(QRect r)
         }
     }
 
-    if(memStatus() > 85)
+    if(memStatus() > 80)
     {
         clear(r);
     }
@@ -123,9 +121,11 @@ void TileMap::clear(QRect r)
         {
             if((matrix[y][x] == true)&&(((y<topBorder)||(y>bottomBorder))||((x<leftBorder)||(x>rightBorder))))
             {
-                scene->removeItem(storage.first());
-                delete storage.first();
-                storage.removeFirst();
+//                scene->removeItem(storage.first());
+//                delete storage.first();
+//                storage.removeFirst();
+                scene->removeItem(storage[y*map_size.width()+x]);
+                storage.removeAt(y*map_size.width()+x);
                 matrix[y][x] = false;
             }
         }

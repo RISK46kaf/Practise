@@ -19,7 +19,7 @@ class TileMap: public QObject
 public:
     explicit TileMap(QObject *parent = 0);
     //explicit TileMap(QGraphicsScene* s);
-    QQueue<Tile*> storage;
+    QList<Tile*> storage;
     QVector<QVector<bool> > matrix;
 
     void drawField(uint width, uint height, QPoint center);
@@ -31,6 +31,7 @@ public:
     void clear(QRect r);
     void clearAll();
     ~TileMap();
+    int memStatus();
 private:
     QSize view_size;
     QSize tile_size;
