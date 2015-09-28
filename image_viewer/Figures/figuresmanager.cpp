@@ -387,21 +387,24 @@ bool FiguresManager::insertData()
             query.bindValue(":thickness",val->getWidth());
             query.bindValue(":diagnosis_id",val->getDiagnosisID());
             query.bindValue(":name_id",val->getEvidenceID());
-            if(!(res &=query.exec()))
+            if(!(res &= query.exec()))
             {
                 qDebug() << DB::DefaulTableNames::MARKER << query.lastError().text();
             }
-            long long id = query.value("id").toLongLong();
-            QList<QPoint> points = val->coordinatesList();
-            foreach (QPoint point, points) {
-                query.prepare(QString("INSERT INTO %1 (point,mark_id) VALUES (PointFromText('POINT(:x :y)', :mark_id);")
-                              .arg(DB::DefaulTableNames::MARKER_POINTS));
-                query.bindValue(":x",point.x());
-                query.bindValue(":y",point.y());
-                query.bindValue(":mark_id",id);
-                if(!(res &= query.exec()))
-                {
-                    qDebug() << DB::DefaulTableNames::MARKER_POINTS << query.lastError().text();
+            else
+            {
+                long long id = query.value("id").toLongLong();
+                QList<QPoint> points = val->coordinatesList();
+                foreach (QPoint point, points) {
+                    query.prepare(QString("INSERT INTO %1 (point,mark_id) VALUES (PointFromText('POINT(:x :y)', :mark_id);")
+                                  .arg(DB::DefaulTableNames::MARKER_POINTS));
+                    query.bindValue(":x",point.x());
+                    query.bindValue(":y",point.y());
+                    query.bindValue(":mark_id",id);
+                    if(!(res &= query.exec()))
+                    {
+                        qDebug() << DB::DefaulTableNames::MARKER_POINTS << query.lastError().text();
+                    }
                 }
             }
         }
