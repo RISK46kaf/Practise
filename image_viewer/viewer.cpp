@@ -14,12 +14,15 @@ Viewer::Viewer(QWidget *parent) :
     map = NULL;
     view = new MyGraphicsView();
     scene = new QGraphicsScene();
+    preview = new PreviewView();
     ui->gridLayout->addWidget(view);
+    ui->previewLayout->addWidget(preview);
     view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     view->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     scale = 1;
 
+    preview = new PreviewView();
 //<<<<<<< HEAD
 //    Rect r;
     //Ellipse* ptr = (Ellipse*)r.toEllipse();

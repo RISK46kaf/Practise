@@ -80,7 +80,7 @@ void TileMap::drawViewField(QRect r)
 
     if(memStatus() > 85)
     {
-        clear(r);
+        clearAll();
     }
 
 }
@@ -143,6 +143,21 @@ void TileMap::clear(QRect r)
     }
 }
 
+void TileMap::clearAll()
+{
+    qDebug()<<"storage size: "<<storage.size();
+    for(uint i=0;i<storage.size();++i)
+        delete storage[i];
+    storage.clear();
+    qDebug()<<"storage size then: "<<storage.size();
+    for(int y=0;y<matrix.size();++y)
+    {
+        for(int x=0;x<matrix[y].size();++x)
+        {
+            matrix[y][x] = 0;
+        }
+    }
+}
 
 
 

@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     Figures/arrow.cpp \
     Figures/polygon.cpp \
     Figures/figuresmanager.cpp \
-    DB/defaultnames.cpp
+    DB/defaultnames.cpp \
+    previewview.cpp
 
 HEADERS  += viewer.h \
     cutter.h \
@@ -39,7 +40,8 @@ HEADERS  += viewer.h \
     Figures/shapebase.h \
     Figures/polygon.h \
     Figures/figuresmanager.h \
-    DB/defaultnames.h
+    DB/defaultnames.h \
+    previewview.h
 
 FORMS    += viewer.ui
 

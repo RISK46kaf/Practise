@@ -11,6 +11,7 @@
 #include <QDebug>
 #include <QScrollBar>
 #include <QXmlStreamReader>
+#include <previewview.h>
 
 namespace Ui {
 class Viewer;
@@ -50,6 +51,7 @@ private:
     Ui::Viewer *ui;
     Cutter cutter;
     MyGraphicsView* view;
+    PreviewView* preview;
     QGraphicsScene* scene;
     TileMap* map;
     QGraphicsPixmapItem *centralItem;
