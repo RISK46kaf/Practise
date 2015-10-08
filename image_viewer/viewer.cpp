@@ -2,6 +2,7 @@
 #include "ui_viewer.h"
 #include <QtGui>
 #include <QXmlStreamStringRef>
+#include "rectitem.h"
 //#include <QSizePolicy>
 #include "Figures/figuresmanager.h"
 
@@ -21,8 +22,6 @@ Viewer::Viewer(QWidget *parent) :
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     view->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     scale = 1;
-
-    preview = new PreviewView();
 //<<<<<<< HEAD
 //    Rect r;
     //Ellipse* ptr = (Ellipse*)r.toEllipse();
@@ -89,7 +88,9 @@ Viewer::Viewer(QWidget *parent) :
         connect(view, SIGNAL(zoomOut(QPoint)),this,SLOT(zoomOut(QPoint)));
         connect(view, SIGNAL(zoomIn(QPoint)),this,SLOT(zoomIn(QPoint)));
         connect(t, SIGNAL(timeout()),this,SLOT(timeout()));
-
+        connect(this, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
+        connect(this, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
+        //connect(this,SIGNAL(viewRect(QRect r)),preview,SLOT(setRect(QRect r)));
         map = new TileMap();
 
         map->setScene(scene);
@@ -102,6 +103,7 @@ Viewer::Viewer(QWidget *parent) :
         view->verticalScrollBar()->setSingleStep(1);
 
         //view->verticalScrollBar()->setMaximumHeight(4352);
+
     }
 }
 
@@ -112,6 +114,7 @@ Viewer::~Viewer()
     delete view;
     delete ui;
     delete t;
+    delete preview;
 }
 
 void Viewer::on_actionPrepare_Image_triggered()
@@ -131,10 +134,12 @@ void Viewer::on_actionLoad_Images_triggered()
 
 void Viewer::viewResized()//////////////////////////////
 {
+    emit viewRect(QRect(0,0,view->size().width(),view->size().height()));
+    emit topLeftPointEvent(getCentralPoint());
+
     view->verticalScrollBar()->setSingleStep(1);
     map->drawViewField(getViewField());
-    view->horizontalScrollBar()->setValue(0);
-    view->verticalScrollBar()->setValue(0);
+
     scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
 }
 
@@ -145,6 +150,9 @@ void Viewer::viewChanged()
 
 void Viewer::scrolledVertical(int value)
 {
+    emit viewRect(QRect(0,0,view->size().width(),view->size().height()));
+    emit topLeftPointEvent(getCentralPoint());
+
     view->horizontalScrollBar()->blockSignals(true);
 
 
@@ -156,6 +164,8 @@ void Viewer::scrolledVertical(int value)
 
 void Viewer::scrolledHorizontal(int value)
 {
+    emit viewRect(QRect(0,0,view->size().width(),view->size().height()));
+    emit topLeftPointEvent(getCentralPoint());
     view->horizontalScrollBar()->blockSignals(true);
 
 
@@ -166,17 +176,6 @@ void Viewer::scrolledHorizontal(int value)
 
 
 
-void Viewer::on_zoomOutButton_clicked()
-{
-    if((int)scale < (tileAmount.size()))
-    {
-
-        ++scale;
-        map->setScale(tileAmount[scale-1],scale);
-        map->drawViewField(getViewField());
-        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
-    }
-}
 
 void Viewer::zoomOut(QPoint pnt)
 {
@@ -227,7 +226,7 @@ QPoint Viewer::getCentralPoint()
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    return view_field.center();
+    return view_field.topLeft();
 }
 
 void Viewer::setMousePos(QPoint pnt)

@@ -38,21 +38,21 @@ private slots:
 
     void scrolledHorizontal(int value);
 
-
-    void on_zoomOutButton_clicked();
     void zoomOut(QPoint);
     void zoomIn(QPoint);
 
     void timeout();
 
 signals:
-    void centralPointEvent(QPointF);
+    void topLeftPointEvent(QPointF);
+    void viewRect(QRect r);
 private:
     Ui::Viewer *ui;
     Cutter cutter;
     MyGraphicsView* view;
     PreviewView* preview;
     QGraphicsScene* scene;
+    QGraphicsScene* previewScene;
     TileMap* map;
     QGraphicsPixmapItem *centralItem;
     QStringList paths;
