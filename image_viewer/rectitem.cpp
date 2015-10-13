@@ -18,8 +18,12 @@ void RectItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(option);
     Q_UNUSED(widget);
     //painter->drawPolygon(mapToScene(rect));
-    painter->setPen(QPen(Qt::red));
+    QPen pn;
+    pn.setColor(QColor(Qt::red));
+    pn.setWidth(5);
+    painter->setPen(pn);
     painter->drawRect(rect);
+
 }
 
 QRectF RectItem::boundingRect() const
@@ -34,4 +38,10 @@ void RectItem::setRect(QRect r)
 
     rect.setTopLeft(p1);
     rect.setBottomRight(p2);
+}
+
+void RectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsItem::mouseMoveEvent(event);
+    qDebug()<<this->pos();
 }

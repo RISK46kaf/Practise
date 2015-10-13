@@ -90,7 +90,7 @@ Viewer::Viewer(QWidget *parent) :
         connect(t, SIGNAL(timeout()),this,SLOT(timeout()));
         connect(this, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
         connect(this, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
-        //connect(this,SIGNAL(viewRect(QRect r)),preview,SLOT(setRect(QRect r)));
+        //connect(this,SIGNAL(viewRect(QRect r)),preview->getRectItem(),SLOT());
         map = new TileMap();
 
         map->setScene(scene);
@@ -101,7 +101,7 @@ Viewer::Viewer(QWidget *parent) :
         oldValueVertical = 0;
         view->setScene(scene);
         view->verticalScrollBar()->setSingleStep(1);
-
+        preview->setScale(1);
         //view->verticalScrollBar()->setMaximumHeight(4352);
 
     }
@@ -134,7 +134,7 @@ void Viewer::on_actionLoad_Images_triggered()
 
 void Viewer::viewResized()//////////////////////////////
 {
-    emit viewRect(QRect(0,0,view->size().width(),view->size().height()));
+    emit viewRect(getViewField());
     emit topLeftPointEvent(getCentralPoint());
 
     view->verticalScrollBar()->setSingleStep(1);
@@ -150,7 +150,7 @@ void Viewer::viewChanged()
 
 void Viewer::scrolledVertical(int value)
 {
-    emit viewRect(QRect(0,0,view->size().width(),view->size().height()));
+    emit viewRect(getViewField());
     emit topLeftPointEvent(getCentralPoint());
 
     view->horizontalScrollBar()->blockSignals(true);
@@ -164,7 +164,7 @@ void Viewer::scrolledVertical(int value)
 
 void Viewer::scrolledHorizontal(int value)
 {
-    emit viewRect(QRect(0,0,view->size().width(),view->size().height()));
+    emit viewRect(getViewField());
     emit topLeftPointEvent(getCentralPoint());
     view->horizontalScrollBar()->blockSignals(true);
 
@@ -189,7 +189,9 @@ void Viewer::zoomOut(QPoint pnt)
         map->drawViewField(getViewField());
         scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
         view->centerOn(QPoint(x,y));
-
+        preview->setScale(scale);
+        emit viewRect(getViewField());
+        emit topLeftPointEvent(getCentralPoint());
     }
 }
 
@@ -205,12 +207,20 @@ void Viewer::zoomIn(QPoint pnt)
         map->drawViewField(getViewField());
         scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
         view->centerOn(QPoint(x,y));
+        preview->setScale(scale);
+        emit viewRect(getViewField());
+        emit topLeftPointEvent(getCentralPoint());
     }
 }
 
 void Viewer::timeout()
 {
     map->drawField(10,10,getCentralPoint());
+}
+
+void Viewer::setViewPos(QPointF pnt)
+{
+    view->centerOn(pnt);
 }
 
 QRect Viewer::getViewField()

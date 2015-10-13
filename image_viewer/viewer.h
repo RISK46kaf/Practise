@@ -43,6 +43,8 @@ private slots:
 
     void timeout();
 
+    void setViewPos(QPointF pnt);
+
 signals:
     void topLeftPointEvent(QPointF);
     void viewRect(QRect r);

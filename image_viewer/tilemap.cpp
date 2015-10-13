@@ -24,8 +24,6 @@ TileMap::TileMap(QObject *parent) :
     result_size = QSize(3,3);
     rect = QRect(QPoint(0,0),QPoint(3,0));
     map_size = QSize(0,0);
-
-
 }
 
 void TileMap::drawField(uint width, uint height, QPoint center)

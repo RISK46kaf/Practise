@@ -17,15 +17,18 @@ public:
     RectItem* rectItem;
     QGraphicsScene* scene;
     QRect rect;
-    uint scale;
+    int scale;
+    int max_scale;
     void reDraw();
     RectItem *getRectItem();
     QGraphicsPixmapItem pixItem;
+    void setMaxScale(int max);
 signals:
 
 public slots:
     void setR(QRect r);
     void setP(QPointF p);
+    void setScale(uint s);
 protected:
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent* event);
