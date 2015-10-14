@@ -2,6 +2,7 @@
 #include "ui_viewer.h"
 #include <QtGui>
 #include <QXmlStreamStringRef>
+#include "rectitem.h"
 //#include <QSizePolicy>
 #include "Figures/figuresmanager.h"
 
@@ -14,27 +15,29 @@ Viewer::Viewer(QWidget *parent) :
     map = NULL;
     view = new MyGraphicsView();
     scene = new QGraphicsScene();
+    preview = new PreviewView();
+    cmpScene = new QGraphicsScene();
     ui->gridLayout->addWidget(view);
+    ui->previewLayout->addWidget(preview);
     view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     view->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     scale = 1;
-
-//<<<<<<< HEAD
-//    Rect r;
+    //<<<<<<< HEAD
+    //    Rect r;
     //Ellipse* ptr = (Ellipse*)r.toEllipse();
 
     //qDebug() << ptr->getFigureType() << ptr;
 
     //delete ptr;
-//=======
-//    Rect r;
-//    Ellipse* ptr = (Ellipse*)r.toEllipse();
+    //=======
+    //    Rect r;
+    //    Ellipse* ptr = (Ellipse*)r.toEllipse();
 
-//    qDebug() << ptr->getFigureType() << ptr;
+    //    qDebug() << ptr->getFigureType() << ptr;
 
-//    delete ptr;
-//>>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
+    //    delete ptr;
+    //>>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
     //
     //XML
     QXmlStreamAttributes att;
@@ -86,7 +89,9 @@ Viewer::Viewer(QWidget *parent) :
         connect(view, SIGNAL(zoomOut(QPoint)),this,SLOT(zoomOut(QPoint)));
         connect(view, SIGNAL(zoomIn(QPoint)),this,SLOT(zoomIn(QPoint)));
         connect(t, SIGNAL(timeout()),this,SLOT(timeout()));
-
+        connect(this, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
+        connect(this, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
+        //connect(this,SIGNAL(viewRect(QRect r)),preview->getRectItem(),SLOT());
         map = new TileMap();
 
         map->setScene(scene);
@@ -97,8 +102,9 @@ Viewer::Viewer(QWidget *parent) :
         oldValueVertical = 0;
         view->setScene(scene);
         view->verticalScrollBar()->setSingleStep(1);
-
+        preview->setScale(1);
         //view->verticalScrollBar()->setMaximumHeight(4352);
+
     }
 }
 
@@ -107,8 +113,9 @@ Viewer::~Viewer()
     delete map;
     delete scene;
     delete view;
-    delete ui;
     delete t;
+    //delete preview;
+    delete ui;
 }
 
 void Viewer::on_actionPrepare_Image_triggered()
@@ -121,18 +128,23 @@ void Viewer::on_actionPrepare_Image_triggered()
 
 void Viewer::on_actionLoad_Images_triggered()
 {
-    if(map == NULL)
-        return;
-    map->clear(getViewField());
+    //    if(map == NULL)
+    //        return;
+    //    map->clear(getViewField());
+    QString fileName;
+    fileName = QFileDialog::getOpenFileName(this,tr("Open"),tr(""),tr("Files(*.xml)"));
+    QDir d(fileName);
+    map->loadImage(d);
 }
 
 void Viewer::viewResized()//////////////////////////////
 {
+    emit viewRect(getViewField());
+    emit topLeftPointEvent(getCentralPoint());
+
     view->verticalScrollBar()->setSingleStep(1);
     map->drawViewField(getViewField());
-    view->horizontalScrollBar()->setValue(0);
-    view->verticalScrollBar()->setValue(0);
-    ui->progressBar->setValue(map->memStatus());
+
 
     scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
 }
@@ -144,11 +156,13 @@ void Viewer::viewChanged()
 
 void Viewer::scrolledVertical(int value)
 {
+    emit viewRect(getViewField());
+    emit topLeftPointEvent(getCentralPoint());
+
     view->horizontalScrollBar()->blockSignals(true);
 
 
     map->drawViewField(getViewField());
-    ui->progressBar->setValue(map->memStatus());
 
     oldValueVertical = value;
     view->horizontalScrollBar()->blockSignals(false);
@@ -156,9 +170,10 @@ void Viewer::scrolledVertical(int value)
 
 void Viewer::scrolledHorizontal(int value)
 {
+    emit viewRect(getViewField());
+    emit topLeftPointEvent(getCentralPoint());
     view->horizontalScrollBar()->blockSignals(true);
 
-    ui->progressBar->setValue(map->memStatus());
 
     map->drawViewField(getViewField());
     view->horizontalScrollBar()->blockSignals(false);
@@ -166,17 +181,6 @@ void Viewer::scrolledHorizontal(int value)
 
 
 
-void Viewer::on_zoomOutButton_clicked()
-{
-    if((int)scale < (tileAmount.size()))
-    {
-
-        ++scale;
-        map->setScale(tileAmount[scale-1],scale);
-        map->drawViewField(getViewField());
-        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
-    }
-}
 
 void Viewer::zoomOut(QPoint pnt)
 {
@@ -190,7 +194,9 @@ void Viewer::zoomOut(QPoint pnt)
         map->drawViewField(getViewField());
         scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
         view->centerOn(QPoint(x,y));
-
+        preview->setScale(scale);
+        emit viewRect(getViewField());
+        emit topLeftPointEvent(getCentralPoint());
     }
 }
 
@@ -206,12 +212,20 @@ void Viewer::zoomIn(QPoint pnt)
         map->drawViewField(getViewField());
         scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
         view->centerOn(QPoint(x,y));
+        preview->setScale(scale);
+        emit viewRect(getViewField());
+        emit topLeftPointEvent(getCentralPoint());
     }
 }
 
 void Viewer::timeout()
 {
     map->drawField(10,10,getCentralPoint());
+}
+
+void Viewer::setViewPos(QPointF pnt)
+{
+    view->centerOn(pnt);
 }
 
 QRect Viewer::getViewField()
@@ -227,7 +241,7 @@ QPoint Viewer::getCentralPoint()
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    return view_field.center();
+    return view_field.topLeft();
 }
 
 void Viewer::setMousePos(QPoint pnt)
@@ -238,3 +252,32 @@ void Viewer::setMousePos(QPoint pnt)
 }
 
 
+
+void Viewer::on_actionLoad_Images_2_triggered()
+{
+
+    imageList = QFileDialog::getOpenFileNames(this,tr("Open"),tr(""),tr("Files(*.jpeg *.jpg)"));
+    ui->cmpView->setScene(cmpScene);
+    cmpScene->addPixmap(imageList[0]);
+    for(uint i=0;i<imageList.size();++i)
+    {
+        QListWidgetItem* it = new QListWidgetItem();
+        //it->setText(imageList[i]);
+        QIcon icon;
+        QPixmap img(imageList[i]);
+        it->setSizeHint(QSize(180,180));
+        //img.scaled(5,5);
+        icon.addPixmap(img.scaled(180,180));
+        icon.actualSize(QSize(180,180));
+        it->setIcon(icon);
+        ui->imageListWidget->addItem(it);
+        items.push_back(it);
+
+    }
+}
+
+void Viewer::on_imageListWidget_currentRowChanged(int currentRow)
+{
+    cmpScene->clear();
+    cmpScene->addPixmap(QPixmap(imageList[currentRow]));
+}

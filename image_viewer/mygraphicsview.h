@@ -5,7 +5,7 @@
 #include <QResizeEvent>
 #include <QObject>
 
-class MyGraphicsView : public QGraphicsView
+class MyGraphicsView :public QGraphicsView
 {
     Q_OBJECT
 public:

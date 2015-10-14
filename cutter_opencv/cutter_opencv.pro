@@ -17,17 +17,24 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
-INCLUDEPATH += C:/opencv-mingw/install/include \
-C:/opencv-mingw/install/x86/mingw/bin
-LIBS += -LC:/opencv-mingw/install/x86/mingw/bin \
--lopencv_core300 \
--lopencv_imgproc300
-LIBS += -LC:/opencv-mingw/install/x86/mingw/lib
+#INCLUDEPATH += C:/opencv-mingw/install/include \
+#C:/opencv-mingw/install/x86/mingw/bin
+#LIBS += -LC:/opencv-mingw/install/x86/mingw/bin \
+#-lopencv_core300 \
+#-lopencv_imgproc300
+#LIBS += -LC:/opencv-mingw/install/x86/mingw/lib
 
-LIBS+=C:\\opencv-mingw\\lib\\libopencv_core300.dll.a
-LIBS+=C:\\opencv-mingw\\lib\\libopencv_highgui300.dll.a
-LIBS+=C:\\opencv-mingw\\lib\\libopencv_imgproc300.dll.a
-LIBS+=C:\\opencv-mingw\\lib\\libopencv_ml300.dll.a
-LIBS+=C:\\opencv-mingw\\lib\\libopencv_calib3d300.dll.a
-LIBS+=C:\\opencv-mingw\\lib\\libopencv_flann300.dll.a
-LIBS+=C:\\opencv-mingw\\lib\\libopencv_imgcodecs300.dll.a
+#LIBS+=C:\\opencv-mingw\\lib\\libopencv_core300.dll.a
+#LIBS+=C:\\opencv-mingw\\lib\\libopencv_highgui300.dll.a
+#LIBS+=C:\\opencv-mingw\\lib\\libopencv_imgproc300.dll.a
+#LIBS+=C:\\opencv-mingw\\lib\\libopencv_ml300.dll.a
+#LIBS+=C:\\opencv-mingw\\lib\\libopencv_calib3d300.dll.a
+#LIBS+=C:\\opencv-mingw\\lib\\libopencv_flann300.dll.a
+#LIBS+=C:\\opencv-mingw\\lib\\libopencv_imgcodecs300.dll.a
+
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.10
+
+INCLUDEPATH += /usr/local/include
+
+LIBS += /opt/local/opencv-3.0.0/build/lib/*.dylib
+#LIBS += /Users/Yarique/OpenCV/opencv-2.4.10/build/lib/*.dylib

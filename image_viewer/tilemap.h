@@ -11,7 +11,7 @@
 #include <QVector>
 #include <QString>
 #include <windows.h>
-
+#include <QDir>
 
 class TileMap: public QObject
 {
@@ -32,6 +32,7 @@ public:
     void clearAll();
     ~TileMap();
     int memStatus();
+    void loadImage(QDir p);
 private:
     QSize view_size;
     QSize tile_size;
@@ -40,7 +41,7 @@ private:
     QRect rect;
     QGraphicsScene* scene;
     uint scale;
-
+    QString image_path;
 };
 
 #endif // TILEMAP_H

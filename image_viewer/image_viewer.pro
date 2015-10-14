@@ -20,26 +20,30 @@ SOURCES += main.cpp\
     mygraphicsview.cpp \
     tilemap.cpp \
     tile.cpp \
+    previewview.cpp\
     Figures/shapebase.cpp \
     Figures/ellipse.cpp \
     Figures/rect.cpp \
     Figures/arrow.cpp \
     Figures/polygon.cpp \
     Figures/figuresmanager.cpp \
-    DB/defaultnames.cpp
+    DB/defaultnames.cpp \
+    rectitem.cpp
 
 HEADERS  += viewer.h \
     cutter.h \
     mygraphicsview.h \
     tilemap.h \
     tile.h \
+    previewview.h\
     Figures/ellipse.h \
     Figures/rect.h \
     Figures/arrow.h \
     Figures/shapebase.h \
     Figures/polygon.h \
     Figures/figuresmanager.h \
-    DB/defaultnames.h
+    DB/defaultnames.h \
+    rectitem.h
 
 FORMS    += viewer.ui
 

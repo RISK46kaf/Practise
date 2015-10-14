@@ -11,6 +11,8 @@
 #include <QDebug>
 #include <QScrollBar>
 #include <QXmlStreamReader>
+#include <previewview.h>
+#include <QListWidget>
 
 namespace Ui {
 class Viewer;
@@ -37,20 +39,27 @@ private slots:
 
     void scrolledHorizontal(int value);
 
-
-    void on_zoomOutButton_clicked();
     void zoomOut(QPoint);
     void zoomIn(QPoint);
 
     void timeout();
 
+    void setViewPos(QPointF pnt);
+
+    void on_actionLoad_Images_2_triggered();
+
+    void on_imageListWidget_currentRowChanged(int currentRow);
+
 signals:
-    void centralPointEvent(QPointF);
+    void topLeftPointEvent(QPointF);
+    void viewRect(QRect r);
 private:
     Ui::Viewer *ui;
     Cutter cutter;
     MyGraphicsView* view;
+    PreviewView* preview;
     QGraphicsScene* scene;
+    QGraphicsScene* previewScene;
     TileMap* map;
     QGraphicsPixmapItem *centralItem;
     QStringList paths;
@@ -63,6 +72,9 @@ private:
     QSize map_size;
     QRect getViewField();
     QPoint getCentralPoint();
+    QStringList imageList;
+    QGraphicsScene *cmpScene;
+    QVector<QListWidgetItem*> items;
     QTimer* t;
     void setMousePos(QPoint pnt);
     bool l;
