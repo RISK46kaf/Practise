@@ -1,8 +1,12 @@
 #include "tilemap.h"
-
+#ifdef Q_OS_UNIX
+#include <QProcess>
+#endif
 
 int TileMap::memStatus()
 {
+    int memPercent;
+#ifdef Q_OS_WIN32
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof(statex);
@@ -11,8 +15,37 @@ int TileMap::memStatus()
     qDebug()<<statex.dwMemoryLoad;
     qDebug()<<sizeof(statex.dwMemoryLoad);
     qDebug()<<sizeof(int);
-
-    return statex.dwMemoryLoad;
+    memPercent = statex.dwMemoryLoad;
+#endif
+#ifdef Q_OS_OSX
+    QProcess p;
+    QString virtualMem, memSize;
+    p.start("sysctl", QStringList() << "hw.physmem");
+    p.waitForFinished();
+    virtualMem = p.readAllStandardOutput();
+    p.close();
+    p.start("sysctl", QStringList() << "hw.memsize");
+    p.waitForFinished();
+    memSize = p.readAllStandardOutput();
+    p.close();
+    memPercent = virtualMem.toDouble()/memSize.toDouble();
+#endif
+#ifdef Q_OS_LINUX
+//    QProcess p;
+//    QString virtualMem, memSize;
+//    p.start("sysctl", QStringList() << "hw.physmem");
+//    p.waitForFinished();
+//    virtualMem = p.readAllStandardOutput();
+//    p.close();
+//    p.start("sysctl", QStringList() << "hw.memsize");
+//    p.waitForFinished();
+//    memSize = p.readAllStandardOutput();
+//    p.close();
+//    memPercent = virtualMem.toDouble()/memSize.toDouble();
+//    free | awk \'\/buffers\\/cache\/{printf(\", %.2f%\"), $4/($3+$4)*100}\'
+//            awk '/MemTotal/ {print $2}' /proc/meminfo
+#endif
+    return memPercent;
 }
 
 void TileMap::loadImage(QDir p)

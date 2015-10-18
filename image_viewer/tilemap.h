@@ -10,7 +10,9 @@
 #include <QStack>
 #include <QVector>
 #include <QString>
+#ifdef Q_OS_WIN32
 #include <windows.h>
+#endif
 #include <QDir>
 
 class TileMap: public QObject
