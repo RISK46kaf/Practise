@@ -19,7 +19,7 @@ void RectItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(widget);
     QPen pn;
     pn.setColor(QColor(Qt::green));
-    pn.setWidth(5);
+    pn.setWidth(15);
     painter->setPen(pn);
     painter->drawRect(rect);
 
