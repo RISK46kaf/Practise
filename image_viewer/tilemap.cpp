@@ -50,7 +50,7 @@ int TileMap::memStatus()
 
 void TileMap::loadImage(QDir p)
 {
-    //image_path = p.
+    image_path = p.path() + "/";
 }
 
 
@@ -74,8 +74,8 @@ void TileMap::drawField(uint width, uint height, QPoint center)
             if(matrix[y][x] == false)
             {
                 matrix[y][x] = true;
-                QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
-                Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                QString path = image_path + QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".png";
+                Tile * t = new Tile(QPixmap(path,"PNG"),QPoint(x,y));
                 storage.push_back(t);
                 scene->addItem(storage.last());
             }
@@ -88,6 +88,10 @@ void TileMap::drawField(uint width, uint height, QPoint center)
 void TileMap::drawViewField(QRect r)
 {
 
+    if(memStatus() > 85)
+    {
+        clearAll();
+    }
     if(((r.bottom()/256) <= map_size.height())&&((r.right()/256) <= map_size.width()))
     {
         uint topBorder = r.top()/256;
@@ -105,20 +109,14 @@ void TileMap::drawViewField(QRect r)
                 if(matrix[y][x] == false)
                 {
                     matrix[y][x] = true;
-                    QString path = QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+"_"+".jpeg";
-                    Tile * t = new Tile(QPixmap(path,"JPEG"),QPoint(x,y));
+                    QString path = image_path +  QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".png";
+                    Tile * t = new Tile(QPixmap(path,"PNG"),QPoint(x,y));
                     storage.push_back(t);
                     scene->addItem(storage.last());
                 }
             }
         }
     }
-
-    if(memStatus() > 100)
-    {
-        clearAll();
-    }
-
 }
 
 

@@ -23,6 +23,7 @@ public:
     RectItem *getRectItem();
     QGraphicsPixmapItem pixItem;
     void setMaxScale(int max);
+    void setImage(QString path);
 signals:
 
 public slots:

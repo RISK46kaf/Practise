@@ -40,72 +40,24 @@ Viewer::Viewer(QWidget *parent) :
     //>>>>>>> 06aa6648283460898d44a259b9ac63c7c036bed2
     //
     //XML
-    QXmlStreamAttributes att;
-    QFile* file = new QFile("image.xml");
-    if (file->open(QIODevice::ReadOnly))
-    {
 
-        QXmlStreamReader xml(file);
-        while (!xml.atEnd() && !xml.hasError())
-        {
-            QXmlStreamReader::TokenType token = xml.readNext();
-            Q_UNUSED(token)  // если 'token' используется убрать
-            att = xml.attributes();
-            if(att.size() != 0)
-            {
-                QSize isize;
-                QSize tsize;
-                if(att[1].name().toString() == "width")
-                {
-                    isize.setWidth(att[1].value().toInt());
-                }
-                if(att[2].name().toString() == "height")
-                {
-                    isize.setHeight(att[2].value().toInt());
-                }
-                imgSizes.push_back(isize);
-
-                if(att[3].name().toString() == "tile_amount_w")
-                {
-                    tsize.setWidth(att[3].value().toInt());
-                }
-                if(att[4].name().toString() == "tile_amount_h")
-                {
-                    tsize.setHeight(att[4].value().toInt());
-                }
-                tileAmount.push_back(tsize);
-            }
+    t = new QTimer();
+    t->start(60000);
 
 
-        }
-        t = new QTimer();
-        t->start(60000);
+    map = new TileMap();
 
-        //
-        connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
-        //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
-        connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
-        connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
-        connect(view, SIGNAL(zoomOut(QPoint)),this,SLOT(zoomOut(QPoint)));
-        connect(view, SIGNAL(zoomIn(QPoint)),this,SLOT(zoomIn(QPoint)));
-        connect(t, SIGNAL(timeout()),this,SLOT(timeout()));
-        connect(this, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
-        connect(this, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
-        //connect(this,SIGNAL(viewRect(QRect r)),preview->getRectItem(),SLOT());
-        map = new TileMap();
+    map->setScene(scene);
+    //map->setScale(tileAmount[0],scale);
+    //map->drawViewField(getViewField());
 
-        map->setScene(scene);
-        map->setScale(tileAmount[0],scale);
-        map->drawViewField(getViewField());
+    oldValueHorizontal = 0;
+    oldValueVertical = 0;
+    view->setScene(scene);
+    view->verticalScrollBar()->setSingleStep(1);
+    preview->setScale(1);
+    //view->verticalScrollBar()->setMaximumHeight(4352);
 
-        oldValueHorizontal = 0;
-        oldValueVertical = 0;
-        view->setScene(scene);
-        view->verticalScrollBar()->setSingleStep(1);
-        preview->setScale(1);
-        //view->verticalScrollBar()->setMaximumHeight(4352);
-
-    }
 }
 
 Viewer::~Viewer()
@@ -134,7 +86,11 @@ void Viewer::on_actionLoad_Images_triggered()
     QString fileName;
     fileName = QFileDialog::getOpenFileName(this,tr("Open"),tr(""),tr("Files(*.xml)"));
     QDir d(fileName);
+    d.cd("..");
+    QString s = d.path();
     map->loadImage(d);
+    setXML(fileName);
+    setPreview(d.path()+QString("/Preview/1_10.png"));
 }
 
 void Viewer::viewResized()//////////////////////////////
@@ -244,6 +200,71 @@ QPoint Viewer::getCentralPoint()
     return view_field.topLeft();
 }
 
+void Viewer::setXML(QString path)
+{
+
+    //
+    connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
+    //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
+    connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
+    connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
+    connect(view, SIGNAL(zoomOut(QPoint)),this,SLOT(zoomOut(QPoint)));
+    connect(view, SIGNAL(zoomIn(QPoint)),this,SLOT(zoomIn(QPoint)));
+    connect(t, SIGNAL(timeout()),this,SLOT(timeout()));
+    connect(this, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
+    connect(this, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
+    //connect(this,SIGNAL(viewRect(QRect r)),preview->getRectItem(),SLOT());
+
+    QXmlStreamAttributes att;
+
+    QFile* file = new QFile(path);
+    if (file->open(QIODevice::ReadOnly))
+    {
+
+        QXmlStreamReader xml(file);
+        while (!xml.atEnd() && !xml.hasError())
+        {
+            QXmlStreamReader::TokenType token = xml.readNext();
+            Q_UNUSED(token)  // если 'token' используется убрать
+            att = xml.attributes();
+            if(att.size() != 0)
+            {
+                QSize isize;
+                QSize tsize;
+                if(att[1].name().toString() == "width")
+                {
+                    isize.setWidth(att[1].value().toInt());
+                }
+                if(att[2].name().toString() == "height")
+                {
+                    isize.setHeight(att[2].value().toInt());
+                }
+                imgSizes.push_back(isize);
+
+                if(att[3].name().toString() == "tile_amount_w")
+                {
+                    tsize.setWidth(att[3].value().toInt());
+                }
+                if(att[4].name().toString() == "tile_amount_h")
+                {
+                    tsize.setHeight(att[4].value().toInt());
+                }
+                tileAmount.push_back(tsize);
+            }
+
+
+        }
+    }
+
+    map->setScale(tileAmount[0],scale);
+    map->drawViewField(getViewField());
+}
+
+void Viewer::setPreview(QString path)
+{
+    preview->setImage(path);
+}
+
 void Viewer::setMousePos(QPoint pnt)
 {
     QCursor c = cursor();
@@ -251,30 +272,6 @@ void Viewer::setMousePos(QPoint pnt)
     setCursor(c);
 }
 
-
-
-void Viewer::on_actionLoad_Images_2_triggered()
-{
-
-    imageList = QFileDialog::getOpenFileNames(this,tr("Open"),tr(""),tr("Files(*.jpeg *.jpg)"));
-    ui->cmpView->setScene(cmpScene);
-    cmpScene->addPixmap(imageList[0]);
-    for(uint i=0;i<imageList.size();++i)
-    {
-        QListWidgetItem* it = new QListWidgetItem();
-        //it->setText(imageList[i]);
-        QIcon icon;
-        QPixmap img(imageList[i]);
-        it->setSizeHint(QSize(180,180));
-        //img.scaled(5,5);
-        icon.addPixmap(img.scaled(180,180));
-        icon.actualSize(QSize(180,180));
-        it->setIcon(icon);
-        ui->imageListWidget->addItem(it);
-        items.push_back(it);
-
-    }
-}
 
 void Viewer::on_imageListWidget_currentRowChanged(int currentRow)
 {

@@ -46,8 +46,6 @@ private slots:
 
     void setViewPos(QPointF pnt);
 
-    void on_actionLoad_Images_2_triggered();
-
     void on_imageListWidget_currentRowChanged(int currentRow);
 
 signals:
@@ -76,6 +74,8 @@ private:
     QGraphicsScene *cmpScene;
     QVector<QListWidgetItem*> items;
     QTimer* t;
+    void setXML(QString path);
+    void setPreview(QString path);
     void setMousePos(QPoint pnt);
     bool l;
 
