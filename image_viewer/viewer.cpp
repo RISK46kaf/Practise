@@ -86,7 +86,7 @@ void Viewer::on_actionLoad_Images_triggered()
     QString fileName;
     fileName = QFileDialog::getOpenFileName(this,tr("Open"),tr(""),tr("Files(*.xml)"));
     QDir d(fileName);
-    d.cd("..");
+    d.cd("../");
     QString s = d.path();
     map->loadImage(d);
     setXML(fileName);

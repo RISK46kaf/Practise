@@ -1,7 +1,6 @@
 #include "tilemap.h"
 #ifdef Q_OS_UNIX
 #include <QProcess>
-#include <QDebug>
 #endif
 
 int TileMap::memStatus()
@@ -29,12 +28,9 @@ int TileMap::memStatus()
     p.waitForFinished();
     memSize = p.readAllStandardOutput();
     p.close();
-    qDebug() << "virtualMem" << virtualMem << "memSize" << memSize;
     virtualMem = virtualMem.remove(0,virtualMem.indexOf(":")+2);
     memSize = memSize.remove(0,memSize.indexOf(":")+2);
     memPercent = 100*(virtualMem.toDouble()/memSize.toDouble());
-    qDebug() << "virtualMem" << virtualMem << "memSize" << memSize;
-    qDebug() << "memPercent" << memPercent;
 #endif
 #ifdef Q_OS_LINUX
 //    QProcess p;
