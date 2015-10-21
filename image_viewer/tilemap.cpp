@@ -28,7 +28,7 @@ int TileMap::memStatus()
     p.waitForFinished();
     memSize = p.readAllStandardOutput();
     p.close();
-    memPercent = virtualMem.toDouble()/memSize.toDouble();
+    memPercent = 100*(virtualMem.toDouble()/memSize.toDouble());
 #endif
 #ifdef Q_OS_LINUX
 //    QProcess p;
@@ -44,6 +44,7 @@ int TileMap::memStatus()
 //    memPercent = virtualMem.toDouble()/memSize.toDouble();
 //    free | awk \'\/buffers\\/cache\/{printf(\", %.2f%\"), $4/($3+$4)*100}\'
 //            awk '/MemTotal/ {print $2}' /proc/meminfo
+    memPercent = 100
 #endif
     return memPercent;
 }
