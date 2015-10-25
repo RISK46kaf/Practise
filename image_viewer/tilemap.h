@@ -6,10 +6,13 @@
 #include <QDebug>
 #include "tile.h"
 #include <QQueue>
+#include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QScrollBar>
 #include <QStack>
 #include <QVector>
 #include <QString>
+#include "previewview.h"
 #ifdef Q_OS_WIN32
 #include <windows.h>
 #endif
@@ -28,7 +31,11 @@ public:
     void drawViewField(QRect r);
     void init();
     void setScene(QGraphicsScene *s);
+    void setView(QGraphicsView *v);
+    void setPreviewView(PreviewView* pv);
     void setScale(QSize &size, uint s);
+    void setImgSizes(QVector<QSize> ims);
+    void setTileAmount(QVector<QSize> ta);
     void viewSizeChanged(QRect r);
     void clear(QRect r);
     void clearAll();
@@ -42,8 +49,27 @@ private:
     QSize result_size;
     QRect rect;
     QGraphicsScene* scene;
+    QGraphicsView* view;
+    PreviewView* preview;
     uint scale;
     QString image_path;
+    QRect getViewField();
+    QPoint getCentralPoint();
+    QVector<QSize> imgSizes;
+    QVector<QSize> tileAmount;
+private slots:
+    void viewResized();
+
+
+    void scrolledVertical(int value);
+
+    void scrolledHorizontal(int value);
+
+    void zoomOut(QPoint pnt);
+    void zoomIn(QPoint pnt);
+signals:
+    void viewRect(QRect r);
+    void topLeftPointEvent(QPointF);
 };
 
 #endif // TILEMAP_H

@@ -23,6 +23,23 @@ Viewer::Viewer(QWidget *parent) :
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     view->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     scale = 1;
+
+    //cmp
+
+    cmpView = new MyGraphicsView();
+    cmpScene = new QGraphicsScene();
+    cmpPreview = new PreviewView();
+    cmpView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    cmpView->setStyleSheet( "QGraphicsView { border-style: none; }" );
+    cmpView->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+
+    cmpScale = 1;
+
+    ui->compareLayout->addWidget(cmpPreview);
+    ui->compareLayout->addWidget(cmpView);
+
+
+
     //<<<<<<< HEAD
     //    Rect r;
     //Ellipse* ptr = (Ellipse*)r.toEllipse();
@@ -48,6 +65,14 @@ Viewer::Viewer(QWidget *parent) :
     map = new TileMap();
 
     map->setScene(scene);
+    map->setView(view);
+    map->setPreviewView(preview);
+
+    cmpMap = new TileMap();
+
+    cmpMap->setScene(cmpScene);
+    cmpMap->setView(cmpView);
+    cmpMap->setPreviewView(cmpPreview);
     //map->setScale(tileAmount[0],scale);
     //map->drawViewField(getViewField());
 
@@ -55,6 +80,9 @@ Viewer::Viewer(QWidget *parent) :
     oldValueVertical = 0;
     view->setScene(scene);
     view->verticalScrollBar()->setSingleStep(1);
+
+    cmpView->setScene(cmpScene);
+    cmpView->verticalScrollBar()->setSingleStep(1);
     preview->setScale(1);
     //view->verticalScrollBar()->setMaximumHeight(4352);
 
@@ -80,6 +108,19 @@ void Viewer::on_actionPrepare_Image_triggered()
 
 void Viewer::on_actionLoad_Images_triggered()
 {
+
+    //
+    connect(view, SIGNAL(resized()),map,SLOT(viewResized()));
+    //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
+    connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), map, SLOT(scrolledVertical(int)));
+    connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), map, SLOT(scrolledHorizontal(int)));
+    connect(view, SIGNAL(zoomOut(QPoint)),map,SLOT(zoomOut(QPoint)));
+    connect(view, SIGNAL(zoomIn(QPoint)),map,SLOT(zoomIn(QPoint)));
+    connect(t, SIGNAL(timeout()),map,SLOT(timeout()));
+    connect(map, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
+    connect(map, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
+    //connect(this,SIGNAL(viewRect(QRect r)),preview->getRectItem(),SLOT());
+
     //    if(map == NULL)
     //        return;
     //    map->clear(getViewField());
@@ -87,137 +128,18 @@ void Viewer::on_actionLoad_Images_triggered()
     fileName = QFileDialog::getOpenFileName(this,tr("Open"),tr(""),tr("Files(*.xml)"));
     QDir d(fileName);
     d.cd("../");
-    QString s = d.path();
+    QString p = d.path();
     map->loadImage(d);
-    setXML(fileName);
-    setPreview(d.path()+QString("/Preview/1_10.png"));
-}
 
-void Viewer::viewResized()//////////////////////////////
-{
-    emit viewRect(getViewField());
-    emit topLeftPointEvent(getCentralPoint());
-
-    view->verticalScrollBar()->setSingleStep(1);
-    map->drawViewField(getViewField());
-
-
-    scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
-}
-
-void Viewer::viewChanged()
-{
-
-}
-
-void Viewer::scrolledVertical(int value)
-{
-    emit viewRect(getViewField());
-    emit topLeftPointEvent(getCentralPoint());
-
-    view->horizontalScrollBar()->blockSignals(true);
-
-
-    map->drawViewField(getViewField());
-
-    oldValueVertical = value;
-    view->horizontalScrollBar()->blockSignals(false);
-}
-
-void Viewer::scrolledHorizontal(int value)
-{
-    emit viewRect(getViewField());
-    emit topLeftPointEvent(getCentralPoint());
-    view->horizontalScrollBar()->blockSignals(true);
-
-
-    map->drawViewField(getViewField());
-    view->horizontalScrollBar()->blockSignals(false);
-}
-
-
-
-
-void Viewer::zoomOut(QPoint pnt)
-{
-    QPoint npnt = view->mapToScene(pnt).toPoint();
-    if((int)scale < (tileAmount.size()))
-    {
-        int x = scale*npnt.x()/(scale+1);
-        int y = scale*npnt.y()/(scale+1);
-        ++scale;
-        map->setScale(tileAmount[scale-1],scale);
-        map->drawViewField(getViewField());
-        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
-        preview->setScale(scale);
-        emit viewRect(getViewField());
-        emit topLeftPointEvent(getCentralPoint());
-        view->centerOn(QPoint(x,y));
-    }
-}
-
-void Viewer::zoomIn(QPoint pnt)
-{ 
-    QPoint npnt = view->mapToScene(pnt).toPoint();
-    if((int)scale > 1)
-    {
-        int x = scale*npnt.x()/(scale-1);
-        int y = scale*npnt.y()/(scale-1);
-        --scale;
-        map->setScale(tileAmount[scale-1],scale);
-        map->drawViewField(getViewField());
-        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
-        preview->setScale(scale);
-        emit viewRect(getViewField());
-        emit topLeftPointEvent(getCentralPoint());
-        view->centerOn(QPoint(x,y));
-    }
-}
-
-void Viewer::timeout()
-{
-    map->drawField(10,10,getCentralPoint());
-}
-
-void Viewer::setViewPos(QPointF pnt)
-{
-    view->centerOn(pnt);
-}
-
-QRect Viewer::getViewField()
-{
-    QRect view_field;
-    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    return view_field;
-}
-
-QPoint Viewer::getCentralPoint()
-{
-    QRect view_field;
-    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
-    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    return view_field.topLeft();
-}
-
-void Viewer::setXML(QString path)
-{
-
-    //
-    connect(view, SIGNAL(resized()),this,SLOT(viewResized()));
-    //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
-    connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledVertical(int)));
-    connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(scrolledHorizontal(int)));
-    connect(view, SIGNAL(zoomOut(QPoint)),this,SLOT(zoomOut(QPoint)));
-    connect(view, SIGNAL(zoomIn(QPoint)),this,SLOT(zoomIn(QPoint)));
-    connect(t, SIGNAL(timeout()),this,SLOT(timeout()));
-    connect(this, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
-    connect(this, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
-    //connect(this,SIGNAL(viewRect(QRect r)),preview->getRectItem(),SLOT());
+    preview->setImage(d.path()+QString("/Preview/1_10.png"));
 
     QXmlStreamAttributes att;
 
-    QFile* file = new QFile(path);
+    QVector<QSize> imgSizes;
+    QVector<QSize> tileAmount;
+
+
+    QFile* file = new QFile(fileName);
     if (file->open(QIODevice::ReadOnly))
     {
 
@@ -257,7 +179,46 @@ void Viewer::setXML(QString path)
     }
 
     map->setScale(tileAmount[0],scale);
+    map->setImgSizes(imgSizes);
+    map->setTileAmount(tileAmount);
     map->drawViewField(getViewField());
+}
+
+
+
+
+
+void Viewer::timeout()
+{
+    map->drawField(10,10,getCentralPoint());
+}
+
+void Viewer::setViewPos(QPointF pnt)
+{
+    view->centerOn(pnt);
+}
+
+QRect Viewer::getViewField()
+{
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    return view_field;
+}
+
+QPoint Viewer::getCentralPoint()
+{
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    return view_field.topLeft();
+}
+
+void Viewer::setXML(QString path)
+{
+
+
+
 }
 
 void Viewer::setPreview(QString path)
@@ -277,4 +238,77 @@ void Viewer::on_imageListWidget_currentRowChanged(int currentRow)
 {
     cmpScene->clear();
     cmpScene->addPixmap(QPixmap(imageList[currentRow]));
+}
+
+void Viewer::on_actionLoad_Images_2_triggered()
+{
+    //
+    connect(cmpView, SIGNAL(resized()),cmpMap,SLOT(viewResized()));
+    //connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(viewChanged()));
+    connect(cmpView->verticalScrollBar(), SIGNAL(valueChanged(int)), cmpMap, SLOT(scrolledVertical(int)));
+    connect(cmpView->horizontalScrollBar(), SIGNAL(valueChanged(int)), cmpMap, SLOT(scrolledHorizontal(int)));
+    connect(cmpView, SIGNAL(zoomOut(QPoint)),cmpMap,SLOT(zoomOut(QPoint)));
+    connect(cmpView, SIGNAL(zoomIn(QPoint)),cmpMap,SLOT(zoomIn(QPoint)));
+    connect(t, SIGNAL(timeout()),cmpMap,SLOT(timeout()));
+    connect(cmpMap, SIGNAL(viewRect(QRect)), cmpPreview, SLOT(setR(QRect)));
+    connect(cmpMap, SIGNAL(topLeftPointEvent(QPointF)), cmpPreview, SLOT(setP(QPointF)));
+    //connect(this,SIGNAL(viewRect(QRect r)),preview->getRectItem(),SLOT());
+
+    QXmlStreamAttributes att;
+    QVector<QSize> imgSizes;
+    QVector<QSize> tileAmount;
+
+    QString fileName;
+    fileName = QFileDialog::getOpenFileName(this,tr("Open"),tr(""),tr("Files(*.xml)"));
+    QDir d(fileName);
+    d.cd("../");
+    QString p = d.path();
+    cmpMap->loadImage(d);
+
+    cmpPreview->setImage(d.path()+QString("/Preview/1_10.png"));
+
+
+    QFile* file = new QFile(fileName);
+    if (file->open(QIODevice::ReadOnly))
+    {
+
+        QXmlStreamReader xml(file);
+        while (!xml.atEnd() && !xml.hasError())
+        {
+            QXmlStreamReader::TokenType token = xml.readNext();
+            Q_UNUSED(token)  // если 'token' используется убрать
+            att = xml.attributes();
+            if(att.size() != 0)
+            {
+                QSize isize;
+                QSize tsize;
+                if(att[1].name().toString() == "width")
+                {
+                    isize.setWidth(att[1].value().toInt());
+                }
+                if(att[2].name().toString() == "height")
+                {
+                    isize.setHeight(att[2].value().toInt());
+                }
+                imgSizes.push_back(isize);
+
+                if(att[3].name().toString() == "tile_amount_w")
+                {
+                    tsize.setWidth(att[3].value().toInt());
+                }
+                if(att[4].name().toString() == "tile_amount_h")
+                {
+                    tsize.setHeight(att[4].value().toInt());
+                }
+                tileAmount.push_back(tsize);
+            }
+
+
+        }
+    }
+
+    cmpMap->setScale(tileAmount[0],scale);
+    cmpMap->setImgSizes(imgSizes);
+    cmpMap->setTileAmount(tileAmount);
+    cmpMap->drawViewField(getViewField());
 }

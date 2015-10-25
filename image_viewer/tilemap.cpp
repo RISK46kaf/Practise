@@ -128,6 +128,16 @@ void TileMap::setScene(QGraphicsScene *s)
     scene = s;
 }
 
+void TileMap::setView(QGraphicsView *v)
+{
+    view = v;
+}
+
+void TileMap::setPreviewView(PreviewView *pv)
+{
+    preview = pv;
+}
+
 void TileMap::setScale(QSize& size, uint s)
 {
     for(int i=0;i<matrix.size();++i)
@@ -144,6 +154,16 @@ void TileMap::setScale(QSize& size, uint s)
             matrix[y].push_back(0);
         }
     }
+}
+
+void TileMap::setImgSizes(QVector<QSize> ims)
+{
+    imgSizes = ims;
+}
+
+void TileMap::setTileAmount(QVector<QSize> ta)
+{
+    tileAmount = ta;
 }
 
 void TileMap::clear(QRect r)
@@ -200,10 +220,103 @@ void TileMap::clearAll()
 
 
 
+void TileMap::viewResized()
+{
+    emit viewRect(getViewField());
+    emit topLeftPointEvent(getCentralPoint());
+
+    view->verticalScrollBar()->setSingleStep(1);
+    this->drawViewField(getViewField());
+
+
+    scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
+}
+
+void TileMap::scrolledVertical(int value)
+{
+    emit viewRect(getViewField());
+    emit topLeftPointEvent(getCentralPoint());
+
+    view->horizontalScrollBar()->blockSignals(true);
+
+
+    this->drawViewField(getViewField());
+
+    //oldValueVertical = value;
+    view->horizontalScrollBar()->blockSignals(false);
+}
+
+void TileMap::scrolledHorizontal(int value)
+{
+    emit viewRect(getViewField());
+    emit topLeftPointEvent(getCentralPoint());
+    view->horizontalScrollBar()->blockSignals(true);
+
+
+    this->drawViewField(getViewField());
+    view->horizontalScrollBar()->blockSignals(false);
+}
+
+void TileMap::zoomOut(QPoint pnt)
+{
+    QPoint npnt = view->mapToScene(pnt).toPoint();
+    if((int)scale < (tileAmount.size()))
+    {
+        int x = scale*npnt.x()/(scale+1);
+        int y = scale*npnt.y()/(scale+1);
+        ++scale;
+        this->setScale(tileAmount[scale-1],scale);
+        this->drawViewField(getViewField());
+        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
+        preview->setScale(scale);
+        emit viewRect(getViewField());
+        emit topLeftPointEvent(getCentralPoint());
+        view->centerOn(QPoint(x,y));
+    }
+}
+
+void TileMap::zoomIn(QPoint pnt)
+{
+    QPoint npnt = view->mapToScene(pnt).toPoint();
+    if((int)scale > 1)
+    {
+        int x = scale*npnt.x()/(scale-1);
+        int y = scale*npnt.y()/(scale-1);
+        --scale;
+        this->setScale(tileAmount[scale-1],scale);
+        this->drawViewField(getViewField());
+        scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
+        view->centerOn(QPoint(x,y));
+        preview->setScale(scale);
+        emit viewRect(getViewField());
+        emit topLeftPointEvent(getCentralPoint());
+    }
+}
+
+
+
+
 TileMap::~TileMap()
 {
     for(uint i=0;i<storage.size();++i)
     {
         delete storage[i];
     }
+}
+
+
+QRect TileMap::getViewField()
+{
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    return view_field;
+}
+
+QPoint TileMap::getCentralPoint()
+{
+    QRect view_field;
+    view_field.setTopLeft(view->mapToScene(0,0).toPoint());
+    view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
+    return view_field.topLeft();
 }

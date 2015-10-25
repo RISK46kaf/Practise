@@ -31,22 +31,14 @@ private slots:
 
     void on_actionLoad_Images_triggered();
 
-    void viewResized();
-
-    void viewChanged();
-
-    void scrolledVertical(int value);
-
-    void scrolledHorizontal(int value);
-
-    void zoomOut(QPoint);
-    void zoomIn(QPoint);
 
     void timeout();
 
     void setViewPos(QPointF pnt);
 
     void on_imageListWidget_currentRowChanged(int currentRow);
+
+    void on_actionLoad_Images_2_triggered();
 
 signals:
     void topLeftPointEvent(QPointF);
@@ -55,25 +47,29 @@ private:
     Ui::Viewer *ui;
     Cutter cutter;
     MyGraphicsView* view;
+    MyGraphicsView* cmpView;
     PreviewView* preview;
+    PreviewView* cmpPreview;
     QGraphicsScene* scene;
+    QGraphicsScene* cmpScene;
     QGraphicsScene* previewScene;
+    QGraphicsScene* cmpPreviewScene;
     TileMap* map;
+    TileMap* cmpMap;
     QGraphicsPixmapItem *centralItem;
     QStringList paths;
     uint oldValueHorizontal;
     uint oldValueVertical;
     QRect old_view_field;
     uint scale;
-    QVector<QSize> imgSizes;
-    QVector<QSize> tileAmount;
+    uint cmpScale;
     QSize map_size;
     QRect getViewField();
     QPoint getCentralPoint();
     QStringList imageList;
-    QGraphicsScene *cmpScene;
     QVector<QListWidgetItem*> items;
     QTimer* t;
+
     void setXML(QString path);
     void setPreview(QString path);
     void setMousePos(QPoint pnt);
