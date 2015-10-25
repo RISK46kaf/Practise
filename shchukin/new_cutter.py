@@ -17,9 +17,9 @@ flagO = "-o" #set output directory
 flagZ = "-z" #zip result with name
 flagX = "-x" #create xml mapping of cutted image
 
-def startOfFile(filename,outputDir,xmlOutput):
+def startOfFile(outputDir,xmlOutput):
     with open(outputDir + "/" + xmlOutput +".xml", 'w+') as f:
-        f.write('<image filename=\"'+filename+'\">\n')
+        f.write('<image>\n')
         f.close
 
 def appendToFile(outputDir,xmlOutput,value,width,height,tile_amount_w,tile_amount_h):
@@ -161,7 +161,7 @@ def main(): #{
 
     if not os.path.exists(outputDir):
         os.mkdir(outputDir)
-    startOfFile(filename,outputDir,xmlOutput)
+    startOfFile(outputDir,xmlOutput)
     try:
         imageCrutter(filename,tileSize,scalesCount,outputDir,zipInfo,xmlOutput)
 
