@@ -149,10 +149,10 @@ void Viewer::zoomOut(QPoint pnt)
         map->setScale(tileAmount[scale-1],scale);
         map->drawViewField(getViewField());
         scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
-        view->centerOn(QPoint(x,y));
         preview->setScale(scale);
         emit viewRect(getViewField());
         emit topLeftPointEvent(getCentralPoint());
+        view->centerOn(QPoint(x,y));
     }
 }
 
@@ -167,10 +167,10 @@ void Viewer::zoomIn(QPoint pnt)
         map->setScale(tileAmount[scale-1],scale);
         map->drawViewField(getViewField());
         scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
-        view->centerOn(QPoint(x,y));
         preview->setScale(scale);
         emit viewRect(getViewField());
         emit topLeftPointEvent(getCentralPoint());
+        view->centerOn(QPoint(x,y));
     }
 }
 
