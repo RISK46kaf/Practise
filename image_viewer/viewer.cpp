@@ -314,3 +314,16 @@ void Viewer::on_actionLoad_Images_2_triggered()
     cmpMap->setTileAmount(tileAmount);
     cmpMap->drawViewField(getViewField());
 }
+
+inline void sortSize(QVector<QSize> sizeList)
+{
+    for(uint j=1;j<sizeList.size();++j)
+    {
+        uint key = sizeList[j].width()*sizeList[j].height();
+        int i = j - 1;
+        while(i > 0)
+        {
+
+        }
+    }
+}

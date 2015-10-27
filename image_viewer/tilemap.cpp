@@ -262,6 +262,8 @@ void TileMap::zoomOut(QPoint pnt)
     QPoint npnt = view->mapToScene(pnt).toPoint();
     if((int)scale < (tileAmount.size()))
     {
+        clearAll();
+
         int x = scale*npnt.x()/(scale+1);
         int y = scale*npnt.y()/(scale+1);
         ++scale;
@@ -272,6 +274,9 @@ void TileMap::zoomOut(QPoint pnt)
         emit viewRect(getViewField());
         emit topLeftPointEvent(getCentralPoint());
         view->centerOn(QPoint(x,y));
+
+        scene->update();
+        view->update();
     }
 }
 
@@ -280,6 +285,8 @@ void TileMap::zoomIn(QPoint pnt)
     QPoint npnt = view->mapToScene(pnt).toPoint();
     if((int)scale > 1)
     {
+        clearAll();
+
         int x = scale*npnt.x()/(scale-1);
         int y = scale*npnt.y()/(scale-1);
         --scale;
@@ -290,6 +297,9 @@ void TileMap::zoomIn(QPoint pnt)
         preview->setScale(scale);
         emit viewRect(getViewField());
         emit topLeftPointEvent(getCentralPoint());
+
+        scene->update();
+        view->update();
     }
 }
 
