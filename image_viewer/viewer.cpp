@@ -6,6 +6,23 @@
 //#include <QSizePolicy>
 #include "Figures/figuresmanager.h"
 
+inline void sortSize(QVector<QSize>& sizeList)
+{
+    for(uint j=1;j<sizeList.size();++j)
+    {
+        uint key = sizeList[j].width()*sizeList[j].height();
+        QSize sk = sizeList[j];
+        int i = j - 1;
+        while((i > 0)&&((sizeList[i].width()*sizeList[i].height()) < key))
+        {
+            sizeList[i+1] = sizeList[i];
+            i = i - 1;
+        }
+        sizeList[i+1] = sk;
+    }
+}
+
+
 Viewer::Viewer(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Viewer)
@@ -180,6 +197,8 @@ void Viewer::on_actionLoad_Images_triggered()
         }
     }
 
+    sortSize(imgSizes);
+    sortSize(tileAmount);
     map->setScale(tileAmount[0],scale);
     map->setImgSizes(imgSizes);
     map->setTileAmount(tileAmount);
@@ -308,6 +327,8 @@ void Viewer::on_actionLoad_Images_2_triggered()
 
         }
     }
+    sortSize(imgSizes);
+    sortSize(tileAmount);
 
     cmpMap->setScale(tileAmount[0],scale);
     cmpMap->setImgSizes(imgSizes);
@@ -315,15 +336,3 @@ void Viewer::on_actionLoad_Images_2_triggered()
     cmpMap->drawViewField(getViewField());
 }
 
-inline void sortSize(QVector<QSize> sizeList)
-{
-    for(uint j=1;j<sizeList.size();++j)
-    {
-        uint key = sizeList[j].width()*sizeList[j].height();
-        int i = j - 1;
-        while(i > 0)
-        {
-
-        }
-    }
-}
