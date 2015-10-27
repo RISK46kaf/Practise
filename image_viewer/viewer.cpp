@@ -22,6 +22,7 @@ Viewer::Viewer(QWidget *parent) :
     view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     view->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    view->setDragMode(QGraphicsView::ScrollHandDrag);
     scale = 1;
 
     //cmp
@@ -32,6 +33,7 @@ Viewer::Viewer(QWidget *parent) :
     cmpView->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     cmpView->setStyleSheet( "QGraphicsView { border-style: none; }" );
     cmpView->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    cmpView->setDragMode(QGraphicsView::ScrollHandDrag);
 
     cmpScale = 1;
 
