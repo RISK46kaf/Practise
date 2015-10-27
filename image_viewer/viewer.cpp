@@ -199,6 +199,7 @@ void Viewer::on_actionLoad_Images_triggered()
 
     sortSize(imgSizes);
     sortSize(tileAmount);
+    preview->setMaxScale(imgSizes.size()-1);
     map->setScale(tileAmount[0],scale);
     map->setImgSizes(imgSizes);
     map->setTileAmount(tileAmount);
@@ -329,6 +330,7 @@ void Viewer::on_actionLoad_Images_2_triggered()
     }
     sortSize(imgSizes);
     sortSize(tileAmount);
+    preview->setMaxScale(imgSizes.size()-1);
 
     cmpMap->setScale(tileAmount[0],scale);
     cmpMap->setImgSizes(imgSizes);

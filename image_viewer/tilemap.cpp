@@ -271,6 +271,7 @@ void TileMap::zoomOut(QPoint pnt)
         this->drawViewField(getViewField());
         scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
         preview->setScale(scale);
+
         emit viewRect(getViewField());
         emit topLeftPointEvent(getCentralPoint());
         view->centerOn(QPoint(x,y));

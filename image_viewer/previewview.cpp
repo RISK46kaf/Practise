@@ -16,8 +16,8 @@ PreviewView::~PreviewView()
 void PreviewView::setR(QRect r)
 {
     qDebug()<<"wdad";
-    int p1 = r.size().width()*scale/10;
-    int p2 = r.size().height()*scale/10;
+    int p1 = r.size().width()*scale/max_scale;
+    int p2 = r.size().height()*scale/max_scale;
     rect.setTopLeft(QPoint(0,0));
     rect.setBottomRight(QPoint(p1,p2));
     rectItem->setRect(getViewField(rect));
