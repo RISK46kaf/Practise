@@ -33,22 +33,22 @@ int TileMap::memStatus()
     memPercent = 100*(virtualMem.toDouble()/memSize.toDouble());
 #endif
 #ifdef Q_OS_LINUX
-//    QProcess p;
-//    QString virtualMem, memSize;
-//    p.start("sysctl", QStringList() << "hw.physmem");
-//    p.waitForFinished();
-//    virtualMem = p.readAllStandardOutput();
-//    p.close();
-//    p.start("sysctl", QStringList() << "hw.memsize");
-//    p.waitForFinished();
-//    memSize = p.readAllStandardOutput();
-//    p.close();
-//    memPercent = virtualMem.toDouble()/memSize.toDouble();
-//    free | awk \'\/buffers\\/cache\/{printf(\", %.2f%\"), $4/($3+$4)*100}\'
-//            awk '/MemTotal/ {print $2}' /proc/meminfo
+    //    QProcess p;
+    //    QString virtualMem, memSize;
+    //    p.start("sysctl", QStringList() << "hw.physmem");
+    //    p.waitForFinished();
+    //    virtualMem = p.readAllStandardOutput();
+    //    p.close();
+    //    p.start("sysctl", QStringList() << "hw.memsize");
+    //    p.waitForFinished();
+    //    memSize = p.readAllStandardOutput();
+    //    p.close();
+    //    memPercent = virtualMem.toDouble()/memSize.toDouble();
+    //    free | awk \'\/buffers\\/cache\/{printf(\", %.2f%\"), $4/($3+$4)*100}\'
+    //            awk '/MemTotal/ {print $2}' /proc/meminfo
     memPercent = 100
-#endif
-    return memPercent;
+        #endif
+            return memPercent;
 }
 
 void TileMap::loadImage(QDir p)
@@ -180,9 +180,9 @@ void TileMap::clear(QRect r)
         {
             if((matrix[y][x] == true)&&(((y<topBorder)||(y>bottomBorder))||((x<leftBorder)||(x>rightBorder))))
             {
-//                scene->removeItem(storage.first());
-//                delete storage.first();
-//                storage.removeFirst();
+                //                scene->removeItem(storage.first());
+                //                delete storage.first();
+                //                storage.removeFirst();
                 scene->removeItem(storage[y*map_size.width()+x]);
                 storage.removeAt(y*map_size.width()+x);
                 matrix[y][x] = false;
@@ -260,12 +260,22 @@ void TileMap::scrolledHorizontal(int value)
 void TileMap::zoomOut(QPoint pnt)
 {
     QPoint npnt = view->mapToScene(pnt).toPoint();
+    QPoint c = view->mapToScene(view->size().width()/2,view->size().height()/2).toPoint();
+
+    int d1 = qSqrt(qPow(npnt.x() - c.x(),2) + qPow(npnt.y() - c.y(),2));
     if((int)scale < (tileAmount.size()))
     {
         clearAll();
 
         int x = scale*npnt.x()/(scale+1);
         int y = scale*npnt.y()/(scale+1);
+
+        int px = scale*c.x()/(scale+1);//центр
+        int py = scale*c.y()/(scale+1);
+
+        int d2 = qSqrt(qPow(x - px,2) + qPow(y - py,2));
+
+
         ++scale;
         this->setScale(tileAmount[scale-1],scale);
         this->drawViewField(getViewField());
@@ -274,7 +284,17 @@ void TileMap::zoomOut(QPoint pnt)
 
         emit viewRect(getViewField());
         emit topLeftPointEvent(getCentralPoint());
-        view->centerOn(QPoint(x,y));
+
+
+
+        if((x>px)&&(y>py))
+            view->centerOn(QPoint(px+qSqrt(qPow(x-px,2))/scale,py+qSqrt(qPow(y-py,2))/scale));
+        if((x>px)&&(y<py))
+            view->centerOn(QPoint(px+qSqrt(qPow(x-px,2))/scale,py-qSqrt(qPow(y-py,2))/scale));
+        if((x<px)&&(y>py))
+            view->centerOn(QPoint(px-qSqrt(qPow(x-px,2))/scale,py+qSqrt(qPow(y-py,2))/scale));
+        if((x<px)&&(y<py))
+            view->centerOn(QPoint(px-qSqrt(qPow(x-px,2))/scale,py-qSqrt(qPow(y-py,2))/scale));
 
         scene->update();
         view->update();
@@ -284,17 +304,39 @@ void TileMap::zoomOut(QPoint pnt)
 void TileMap::zoomIn(QPoint pnt)
 {
     QPoint npnt = view->mapToScene(pnt).toPoint();
+    QPoint c = view->mapToScene(view->size().width()/2,view->size().height()/2).toPoint();
+
+    int d = qSqrt(qPow(pnt.x(),2) + qPow(pnt.y(),2));
     if((int)scale > 1)
     {
         clearAll();
 
         int x = scale*npnt.x()/(scale-1);
         int y = scale*npnt.y()/(scale-1);
+
+        int px = scale*c.x()/(scale-1);
+        int py = scale*c.y()/(scale-1);
+
+        int d2 = qSqrt(qPow(x - px,2) + qPow(y - py,2));
+
+
+
         --scale;
         this->setScale(tileAmount[scale-1],scale);
         this->drawViewField(getViewField());
         scene->setSceneRect(0,0,imgSizes[scale-1].width(),imgSizes[scale-1].height());
-        view->centerOn(QPoint(x,y));
+
+
+        if((x>px)&&(y>py))
+            view->centerOn(QPoint(px+qSqrt(qPow(x-px,2))/scale,py+qSqrt(qPow(y-py,2))/scale));
+        if((x>px)&&(y<py))
+            view->centerOn(QPoint(px+qSqrt(qPow(x-px,2))/scale,py-qSqrt(qPow(y-py,2))/scale));
+        if((x<px)&&(y>py))
+            view->centerOn(QPoint(px-qSqrt(qPow(x-px,2))/scale,py+qSqrt(qPow(y-py,2))/scale));
+        if((x<px)&&(y<py))
+            view->centerOn(QPoint(px-qSqrt(qPow(x-px,2))/scale,py-qSqrt(qPow(y-py,2))/scale));
+
+
         preview->setScale(scale);
         emit viewRect(getViewField());
         emit topLeftPointEvent(getCentralPoint());
