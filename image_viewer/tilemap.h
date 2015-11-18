@@ -12,6 +12,7 @@
 #include <QStack>
 #include <QVector>
 #include <QString>
+#include <QtMath>
 #include "previewview.h"
 #ifdef Q_OS_WIN32
 #include <windows.h>
