@@ -298,6 +298,7 @@ void TileMap::zoomOut(QPoint pnt)
 
         scene->update();
         view->update();
+        emit scaleChanged(scale);
     }
 }
 
@@ -343,6 +344,7 @@ void TileMap::zoomIn(QPoint pnt)
 
         scene->update();
         view->update();
+        emit scaleChanged(scale);
     }
 }
 

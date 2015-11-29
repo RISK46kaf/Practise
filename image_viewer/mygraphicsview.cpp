@@ -3,6 +3,7 @@
 MyGraphicsView::MyGraphicsView() :
     QGraphicsView()
 {
+    scale = 1;
 }
 
 void MyGraphicsView::resizeEvent(QResizeEvent *event)

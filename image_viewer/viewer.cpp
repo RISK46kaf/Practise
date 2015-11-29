@@ -2,7 +2,7 @@
 #include "ui_viewer.h"
 #include <QtGui>
 #include <QXmlStreamStringRef>
-#include "rectitem.h"
+#include "Preview/rectitem.h"
 //#include <QSizePolicy>
 #include "Figures/figuresmanager.h"
 
@@ -31,7 +31,7 @@ Viewer::Viewer(QWidget *parent) :
     ui->frame->setLayout(ui->verticalLayout);
     map = NULL;
     view = new MyGraphicsView();
-    scene = new QGraphicsScene();
+    scene = new MyGraphicsScene();
     preview = new PreviewView();
     cmpScene = new QGraphicsScene();
     ui->gridLayout->addWidget(view);
@@ -39,7 +39,7 @@ Viewer::Viewer(QWidget *parent) :
     view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     view->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    view->setDragMode(QGraphicsView::ScrollHandDrag);
+    //view->setDragMode(QGraphicsView::ScrollHandDrag);
     scale = 1;
 
     //cmp
@@ -138,6 +138,9 @@ void Viewer::on_actionLoad_Images_triggered()
     connect(t, SIGNAL(timeout()),map,SLOT(timeout()));
     connect(map, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
     connect(map, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
+
+    connect(map,SIGNAL(scaleChanged(uint)),this,SLOT(markerScaleChange(uint)));
+
     //connect(this,SIGNAL(viewRect(QRect r)),preview->getRectItem(),SLOT());
 
     //    if(map == NULL)
@@ -255,6 +258,18 @@ void Viewer::setMousePos(QPoint pnt)
     setCursor(c);
 }
 
+void Viewer::markerScaleChange(uint sc)
+{
+    scale = sc;
+    for(uint i=0;i<markers.size();++i)
+    {
+        QTransform tr;
+        double a = 1.0/sc;
+        tr.scale(a,a);
+        markers[i]->item->setTransform(tr);
+    }
+}
+
 
 void Viewer::on_imageListWidget_currentRowChanged(int currentRow)
 {
@@ -271,6 +286,9 @@ void Viewer::on_actionLoad_Images_2_triggered()
     connect(cmpView->horizontalScrollBar(), SIGNAL(valueChanged(int)), cmpMap, SLOT(scrolledHorizontal(int)));
     connect(cmpView, SIGNAL(zoomOut(QPoint)),cmpMap,SLOT(zoomOut(QPoint)));
     connect(cmpView, SIGNAL(zoomIn(QPoint)),cmpMap,SLOT(zoomIn(QPoint)));
+
+
+
     connect(t, SIGNAL(timeout()),cmpMap,SLOT(timeout()));
     connect(cmpMap, SIGNAL(viewRect(QRect)), cmpPreview, SLOT(setR(QRect)));
     connect(cmpMap, SIGNAL(topLeftPointEvent(QPointF)), cmpPreview, SLOT(setP(QPointF)));
@@ -338,3 +356,16 @@ void Viewer::on_actionLoad_Images_2_triggered()
     cmpMap->drawViewField(getViewField());
 }
 
+
+void Viewer::on_arrowButton_clicked()
+{
+    Marker* m = new Marker();
+
+    connect(scene, SIGNAL(mousePressPos(QPoint)),m,SLOT(setFirstPoint(QPoint)));
+    connect(scene, SIGNAL(mouseReleasePos(QPoint)),m,SLOT(setScecondPoint(QPoint)));
+
+    m->drawArrow();
+    scene->addItem(m->item);
+    m->item->setZValue(2);
+    markers.push_back(m);
+}

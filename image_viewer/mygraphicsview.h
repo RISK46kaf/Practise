@@ -10,7 +10,7 @@ class MyGraphicsView :public QGraphicsView
     Q_OBJECT
 public:
     explicit MyGraphicsView();
-
+uint scale;
 signals:
     void resized();
     void changed();

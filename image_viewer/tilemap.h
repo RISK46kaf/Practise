@@ -13,7 +13,7 @@
 #include <QVector>
 #include <QString>
 #include <QtMath>
-#include "previewview.h"
+#include "Preview/previewview.h"
 #ifdef Q_OS_WIN32
 #include <windows.h>
 #endif
@@ -71,6 +71,7 @@ private slots:
 signals:
     void viewRect(QRect r);
     void topLeftPointEvent(QPointF);
+    void scaleChanged(uint scale);
 };
 
 #endif // TILEMAP_H

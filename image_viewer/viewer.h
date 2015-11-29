@@ -11,8 +11,11 @@
 #include <QDebug>
 #include <QScrollBar>
 #include <QXmlStreamReader>
-#include <previewview.h>
+#include <Preview/previewview.h>
 #include <QListWidget>
+#include "Markers/marker.h"
+#include "mygraphicsscene.h"
+
 
 namespace Ui {
 class Viewer;
@@ -40,6 +43,8 @@ private slots:
 
     void on_actionLoad_Images_2_triggered();
 
+    void on_arrowButton_clicked();
+
 signals:
     void topLeftPointEvent(QPointF);
     void viewRect(QRect r);
@@ -50,7 +55,7 @@ private:
     MyGraphicsView* cmpView;
     PreviewView* preview;
     PreviewView* cmpPreview;
-    QGraphicsScene* scene;
+    MyGraphicsScene* scene;
     QGraphicsScene* cmpScene;
     QGraphicsScene* previewScene;
     QGraphicsScene* cmpPreviewScene;
@@ -68,13 +73,15 @@ private:
     QPoint getCentralPoint();
     QStringList imageList;
     QVector<QListWidgetItem*> items;
+    QVector<Marker*> markers;
     QTimer* t;
 
     void setXML(QString path);
     void setPreview(QString path);
     void setMousePos(QPoint pnt);
     bool l;
-
+public slots:
+    void markerScaleChange(uint sc);
 };
 
 
