@@ -13,6 +13,16 @@ void MyGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     update();
 }
 
+void MyGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    Q_UNUSED(mouseEvent);
+    if(mouseEvent->buttons() & Qt::LeftButton)
+    {
+        emit mouseReleasePos(mouseEvent->scenePos().toPoint());
+        update();
+    }
+}
+
 void MyGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     Q_UNUSED(mouseEvent);

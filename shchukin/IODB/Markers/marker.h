@@ -23,11 +23,18 @@ public:
     QPoint secPnt;
     AbstractFigure* item;
     //QTransform tr;
+    double firstScale;
+    double currentScale;
+    void setScale(uint s);
+    void setFirstScale(uint s);
 public slots:
     void setFirstPoint(QPoint pnt);
     void setScecondPoint(QPoint pnt);
+    void setCurrentScale(uint s);
 private:
     int metric(QPoint pnt1, QPoint pnt2);
+signals:
+    void makeUpdate();
 
 };
 

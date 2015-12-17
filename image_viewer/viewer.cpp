@@ -368,4 +368,5 @@ void Viewer::on_arrowButton_clicked()
     scene->addItem(m->item);
     m->item->setZValue(2);
     markers.push_back(m);
+    m->item->update();
 }

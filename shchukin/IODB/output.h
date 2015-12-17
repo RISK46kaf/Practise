@@ -2,6 +2,7 @@
 #define OUTPUT_H
 
 #include <QMainWindow>
+#include "Markers/marker.h"
 
 namespace Ui {
 class Output;
@@ -26,6 +27,7 @@ private:
     Core::ProfileManager* _profileManager;
     Core::DataBaseManager* _dbManager;
     QList<QPair<qint64, QString> >* _previewList;
+
     void init();
 private slots:
     void onUpdatePreviewListWidget();

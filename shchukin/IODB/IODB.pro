@@ -6,6 +6,7 @@
 
 QT       += core gui sql
 
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = IODB
@@ -19,14 +20,40 @@ SOURCES += main.cpp\
     Core/profilemanager.cpp \
     Core/databasemanager.cpp \
     input.cpp \
-    output.cpp
+    output.cpp \
+
+SOURCES +=   ImageFrame/Preview/rectitem.cpp \
+    ImageFrame/Preview/previewview.cpp \
+    ImageFrame/mygraphicsscene.cpp \
+    ImageFrame/mygraphicsview.cpp \
+    ImageFrame/tile.cpp \
+    ImageFrame/tilemap.cpp \
+    ImageFrame/imagewidget.cpp
+
+SOURCES +=    Markers/marker.cpp \
+    Markers/abstractfigure.cpp \
+    Markers/arrowmarker.cpp
+
+
 
 HEADERS  += welcome.h \
     Core/anamnesmanager.h \
     Core/profilemanager.h \
     Core/databasemanager.h \
     input.h \
-    output.h
+    output.h \
+
+HEADERS  +=    ImageFrame/Preview/previewview.h\
+    ImageFrame/Preview/rectitem.h \
+    ImageFrame/mygraphicsscene.h \
+    ImageFrame/mygraphicsview.h \
+    ImageFrame/tile.h \
+    ImageFrame/tilemap.h \
+    ImageFrame/imagewidget.h
+
+HEADERS  +=    Markers/marker.h \
+    Markers/abstractfigure.h \
+    Markers/arrowmarker.h
 
 FORMS    += welcome.ui \
     input.ui \
