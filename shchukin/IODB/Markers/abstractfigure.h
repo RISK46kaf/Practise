@@ -3,7 +3,7 @@
 #include <QPoint>
 #include <QObject>
 #include <QGraphicsItem>
-
+#include <QDebug>
 
 class AbstractFigure : public QObject, public QGraphicsItem
 {
@@ -16,7 +16,9 @@ public:
     uint firstScale;
     uint currentScale;
     QRectF imageRect;
-    void scaleChanged();
+    uint width;
+    QRgb color;
+    void scaleChange(int a);
 };
 
 #endif // ABSTRACTFIGURE_H

@@ -10,6 +10,8 @@
 #include <QtMath>
 #include <Markers/abstractfigure.h>
 #include <Markers/arrowmarker.h>
+#include "ellipsemarker.h"
+#include "rectmarker.h"
 
 
 class Marker : public QObject
@@ -19,6 +21,8 @@ public:
     Marker();
     ~Marker();
     void drawArrow();
+    void drawEllipse();
+
     QPoint centralPnt;
     QPoint secPnt;
     AbstractFigure* item;
@@ -27,6 +31,9 @@ public:
     double currentScale;
     void setScale(uint s);
     void setFirstScale(uint s);
+    void setWidth(uint w);
+    void setColor(QRgb c);
+    void drawRect();
 public slots:
     void setFirstPoint(QPoint pnt);
     void setScecondPoint(QPoint pnt);

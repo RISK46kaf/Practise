@@ -5,6 +5,7 @@
 #include "Core/profilemanager.h"
 #include "Core/databasemanager.h"
 #include <QDebug>
+#include <QColorDialog>
 
 using namespace Core;
 
@@ -645,14 +646,69 @@ void Input::on_toolArrow_clicked()
         markerList.push_back(m);
         //m->item->setScale(1.0);
         m->item->imageRect = _imageWidget->scene->sceneRect();
-        m->item->show();
+        m->setWidth(10);
+        m->setColor(currentMarkerColor);
         m->item->update();
+        markerList.push_back(m);
+    }
+}
 
-        /*
-        QGraphicsLineItem * item = new QGraphicsLineItem();
-        item->setLine(QLineF(QPoint(1000,1000),QPoint(5000,5000)));
-        item->setZValue(4);
-        _imageWidget->scene->addItem(item);
-        */
+void Input::on_toolCol_clicked()
+{
+    currentMarkerColor = QColorDialog::getRgba();
+    markerList.last()->setColor(currentMarkerColor);
+}
+
+void Input::on_toolEllipse_clicked()
+{
+    if(_imageWidget)
+    {
+        Marker* m = new Marker();
+
+        connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),m,SLOT(setFirstPoint(QPoint)));
+        connect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),m,SLOT(setScecondPoint(QPoint)));
+        connect(_imageWidget->map,SIGNAL(scaleChanged(uint)),m,SLOT(setCurrentScale(uint)));
+        connect(m,SIGNAL(makeUpdate()),_imageWidget->map,SLOT());
+
+        m->drawEllipse();
+        m->setFirstScale(_imageWidget->scale);
+        m->item->currentScale = _imageWidget->scale;
+        _imageWidget->scene->addItem(m->item);
+        m->item->setZValue(4);
+        _imageWidget->markers.push_back(m);
+        markerList.push_back(m);
+        //m->item->setScale(1.0);
+        m->item->imageRect = _imageWidget->scene->sceneRect();
+        m->setWidth(10);
+        m->setColor(currentMarkerColor);
+        m->item->update();
+        markerList.push_back(m);
+    }
+}
+
+void Input::on_toolRect_clicked()
+{
+    if(_imageWidget)
+    {
+        Marker* m = new Marker();
+
+        connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),m,SLOT(setFirstPoint(QPoint)));
+        connect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),m,SLOT(setScecondPoint(QPoint)));
+        connect(_imageWidget->map,SIGNAL(scaleChanged(uint)),m,SLOT(setCurrentScale(uint)));
+        connect(m,SIGNAL(makeUpdate()),_imageWidget->map,SLOT());
+
+        m->drawRect();
+        m->setFirstScale(_imageWidget->scale);
+        m->item->currentScale = _imageWidget->scale;
+        _imageWidget->scene->addItem(m->item);
+        m->item->setZValue(4);
+        _imageWidget->markers.push_back(m);
+        markerList.push_back(m);
+        //m->item->setScale(1.0);
+        m->item->imageRect = _imageWidget->scene->sceneRect();
+        m->setWidth(10);
+        m->setColor(currentMarkerColor);
+        m->item->update();
+        markerList.push_back(m);
     }
 }

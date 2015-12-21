@@ -27,6 +27,12 @@ public:
 private slots:
     void on_toolArrow_clicked();
 
+    void on_toolCol_clicked();
+
+    void on_toolEllipse_clicked();
+
+    void on_toolRect_clicked();
+
 private:
     Ui::Input *ui;
     Core::AnamnesManager* _anamnesManager;
@@ -34,7 +40,7 @@ private:
     Core::DataBaseManager* _dbManager;
     ImageWidget* _imageWidget;
     QVector<Marker*> markerList;
-
+    QRgb currentMarkerColor;
     void init();
     void clear();
 };

@@ -21,6 +21,8 @@ SOURCES += main.cpp\
     Core/databasemanager.cpp \
     input.cpp \
     output.cpp \
+    Markers/ellipsemarker.cpp \
+    Markers/rectmarker.cpp
 
 SOURCES +=   ImageFrame/Preview/rectitem.cpp \
     ImageFrame/Preview/previewview.cpp \
@@ -42,6 +44,8 @@ HEADERS  += welcome.h \
     Core/databasemanager.h \
     input.h \
     output.h \
+    Markers/ellipsemarker.h \
+    Markers/rectmarker.h
 
 HEADERS  +=    ImageFrame/Preview/previewview.h\
     ImageFrame/Preview/rectitem.h \

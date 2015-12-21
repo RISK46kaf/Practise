@@ -19,38 +19,24 @@ void ArrowMarker::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
     QPen pn;
-    pn.setColor(QColor(Qt::green));
-    pn.setWidth(20/currentScale);
+    pn.setColor(color);
+    pn.setWidth(width/currentScale);
     painter->setPen(pn);
     painter->drawLine(firstPoint, secondPoint);
-   // painter->drawRect(this->boundingRect());
 
     double PI = 3.14;
+    this->prepareGeometryChange();
 
     QLineF line;
 
     line.setP1(firstPoint);
     line.setP2(secondPoint);
 
-    qDebug()<<"angle "<<line.angle();
-
-    //double angle = std::acos(line().dx() / line().length());
-
-    //double ang  = double(line.angle());
 
     double ang = std::acos(line.dx() / line.length());
 
     qreal arrowSize = 100;
-    /*
-    if (line.dy() >= 0)
-        ang = (PI * 2) - ang;
 
-    QPointF arrowP1 = line.p1() + QPointF(std::sin(line.angle() + PI / 3) * arrowSize,
-                                            std::cos(line.angle() + PI / 3) * arrowSize);
-    QPointF arrowP2 = line.p1() + QPointF(std::sin(line.angle() + PI - PI / 3) * arrowSize,
-                                            std::cos(line.angle() + PI - PI / 3) * arrowSize);
-
-*/
 
     QLineF arrowHead1;
     arrowHead1.setPoints(secondPoint,firstPoint);
@@ -63,14 +49,13 @@ void ArrowMarker::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     arrowHead2.setLength(100);
     arrowHead2.setAngle(arrowHead2.angle()-20);
     painter->drawLine(arrowHead2);
-   // painter->drawLine(secondPoint,arrowP2);
-   // getAngle(firstPoint, secondPoint);
+
 }
 
 QRectF ArrowMarker::boundingRect() const
 {
-    //Q_D(const QGraphicsItemGroup);
-    //return QRectF(QPoint((firstPoint.x()/2),(firstPoint.y()/2)),QPoint((secondPoint.x()/2),(secondPoint.y()/2)));
+    //qDebug()<<"firstPoint boundingRect "<<firstPoint;
+    //qDebug()<<"secondPoint boundingRect "<<secondPoint;
     return QRectF(QPoint(firstPoint),QPoint(secondPoint));
 }
 

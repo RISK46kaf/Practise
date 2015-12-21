@@ -17,11 +17,27 @@ void Marker::drawArrow()
     item->setSecondPnt(QPoint(0,0));
 }
 
+void Marker::drawEllipse()
+{
+    item = new EllipseMarker();
+    item->setFirstPnt(QPoint(0,0));
+    item->setSecondPnt(QPoint(0,0));
+}
+
+
+void Marker::drawRect()
+{
+    item = new RectMarker();
+    item->setFirstPnt(QPoint(0,0));
+    item->setSecondPnt(QPoint(0,0));
+}
+
+
 void Marker::setFirstPoint(QPoint pnt)
 {
     emit(makeUpdate());
 
-    qDebug()<<"currentScale "<<currentScale;
+    qDebug()<<"setFirstPoint currentScale "<<currentScale;
     setFirstScale(currentScale);
     centralPnt = pnt;
     secPnt = pnt;
@@ -58,7 +74,8 @@ void Marker::setScale(uint s)
         qDebug()<<"a "<<a;
         tr.scale(a,a);
         //item->setTransform(tr);
-        item->scaleChanged();
+        //item->prepareGeometryChange();
+        //item->scaleChanged();
         item->setScale(a);
 
         qDebug()<<"rect "<<item->boundingRect();
@@ -69,4 +86,14 @@ void Marker::setScale(uint s)
 void Marker::setCurrentScale(uint s)
 {
     currentScale = s;
+}
+
+void Marker::setWidth(uint w)
+{
+    item->width = w;
+}
+
+void Marker::setColor(QRgb c)
+{
+    item->color = c;
 }

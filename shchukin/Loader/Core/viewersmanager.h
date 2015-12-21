@@ -7,6 +7,7 @@
 #include <QPoint>
 #include <QPointF>
 #include <QRect>
+#include <QStringList>
 
 namespace MyViewers {
 
