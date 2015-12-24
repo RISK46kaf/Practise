@@ -15,6 +15,7 @@ void Marker::drawArrow()
     item = new ArrowMarker();
     item->setFirstPnt(QPoint(0,0));
     item->setSecondPnt(QPoint(0,0));
+    name = "Arrow";
 }
 
 void Marker::drawEllipse()
@@ -22,6 +23,7 @@ void Marker::drawEllipse()
     item = new EllipseMarker();
     item->setFirstPnt(QPoint(0,0));
     item->setSecondPnt(QPoint(0,0));
+    name = "Ellipse";
 }
 
 
@@ -30,6 +32,7 @@ void Marker::drawRect()
     item = new RectMarker();
     item->setFirstPnt(QPoint(0,0));
     item->setSecondPnt(QPoint(0,0));
+    name = "Rect";
 }
 
 

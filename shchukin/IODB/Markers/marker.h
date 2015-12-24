@@ -26,6 +26,7 @@ public:
     QPoint centralPnt;
     QPoint secPnt;
     AbstractFigure* item;
+    QString name;
     //QTransform tr;
     double firstScale;
     double currentScale;

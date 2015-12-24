@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>661</width>
-    <height>652</height>
+    <width>656</width>
+    <height>738</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -984,8 +984,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>98</width>
-           <height>28</height>
+           <width>100</width>
+           <height>30</height>
           </rect>
          </property>
          <attribute name="label">
@@ -1187,8 +1187,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>98</width>
-           <height>28</height>
+           <width>390</width>
+           <height>433</height>
           </rect>
          </property>
          <attribute name="label">
@@ -1551,8 +1551,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>98</width>
-           <height>28</height>
+           <width>100</width>
+           <height>30</height>
           </rect>
          </property>
          <attribute name="label">
@@ -1918,8 +1918,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>98</width>
-           <height>28</height>
+           <width>100</width>
+           <height>30</height>
           </rect>
          </property>
          <attribute name="label">
@@ -2184,21 +2184,12 @@
           <x>7</x>
           <y>10</y>
           <width>371</width>
-          <height>531</height>
+          <height>641</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayoutMark">
          <item>
-          <widget class="QTreeWidget" name="treeWidget">
-           <attribute name="headerVisible">
-            <bool>false</bool>
-           </attribute>
-           <column>
-            <property name="text">
-             <string>1</string>
-            </property>
-           </column>
-          </widget>
+          <widget class="QListWidget" name="listWidget"/>
          </item>
          <item>
           <widget class="QFrame" name="frameMtools">
@@ -2235,55 +2226,11 @@
               <x>10</x>
               <y>0</y>
               <width>351</width>
-              <height>213</height>
+              <height>151</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayoutMtools">
-             <item row="3" column="0">
-              <widget class="QToolButton" name="toolRect">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>94</horstretch>
-                 <verstretch>22</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>94</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Прямоугольник</string>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QToolButton" name="toolPoly">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>94</horstretch>
-                 <verstretch>22</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>94</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Многоугольник</string>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
+             <item row="3" column="1">
               <widget class="QToolButton" name="toolArrow">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2305,7 +2252,7 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="2" column="1">
               <widget class="QToolButton" name="toolEllipse">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2327,48 +2274,7 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
-              <widget class="QToolButton" name="toolAddRoot">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>94</horstretch>
-                 <verstretch>22</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>94</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Добавить корневой признак</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="1">
-              <widget class="QToolButton" name="toolAddChild">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>94</horstretch>
-                 <verstretch>22</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>94</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Добавить признак-наследник</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
               <widget class="QToolButton" name="toolRem">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2387,7 +2293,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="1" column="0">
               <widget class="QToolButton" name="toolCol">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2406,7 +2312,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0">
+             <item row="4" column="0">
               <widget class="QToolButton" name="toolConf">
                <property name="enabled">
                 <bool>true</bool>
@@ -2431,7 +2337,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="1">
+             <item row="4" column="1">
               <widget class="QToolButton" name="toolEdit">
                <property name="enabled">
                 <bool>true</bool>
@@ -2456,9 +2362,56 @@
                </property>
               </widget>
              </item>
+             <item row="2" column="0">
+              <widget class="QToolButton" name="toolRect">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>94</horstretch>
+                 <verstretch>22</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>94</width>
+                 <height>22</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Прямоугольник</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QToolButton" name="toolPoly">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>94</horstretch>
+                 <verstretch>22</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>94</width>
+                 <height>22</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Многоугольник</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </widget>
+         </item>
+         <item>
+          <widget class="QTextBrowser" name="textBrowser"/>
          </item>
         </layout>
        </widget>
@@ -2552,7 +2505,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>661</width>
+     <width>656</width>
      <height>21</height>
     </rect>
    </property>

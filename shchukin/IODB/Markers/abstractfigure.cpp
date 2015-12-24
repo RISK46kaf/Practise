@@ -1,8 +1,18 @@
 #include "abstractfigure.h"
 
+
 AbstractFigure::AbstractFigure()
 {
     width = 1;
+}
+
+AbstractFigure::AbstractFigure(QPoint f, QPoint s, uint scale, uint w, QRgb c)
+{
+    firstPoint = f;
+    secondPoint = s;
+    firstScale = scale;
+    color = c;
+    width = w;
 }
 
 void AbstractFigure::setFirstPnt(QPoint pnt)

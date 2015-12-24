@@ -33,6 +33,8 @@ private slots:
 
     void on_toolRect_clicked();
 
+    void on_toolConf_clicked();
+
 private:
     Ui::Input *ui;
     Core::AnamnesManager* _anamnesManager;
@@ -41,6 +43,7 @@ private:
     ImageWidget* _imageWidget;
     QVector<Marker*> markerList;
     QRgb currentMarkerColor;
+    QVector<QListWidgetItem*> itemList;
     void init();
     void clear();
 };

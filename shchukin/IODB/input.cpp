@@ -712,3 +712,14 @@ void Input::on_toolRect_clicked()
         markerList.push_back(m);
     }
 }
+
+void Input::on_toolConf_clicked()
+{
+    if(_imageWidget)
+    {
+        QListWidgetItem * item = new QListWidgetItem;
+        item->setText(markerList.last()->name);
+        itemList.push_back(item);
+        ui->listWidget->addItem(item);
+    }
+}

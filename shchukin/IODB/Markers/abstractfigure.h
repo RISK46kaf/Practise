@@ -9,6 +9,7 @@ class AbstractFigure : public QObject, public QGraphicsItem
 {
 public:
     AbstractFigure();
+    AbstractFigure(QPoint f, QPoint s, uint scale, uint w, QRgb c);
     QPoint firstPoint;
     QPoint secondPoint;
     void setFirstPnt(QPoint pnt);
