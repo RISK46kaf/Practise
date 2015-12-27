@@ -1,4 +1,4 @@
-#include "welcome.h"
+﻿#include "welcome.h"
 #include "ui_welcome.h"
 #include <QPainter>
 
@@ -19,8 +19,8 @@ Welcome::Welcome(QWidget *parent) :
     ui->lineEditU->selectAll();
     ui->lineEditH->selectAll();
     ui->lineEditP->selectAll();
-    setWindowFlags(Qt::Tool
-    | Qt::WindowTitleHint
+    setWindowFlags(
+      Qt::WindowTitleHint
     | Qt::WindowMinimizeButtonHint
     | Qt::WindowCloseButtonHint
     | Qt::CustomizeWindowHint);
@@ -47,9 +47,9 @@ Welcome::Welcome(QWidget *parent) :
 
 Welcome::~Welcome()
 {
-    if(_input) delete _input;
-    if(_output) delete _output;
     delete ui;
+    /*if(_input !==) */delete _input;
+    /*if(_output) */delete _output;
 }
 
 void Welcome::paintEvent(QPaintEvent *event)
@@ -59,6 +59,12 @@ void Welcome::paintEvent(QPaintEvent *event)
     QPainter p(this);
     QPixmap tmp(":/MyFiles/logo.jpg");
     p.drawPixmap((this->width()-tmp.width())/2,(ui->frame->height()-tmp.height())/2,tmp);
+}
+
+void Welcome::closeEvent(QCloseEvent *e)
+{
+    qDebug() << "closeEvent";
+    QMainWindow::closeEvent(e);
 }
 
 void Welcome::on_pushButton_clicked()
@@ -83,4 +89,3 @@ void Welcome::onOpenMode(int mode)
         close();
     }
 }
-
