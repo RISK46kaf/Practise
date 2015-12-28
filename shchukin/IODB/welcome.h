@@ -1,4 +1,4 @@
-#ifndef WELCOME_H
+﻿#ifndef WELCOME_H
 #define WELCOME_H
 
 #include <QMainWindow>
@@ -23,6 +23,7 @@ public:
     ~Welcome();
 protected:
     void paintEvent(QPaintEvent *);
+    void closeEvent(QCloseEvent *);
 
 private slots:
     void on_pushButton_clicked();
