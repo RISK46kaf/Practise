@@ -3,6 +3,8 @@
 Marker::Marker()
 {
     currentScale = 1;
+    item = NULL;
+    advancedItem = NULL;
 }
 
 Marker::~Marker()
@@ -35,6 +37,13 @@ void Marker::drawRect()
     name = "Rect";
 }
 
+void Marker::drawPolygon()
+
+{
+    advancedItem = new PolygonMarker();
+
+    name = "Polygon";
+}
 
 void Marker::setFirstPoint(QPoint pnt)
 {
@@ -68,7 +77,26 @@ void Marker::setFirstScale(uint s)
 
 void Marker::setScale(uint s)
 {
-    if(item->firstPoint.x() && item->firstPoint.y())
+    if(item)
+    {
+        if(item->firstPoint.x() && item->firstPoint.y())
+        {
+            currentScale = s;
+            QTransform tr;
+            double a = firstScale/currentScale;
+            qDebug()<<"firstScale "<<firstScale;
+            qDebug()<<"a "<<a;
+            tr.scale(a,a);
+            //item->setTransform(tr);
+            //item->prepareGeometryChange();
+            //item->scaleChanged();
+            item->setScale(a);
+
+            //qDebug()<<"rect "<<item->boundingRect();
+            //item->setScale(currentScale/firstScale);
+        }
+    }
+    if(advancedItem)
     {
         currentScale = s;
         QTransform tr;
@@ -79,9 +107,9 @@ void Marker::setScale(uint s)
         //item->setTransform(tr);
         //item->prepareGeometryChange();
         //item->scaleChanged();
-        item->setScale(a);
+        advancedItem->setScale(a);
 
-        qDebug()<<"rect "<<item->boundingRect();
+        //qDebug()<<"rect "<<advancedItem->boundingRect();
         //item->setScale(currentScale/firstScale);
     }
 }
@@ -91,12 +119,25 @@ void Marker::setCurrentScale(uint s)
     currentScale = s;
 }
 
+void Marker::addPoint(QPoint pnt)
+{
+    advancedItem->addPoint(pnt);
+}
+
 void Marker::setWidth(uint w)
 {
-    item->width = w;
+    if(item)
+        item->width = w;
+    if(advancedItem)
+        advancedItem->width = w;
+
 }
 
 void Marker::setColor(QRgb c)
 {
-    item->color = c;
+    if(item)
+        item->color = c;
+    if(advancedItem)
+        advancedItem->color = c;
+
 }

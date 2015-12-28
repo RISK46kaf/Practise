@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     input.cpp \
     output.cpp \
     Markers/ellipsemarker.cpp \
-    Markers/rectmarker.cpp
+    Markers/rectmarker.cpp \
+    Markers/advancedabstractfigure.cpp \
+    Markers/polygonmarker.cpp
 
 SOURCES +=   ImageFrame/Preview/rectitem.cpp \
     ImageFrame/Preview/previewview.cpp \
@@ -45,7 +47,9 @@ HEADERS  += welcome.h \
     input.h \
     output.h \
     Markers/ellipsemarker.h \
-    Markers/rectmarker.h
+    Markers/rectmarker.h \
+    Markers/advancedabstractfigure.h \
+    Markers/polygonmarker.h
 
 HEADERS  +=    ImageFrame/Preview/previewview.h\
     ImageFrame/Preview/rectitem.h \

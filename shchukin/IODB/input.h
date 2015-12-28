@@ -35,15 +35,23 @@ private slots:
 
     void on_toolConf_clicked();
 
+    void on_toolPoly_clicked();
+
+    void on_listWidget_itemClicked(QListWidgetItem *item);
+
+    void on_plainTextEdit_textChanged();
+
+    void on_toolRem_clicked();
+
 private:
     Ui::Input *ui;
     Core::AnamnesManager* _anamnesManager;
     Core::ProfileManager* _profileManager;
     Core::DataBaseManager* _dbManager;
     ImageWidget* _imageWidget;
-    QVector<Marker*> markerList;
+    QList<Marker*> markerList;
     QRgb currentMarkerColor;
-    QVector<QListWidgetItem*> itemList;
+    QList<QListWidgetItem*> itemList;
     void init();
     void clear();
 };

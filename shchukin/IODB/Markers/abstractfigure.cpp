@@ -22,7 +22,7 @@ void AbstractFigure::setFirstPnt(QPoint pnt)
     secondPoint = pnt;
     update(this->boundingRect());
     this->prepareGeometryChange();
-    qDebug()<<"!!1"<<secondPoint;
+    //qDebug()<<"!!1"<<secondPoint;
 }
 
 
@@ -32,7 +32,7 @@ void AbstractFigure::setSecondPnt(QPoint pnt)
     this->prepareGeometryChange();
     update(this->boundingRect());
     this->prepareGeometryChange();
-    qDebug()<<"!!1"<<secondPoint;
+    //qDebug()<<"!!1"<<secondPoint;
 
 }
 

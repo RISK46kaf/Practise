@@ -12,6 +12,9 @@
 #include <Markers/arrowmarker.h>
 #include "ellipsemarker.h"
 #include "rectmarker.h"
+#include "advancedabstractfigure.h"
+#include "polygonmarker.h"
+#include <QTextDocument>
 
 
 class Marker : public QObject
@@ -26,8 +29,11 @@ public:
     QPoint centralPnt;
     QPoint secPnt;
     AbstractFigure* item;
+    AdvancedAbstractFigure* advancedItem;
+
     QString name;
     //QTransform tr;
+    QString text;
     double firstScale;
     double currentScale;
     void setScale(uint s);
@@ -35,10 +41,12 @@ public:
     void setWidth(uint w);
     void setColor(QRgb c);
     void drawRect();
+    void drawPolygon();
 public slots:
     void setFirstPoint(QPoint pnt);
     void setScecondPoint(QPoint pnt);
     void setCurrentScale(uint s);
+    void addPoint(QPoint pnt);
 private:
     int metric(QPoint pnt1, QPoint pnt2);
 signals:

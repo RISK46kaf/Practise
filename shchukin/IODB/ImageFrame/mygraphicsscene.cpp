@@ -29,3 +29,14 @@ void MyGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     emit mouseReleasePos(mouseEvent->scenePos().toPoint());
     update();
 }
+
+void MyGraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    Q_UNUSED(mouseEvent);
+    if(mouseEvent->buttons() & Qt::LeftButton)
+    {
+        emit mouseDoubleClickPos(mouseEvent->scenePos().toPoint());
+        update();
+    }
+}
+

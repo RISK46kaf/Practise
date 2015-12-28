@@ -14,11 +14,13 @@ public:
 signals:
     void mousePressPos(QPoint pnt);
     void mouseReleasePos(QPoint pnt);
+    void mouseDoubleClickPos(QPoint pnt);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent);
     void mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* mouseEvent);
 };
 
 #endif // MYGRAPHICSSCENE_H
