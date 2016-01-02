@@ -1,6 +1,8 @@
 ﻿#ifndef TMPRESULT_H
 #define TMPRESULT_H
+
 #include <QtCore>
+
 struct TmpResult
 {
     bool isValid;

@@ -1,5 +1,7 @@
 ﻿#ifndef MYEXCEPTION_H
 #define MYEXCEPTION_H
+#include <exception>
+
 struct MyException : public std::exception
 {
     explicit MyException(const char* exeptionName) : name(exeptionName) {}
