@@ -3,7 +3,6 @@
 
 #include <QtCore>
 
-
 class TileNameParser
 {
 public:

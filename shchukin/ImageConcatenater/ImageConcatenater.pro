@@ -39,15 +39,14 @@ LIBS +=-L/usr/local/opt/gettext/lib -lvips-cpp -lvips -lgobject-2.0 -lglib-2.0 -
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    threadpoolconcatenater.cpp \
     tilenameparser.cpp \
-    concatenaterrunnable.cpp
+    concatenaterrunnable.cpp \
+    imageconcatenater.cpp
 
 HEADERS += \
-    threadpoolconcatenater.h \
     tilenameparser.h \
     myexception.h \
-    tmatrixt.h \
     concatenaterrunnable.h \
-    tmpresult.h
+    tmpresult.h \
+    imageconcatenater.h
 
