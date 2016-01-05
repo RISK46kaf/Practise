@@ -53,9 +53,9 @@ int main(int argc, char *argv[])
 
     qDebug("Starting Botan");
 
-    std::string plainText = "/Users/Yarique/Documents/BotanTest/plaintext.zip";
-    std::string encrypted = "/Users/Yarique/Documents/BotanTest/encrypted.dat";
-    std::string decrypted = "/Users/Yarique/Documents/BotanTest/decrypted.zip";
+    std::string plainText = "../BotanTest/plaintext.zip";
+    std::string encrypted = "../BotanTest/encrypted.dat";
+    std::string decrypted = "../BotanTest/decrypted.zip";
 
     Botan::LibraryInitializer init;
     std::string passPhrase = "HpcbYTB4~dymbD%eUm3wbkauw2B?F1IsGZqOJN}$JmsB2ezH?UFC54qPWAw3ve8r";
