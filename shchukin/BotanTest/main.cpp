@@ -1,5 +1,6 @@
 ﻿#include <QCoreApplication>
 #include <botan/botan.h>
+#include <botan/auto_rng.h>
 
 #include <QDebug>
 #include <fstream>

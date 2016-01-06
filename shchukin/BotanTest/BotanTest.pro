@@ -7,9 +7,9 @@ TARGET = BotanTest
 CONFIG += console
 CONFIG -= app_bundle
 
-INCLUDEPATH += $$PWD/Botan/build/include
+INCLUDEPATH += $$PWD/BotanWin/build/include
 
-LIBS += -L$$PWD/Botan -lbotan-1.10
+LIBS += -L$$PWD/BotanWin -lbotan-1.10
 #LIBS += $$PWD/Botan/libbotan-1.10.dylib
 
 TEMPLATE = app
