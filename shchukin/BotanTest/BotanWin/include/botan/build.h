@@ -3,8 +3,8 @@
 #define BOTAN_BUILD_CONFIG_H__
 
 /*
-* This file was automatically generated Wed Jan 06 20:48:26 2016 UTC by
-* Yarique@Miracle running 'C:\Botan-1.10.10\configure.py --cc=msvc --cpu=x64'
+* This file was automatically generated Thu Jan 07 23:30:18 2016 UTC by
+* Client1@Client1-PC running 'C:\Botan-1.10.10\configure.py --cc=msvc --cpu=x64'
 *
 * Target
 *  - Compiler: cl /MD /O2 

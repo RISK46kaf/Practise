@@ -9,8 +9,17 @@ CONFIG -= app_bundle
 
 INCLUDEPATH += $$PWD/Botan/build/include
 
-LIBS += -L$$PWD/Botan -lbotan-1.10
-#LIBS += $$PWD/Botan/libbotan-1.10.dylib
+CONFIG += c++11
+
+macx {
+    INCLUDEPATH += $$PWD/BotanOSX/include
+    LIBS += -L$$PWD/BotanOSX -lbotan-1.10
+}
+
+win32 {
+    INCLUDEPATH += $$PWD/BotanWin/include
+    LIBS += -L$$PWD/BotanWin -lbotan
+}
 
 TEMPLATE = app
 
