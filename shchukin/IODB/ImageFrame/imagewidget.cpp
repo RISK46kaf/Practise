@@ -151,7 +151,7 @@ QPoint ImageWidget::getCentralPoint()
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    return view_field.topLeft();
+    return view_field.center();
 }
 
 

@@ -55,7 +55,7 @@ private:
     uint scale;
     QString image_path;
     QRect getViewField();
-    QPoint getCentralPoint();
+    QPoint getLeftPoint();
     QVector<QSize> imgSizes;
     QVector<QSize> tileAmount;
 private slots:

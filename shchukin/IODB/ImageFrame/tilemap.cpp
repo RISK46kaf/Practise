@@ -231,7 +231,7 @@ void TileMap::updateItems()
 void TileMap::viewResized()
 {
     emit viewRect(getViewField());
-    emit topLeftPointEvent(getCentralPoint());
+    emit topLeftPointEvent(getLeftPoint());
 
     view->verticalScrollBar()->setSingleStep(1);
     this->drawViewField(getViewField());
@@ -243,7 +243,7 @@ void TileMap::viewResized()
 void TileMap::scrolledVertical(int value)
 {
     emit viewRect(getViewField());
-    emit topLeftPointEvent(getCentralPoint());
+    emit topLeftPointEvent(getLeftPoint());
 
     view->horizontalScrollBar()->blockSignals(true);
 
@@ -257,7 +257,7 @@ void TileMap::scrolledVertical(int value)
 void TileMap::scrolledHorizontal(int value)
 {
     emit viewRect(getViewField());
-    emit topLeftPointEvent(getCentralPoint());
+    emit topLeftPointEvent(getLeftPoint());
     view->horizontalScrollBar()->blockSignals(true);
 
 
@@ -291,7 +291,7 @@ void TileMap::zoomOut(QPoint pnt)
         preview->setScale(scale);
 
         emit viewRect(getViewField());
-        emit topLeftPointEvent(getCentralPoint());
+        emit topLeftPointEvent(getLeftPoint());
 
 
 
@@ -348,7 +348,7 @@ void TileMap::zoomIn(QPoint pnt)
 
         preview->setScale(scale);
         emit viewRect(getViewField());
-        emit topLeftPointEvent(getCentralPoint());
+        emit topLeftPointEvent(getLeftPoint());
 
         scene->update();
         view->update();
@@ -376,7 +376,7 @@ QRect TileMap::getViewField()
     return view_field;
 }
 
-QPoint TileMap::getCentralPoint()
+QPoint TileMap::getLeftPoint()
 {
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
