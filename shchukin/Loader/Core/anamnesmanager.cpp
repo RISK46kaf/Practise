@@ -219,7 +219,7 @@ void AnamnesManager::setLinePulse(const QString linePulse)
 
 QString AnamnesManager::linePulse2() const
 {
-    _linePulse2;
+    return _linePulse2;
 }
 
 void AnamnesManager::setLinePulse2(const QString linePulse2)

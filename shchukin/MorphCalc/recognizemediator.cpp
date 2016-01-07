@@ -107,8 +107,9 @@ inline cv::Mat RecognizeMediator::qimage2CvMat(const QImage &inImage, bool inClo
 void RecognizeMediator::mat2Bin(cv::Mat *mat, Recognizer::TLayerB* bin)
 {
     cv::cvtColor(*mat, *mat, cv::COLOR_BGR2GRAY);
-    cv::medianBlur(*mat,*mat,5);
-    cv::threshold(*mat, *mat, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
+//    cv::medianBlur(*mat,*mat,5);
+    cv::threshold(*mat, *mat, 180, 255, CV_THRESH_BINARY);
+//    cv::threshold(*mat, *mat, 0, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
     for(int y = 0; y < mat->rows; ++y)
     {
         const uchar* p = mat->ptr<uchar>(y);
