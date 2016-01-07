@@ -68,6 +68,7 @@ private slots:
 
     void zoomOut(QPoint pnt);
     void zoomIn(QPoint pnt);
+    void changeScale(QPoint pnt, uint s);
 signals:
     void viewRect(QRect r);
     void topLeftPointEvent(QPointF);

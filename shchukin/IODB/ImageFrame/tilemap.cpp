@@ -356,6 +356,16 @@ void TileMap::zoomIn(QPoint pnt)
     }
 }
 
+void TileMap::changeScale(QPoint pnt, uint s)
+{
+    clearAll();
+    QPoint npnt = view->mapToScene(pnt).toPoint();
+    QPoint c = view->mapToScene(view->size().width()/2,view->size().height()/2).toPoint();
+    view->centerOn(c);
+    scale = s;
+    this->drawViewField(getViewField());
+}
+
 
 
 
