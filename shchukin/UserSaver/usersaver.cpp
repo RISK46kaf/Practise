@@ -13,6 +13,11 @@ UserSaver::UserSaver(QWidget *parent) :
     ui(new Ui::UserSaver)
 {
     ui->setupUi(this);
+    setWindowFlags(
+      Qt::WindowTitleHint
+    | Qt::WindowMinimizeButtonHint
+    | Qt::WindowCloseButtonHint
+    | Qt::CustomizeWindowHint);
     ui->lineDir->setText(QDir::homePath());
     _lastCorrectO = QDir::homePath();
     connect(ui->lineDir, &QLineEdit::textChanged,

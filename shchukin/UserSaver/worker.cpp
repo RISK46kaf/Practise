@@ -24,7 +24,7 @@ void Worker::startOperation(const QString &l, const QString &p, const QString &o
             .bits_of();
     Botan::SymmetricKey key(key_and_IV, 32);
     Botan::InitializationVector iv(key_and_IV + 32, 16);
-    Decrypt(key,iv,fileName,fileName);
+    Decrypt(key,iv,fileName);
     Botan::AutoSeeded_RNG pRng;
     std::string phrase = (l + p).toStdString();
     std::string hash = Botan::generate_passhash9(phrase,pRng,100,1);
@@ -32,72 +32,73 @@ void Worker::startOperation(const QString &l, const QString &p, const QString &o
     out << hash << "\n";
     out.flush();
     out.close();
-    Encrypt(key,iv,fileName,fileName);
+    Encrypt(key,iv,fileName);
     emit workDone();
 }
 
 void Worker::Encrypt(Botan::SymmetricKey &key,
                      Botan::InitializationVector &iv,
-                     const std::__1::string &inFile,
-                     const std::__1::string &outFile)
+                     const std::__1::string &file2encrypt)
 
 {
-    bool clearTemp = false;
-    QString tmpPath;
-    QFileInfo fi(QString(inFile.c_str()));
+    QFileInfo fi(QString::fromStdString(file2encrypt));
     if(!fi.exists())
         return;
-    if(inFile == outFile)
+    QFile file(QString::fromStdString(file2encrypt));
+    if(file.open(QIODevice::ReadOnly))
     {
-        qDebug() << fi.absoluteFilePath();
-        tmpPath = (QDir::tempPath()  + "/" + fi.fileName());
-        QFile::remove(tmpPath);
-        qDebug() << QFile::copy(fi.absoluteFilePath(),tmpPath);
-        qDebug() << tmpPath;
-        clearTemp = true;
+        QByteArray filedata = file.readAll();
+        file.close();
+        std::string str(filedata.data(),filedata.length());
+        std::istringstream stream_in(str);
+        std::stringstream stream_out;
+        Botan::Pipe pipe(Botan::get_cipher("AES-256/OFB",key,iv,Botan::ENCRYPTION),
+                         new Botan::DataSink_Stream(stream_out));
+        pipe.start_msg();
+        stream_in >> pipe;
+        pipe.end_msg();
+        stream_out.flush();
+        std::string outta = stream_out.str();
+        if(file.open(QIODevice::WriteOnly))
+        {
+            file.write(QByteArray(outta.c_str(), outta.length()));
+            file.close();
+        }
+        else
+            qDebug() << "cannot write only open" << QString::fromStdString(file2encrypt);
     }
-
-    std::ifstream in(tmpPath.isEmpty() ? inFile.c_str() : tmpPath.toStdString().c_str(),
-                     std::ios::binary);
-    std::ofstream out(outFile.c_str(),std::ios::binary);
-    Botan::Pipe pipe(Botan::get_cipher("AES-256/OFB",key,iv,Botan::ENCRYPTION),
-                     new Botan::DataSink_Stream(out));
-    pipe.start_msg();
-    in >> pipe;
-    pipe.end_msg();
-    out.flush();
-    out.close();
-    in.close();
-    if(clearTemp) qDebug() << QFile::remove(tmpPath);
+    else
+        qDebug() << "cannot read only open" << QString::fromStdString(file2encrypt);
 }
 
-void Worker::Decrypt(Botan::SymmetricKey &key, Botan::InitializationVector &iv, const std::__1::string &inFile, const std::__1::string &outFile)
+void Worker::Decrypt(Botan::SymmetricKey &key, Botan::InitializationVector &iv, const std::__1::string &file2encrypt)
 {
-    bool clearTemp = false;
-    QString tmpPath;
-    QFileInfo fi(QString(inFile.c_str()));
+    QFileInfo fi(QString::fromStdString(file2encrypt));
     if(!fi.exists())
         return;
-    if(inFile == outFile)
+    QFile file(QString::fromStdString(file2encrypt));
+    if(file.open(QIODevice::ReadOnly))
     {
-        qDebug() << fi.absoluteFilePath();
-        tmpPath = (QDir::tempPath()  + "/" + fi.fileName());
-        QFile::remove(tmpPath);
-        qDebug() << QFile::copy(fi.absoluteFilePath(),tmpPath);
-        qDebug() << tmpPath;
-        clearTemp = true;
+        QByteArray filedata = file.readAll();
+        file.close();
+        std::string str(filedata.data(),filedata.length());
+        std::istringstream stream_in(str);
+        std::stringstream stream_out;
+        Botan::Pipe pipe(Botan::get_cipher("AES-256/OFB",key,iv,Botan::DECRYPTION),
+                         new Botan::DataSink_Stream(stream_out));
+        pipe.start_msg();
+        stream_in >> pipe;
+        pipe.end_msg();
+        stream_out.flush();
+        std::string outta = stream_out.str();
+        if(file.open(QIODevice::WriteOnly))
+        {
+            file.write(QByteArray(outta.c_str(), outta.length()));
+            file.close();
+        }
+        else
+            qDebug() << "cannot write only open" << QString::fromStdString(file2encrypt);
     }
-
-    std::ifstream in(tmpPath.isEmpty() ? inFile.c_str() : tmpPath.toStdString().c_str(),
-                     std::ios::binary);
-    std::ofstream out(outFile.c_str(),std::ios::binary);
-    Botan::Pipe pipe(Botan::get_cipher("AES-256/OFB",key,iv,Botan::DECRYPTION),
-                     new Botan::DataSink_Stream(out));
-    pipe.start_msg();
-    in >> pipe;
-    pipe.end_msg();
-    out.flush();
-    out.close();
-    in.close();
-    if(clearTemp) qDebug() << QFile::remove(tmpPath);
+    else
+        qDebug() << "cannot read only open" << QString::fromStdString(file2encrypt);
 }
