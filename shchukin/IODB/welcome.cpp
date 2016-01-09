@@ -71,6 +71,8 @@ void Welcome::on_pushButton_clicked()
 {
     _dbManager->connect(ui->lineEditU->text(),ui->lineEditH->text(),
                         ui->lineEditP->text(),ui->comboBoxMode->currentIndex());
+    QString rqst = "<frame><request type=\"0\"></request>" +
+                    ui->lineEditU->text() + ui->lineEditP->text() + "</frame>";
 }
 
 void Welcome::onOpenMode(int mode)

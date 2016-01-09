@@ -19,6 +19,7 @@ public:
 
 signals:
     void workDone();
+    void error(QString mess);
 public slots:
     void startOperation(const QString& l, const QString& p, const QString& o);
     void Encrypt(Botan::SymmetricKey& key,

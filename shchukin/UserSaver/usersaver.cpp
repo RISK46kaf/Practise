@@ -59,6 +59,12 @@ UserSaver::UserSaver(QWidget *parent) :
                     ui->statusBar->showMessage("Данные успешно сохранены",5000);
                  }
             );
+    connect(_worker, &Worker::error, this,
+            [&](QString mess){
+                                ui->saveButton->setEnabled(true);
+                                ui->statusBar->showMessage(mess,5000);
+                             }
+            );
     _worker->moveToThread(_workThread);
     _workThread->start();
     ui->centralWidget->setLayout(ui->verticalLayout);

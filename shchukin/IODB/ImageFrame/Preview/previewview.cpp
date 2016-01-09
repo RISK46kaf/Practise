@@ -1,4 +1,4 @@
-#include "previewview.h"
+﻿#include "previewview.h"
 
 PreviewView::PreviewView()
 {    
@@ -76,7 +76,7 @@ void PreviewView::setMaxScale(int max)
 
 void PreviewView::setImage(QString path)
 {
-    QPixmap img(path,"PNG");
+    QPixmap img(path,"JPG");
     pixItem.setPixmap(img);
     scene->addItem(&pixItem);
     //scene->addPixmap(img);
