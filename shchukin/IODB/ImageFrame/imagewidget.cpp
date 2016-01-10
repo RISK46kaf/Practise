@@ -73,6 +73,7 @@ void ImageWidget::openImage(bool)
 
     qDebug() << d.path();
     QStringList sList;
+    /*qDebug() << "fucking" << */(sList = dirry.entryList(QDir::Files | QDir::NoDotAndDotDot));
 
     if(sList.count())
     {
