@@ -19,6 +19,7 @@ Input::Input(Core::DataBaseManager *dbManager, QWidget *parent) :
 
 void Input::init()
 {
+    markerID = 0;
     ui->pageProfile->setLayout(ui->verticalLayoutProfile);
     ui->pageMark->setLayout(ui->verticalLayoutMark);
     ui->page_1->setLayout(ui->verticalLayoutAnamnez1);
@@ -637,7 +638,7 @@ void Input::on_toolArrow_clicked()
     if(_imageWidget)
     {
         Marker* m = new Marker();
-
+        m->id = markerID +1;
         connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),m,SLOT(setFirstPoint(QPoint)));
         connect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),m,SLOT(setScecondPoint(QPoint)));
         connect(_imageWidget->map,SIGNAL(scaleChanged(uint)),m,SLOT(setCurrentScale(uint)));
@@ -682,7 +683,8 @@ void Input::on_toolEllipse_clicked()
     if(_imageWidget)
     {
         Marker* m = new Marker();
-
+        m->id = markerID +1;
+        ++markerID;
         connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),m,SLOT(setFirstPoint(QPoint)));
         connect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),m,SLOT(setScecondPoint(QPoint)));
         connect(_imageWidget->map,SIGNAL(scaleChanged(uint)),m,SLOT(setCurrentScale(uint)));

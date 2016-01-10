@@ -27,7 +27,6 @@ ImageWidget::ImageWidget(QWidget *parent) : QWidget(parent)
     layout->addWidget(preview);
     layout->addWidget(view);
     layout->addWidget(openButton);
-
     connect(openButton,SIGNAL(clicked(bool)),this,SLOT(openImage(bool)));
     view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );

@@ -32,7 +32,6 @@ public:
     AdvancedAbstractFigure* advancedItem;
 
     QString name;
-    //QTransform tr;
     QString text;
     double firstScale;
     double currentScale;
@@ -42,6 +41,7 @@ public:
     void setColor(QRgb c);
     void drawRect();
     void drawPolygon();
+    int id;
 public slots:
     void setFirstPoint(QPoint pnt);
     void setScecondPoint(QPoint pnt);

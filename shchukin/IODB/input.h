@@ -54,6 +54,7 @@ private:
     QList<QListWidgetItem*> itemList;
     void init();
     void clear();
+    int markerID;
 };
 
 #endif // INPUT_H
