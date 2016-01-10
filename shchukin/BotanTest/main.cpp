@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     Botan::SymmetricKey key(key_and_IV, 32);
     Botan::InitializationVector iv(key_and_IV + 32, 16);
 
-    QByteArray inA = "победа!";
+    QByteArray inA = "victory!";
     QByteArray c;
     QByteArray p;
     EncryptByteArray(key,iv,inA,c);

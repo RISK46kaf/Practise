@@ -63,6 +63,7 @@ void CutterRunnable::imageScales(vips::VImage& image,
     int last_pixel_y = 0;
     QString dirName = outputDir;
     QString previewDir = dirName + "/Preview";
+    QString originDir = dirName + "/Original";
     dirName = dirName + "/1_" + QString::number(i);
     QDir dir(dirName);
     //m.lock();
@@ -71,8 +72,14 @@ void CutterRunnable::imageScales(vips::VImage& image,
     dir = QDir(previewDir);
     if(!dir.exists())
         dir.mkpath(".");
+    dir = QDir(originDir);
+    if(!dir.exists())
+        dir.mkpath(".");
     //m.unlock();
-    QString path = previewDir + "/1_" + QString::number(i) + ".png";
+    QString pathP =
+            previewDir + "/1_" + QString::number(i*5) + ".jpg[Q=35,optimize_coding]";
+    QString pathO =
+            originDir + "/1_" + QString::number(i) + ".png[compression=9]";
     for(int h = 0; h < tile_amount_h; ++h)
     {
         last_pixel_y = tileSize[1];
@@ -93,7 +100,7 @@ void CutterRunnable::imageScales(vips::VImage& image,
                 continue;
             }
             //m.unlock();
-            QString path1 = (dirName+"/"+"y=" + QString::number(h)+"x=" + QString::number(w)+".png");
+            QString path1 = (dirName+"/"+"y=" + QString::number(h)+"x=" + QString::number(w)+".jpg[Q=35,optimize_coding]");
             //m.lock();
             std::cout << path1.toStdString().c_str() << std::endl;
 
@@ -136,7 +143,12 @@ void CutterRunnable::imageScales(vips::VImage& image,
     if(i == scalesCount)
     {
 //        std::cout << "path to save" << path.toStdString().c_str() << std::endl;
-        scaled_image.write_to_file(path.toStdString().c_str());
+        vips::VImage image = scaled_image.similarity( vips::VImage::option()->set( "scale", 0.2 ) );
+        image.write_to_file(pathP.toStdString().c_str());
+    }
+    if(i == 1)
+    {
+        scaled_image.write_to_file(pathO.toStdString().c_str());
     }
     //m.unlock();
 }
