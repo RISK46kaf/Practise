@@ -1,0 +1,181 @@
+Добавление:
+
+
+
+Добавлениие маркера
+`Fill_FMarker` (in mName text, in color int, in thickness int, in scale int, in inURL text, in x int, in y int)
+mName - название (тут по сути может быть что угодно, но лучше что то уникальное)
+color - цвет
+thickness - толщина линии
+scale - масштаб
+URL - адрес. К чему конкретно не важно, но по нему определяется принадлежность маркера к конкретной картинке.
+Если адрес уже есть в базе - маркер привяжется к существующей записи, если нет - сгенерируется новая
+x -
+y - координаты начальной точки маркера
+
+
+
+Для последующего добавления точек
+`Fill_Point` (in x int, in y int, 0 int)
+x
+y - координаты новой точки, которая будет относиться к последнему созданному маркеру
+последний параметр обязательно должен быть 0;
+
+
+
+Добавление морфологии маркера
+`Fill_Morph` (in a1 int, in a2 int, in a3 int, in a4 int,
+in a5 int, in a6 int, in a7 int, in a8 int, in a9 int,
+in a10 float, in a11 float, in MarkId int, 
+in b1 float, in b2 int, in b3 float, in b4 int, in b5 float, in b6 float, in b7 bool,
+in c1 float, in c2 float, in c3 float, in c4 int, in c5 float, in c6 float, in c7 bool)
+
+`Spots`, - тут всё как у зайцева, вроде, минус точки
+`SpotsSquare`,
+`ExtCircuit8Len`,
+`ExtCircuit4Len`,
+`ExtPerimetr`,
+`IntCircuit8Len`,
+`IntCircuit4Len`,
+`IntPerimetr`,
+`Square`,
+`Fulness`,
+`ShapeFactor`,
+`MarkF_id` - id маркера, к которому относится морфология
+
+`MinDiametr`,  - это "Fere"... не помню, как там в зайцевском мануале, но это какой то подкласс для морфологии
+`AngleMin`,
+`MaxDiametr`,
+`AngleMax`,
+`AverageDiametr`,
+`MeanSquareDiametr`,
+`Valid`
+
+`MaxRadius`, - это "Radius", ещё один зайцевский подкласс
+`MinRadius`,
+`AverageRadius`,
+`MeanSquareRadius`,
+`InertiaMoment`,
+`RelInertiaMoment`,
+`Valid`
+
+
+
+
+Просмотр:
+
+
+
+Просмотр точек маркера
+`View_FMark_points` (in Fmark int)
+по id маркера показывает все его точки (два столбца - x и y)
+
+
+
+Просмотр списка диагнозов
+`View_AllDiag` ()
+показывает список диагнозов - id, название
+
+
+
+Просмотр списка всех маркеров
+`View_AllFmarks` ()
+показывает список всех маркеров - id, название
+
+
+
+Просмотр диагноза по морфологии
+`View_Diag_ByMorhp` (in morphId int)
+по id морфологии показывает соответствующий ей диагноз
+
+
+
+Просмотр информации о маркере
+`View_FMark` (in vmode int, in input text)
+по id (vmode=0) маркера показывает его название, цвет, толщину, масштаб
+по названию (vmode!=0) маркера показывает его цвет, толщину, масштаб
+
+
+
+Просмотр маркеров по картинке
+`View_FMark_ByURL` (in inURL text)
+по пути к картинке показывает id, название маркеров, которые к ней относятся
+
+
+
+Просмотр адреса картинки
+`View_Mark_Url` (in Inid int)
+по id маркера показывает путь к картинке, к которой он относится
+
+
+
+Просмотр морфологии маркеров
+`View_Morph` (in MarkId int)
+по id маркера показывает его полную морфологию
+если в качестве MarkId "-1" - выводит таблицу со всеми морфологиями всех маркеров
+
+`mark_id` int, - id маркера
+`spots` int,
+`spots_sq` int,
+`ext_curc8len` int,
+`ext_curc4len` int,
+`ext_perim` int,
+`int_curc8len` int,
+`int_curc4len` int,
+`int_perim` int,
+`square` int,
+`fulness` float,
+`shape_factor` float,
+
+`min_diam` float, -  "Fere"
+`angle_min` int,
+`max_diam` float,
+`angle_max` int,
+`average_diam` float,
+`mean_sq_d` float,
+`valid_d` bool,
+
+`max_rad` float, - "Radius"
+`min_rad` float,
+`avg_rad` float,
+`mean_sq_r` int,
+`inertia` float,
+`rel_inertia` float,
+`valid_r` bool
+
+
+
+Просмотр морфологий по диагнозу
+`View_Morph_ByDiag` (in diagId int)
+Просмотр морфологий всех маркеров, которые отностяся к заданному id диагноза
+
+`mark_id` int, - id маркера
+`spots` int,
+`spots_sq` int,
+`ext_curc8len` int,
+`ext_curc4len` int,
+`ext_perim` int,
+`int_curc8len` int,
+`int_curc4len` int,
+`int_perim` int,
+`square` int,
+`fulness` float,
+`shape_factor` float,
+
+`min_diam` float, -  "Fere"
+`angle_min` int,
+`max_diam` float,
+`angle_max` int,
+`average_diam` float,
+`mean_sq_d` float,
+`valid_d` bool,
+
+`max_rad` float, - "Radius"
+`min_rad` float,
+`avg_rad` float,
+`mean_sq_r` int,
+`inertia` float,
+`rel_inertia` float,
+`valid_r` bool
+
+
