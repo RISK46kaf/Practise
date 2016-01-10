@@ -1,4 +1,4 @@
-#include "tilemap.h"
+﻿#include "tilemap.h"
 #ifdef Q_OS_UNIX
 #include <QProcess>
 #endif
@@ -77,8 +77,8 @@ void TileMap::drawField(uint width, uint height, QPoint center)
             if(matrix[y][x] == false)
             {
                 matrix[y][x] = true;
-                QString path = image_path + QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".png";
-                Tile * t = new Tile(QPixmap(path,"PNG"),QPoint(x,y));
+                QString path = image_path + "1_" + QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".jpg";
+                Tile * t = new Tile(QPixmap(path,"JPG"),QPoint(x,y));
                 storage.push_back(t);
                 scene->addItem(storage.last());
             }
@@ -112,8 +112,8 @@ void TileMap::drawViewField(QRect r)
                 if(matrix[y][x] == false)
                 {
                     matrix[y][x] = true;
-                    QString path = image_path +  QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".png";
-                    Tile * t = new Tile(QPixmap(path,"PNG"),QPoint(x,y));
+                    QString path = image_path + "1_" + QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".jpg";
+                    Tile * t = new Tile(QPixmap(path,"JPG"),QPoint(x,y));
                     storage.push_back(t);
                     scene->addItem(storage.last());
                 }

@@ -51,42 +51,18 @@ void EncryptByteArray(Botan::SymmetricKey& key,
                       QByteArray& inArray,
                       QByteArray& outArray)
 {
-    QString dirName1 = QDir::tempPath() + "/BotanTest/PlainText/";
-    QString dirName2 = QDir::tempPath() + "/BotanTest/Encrypted/";
-    QDir dir(dirName1);
-    if(!dir.exists())
-    {
-        dir.mkpath(".");
-    }
-    dir = QDir(dirName2);
-    if(!dir.exists())
-    {
-        dir.mkpath(".");
-    }
-    QString plainText =
-            dirName1 + QString::number((qint64)QThread::currentThreadId(),16) + ".txt";
-    QString encrypted =
-            dirName2 + QString::number((qint64)QThread::currentThreadId(),16) + ".txt";
-    QFile file1(plainText);
-    file1.open(QIODevice::WriteOnly);
-    file1.write(inArray);
-    file1.close();
-    Encrypt(key,iv,plainText.toStdString(),encrypted.toStdString());
-    QFile file2(encrypted);
-    file2.open(QIODevice::ReadOnly);
-    outArray = file2.readAll();
-    file2.close();
-    QDir tmpDir(QFileInfo(QDir::tempPath()
-                       + "/BotanTest/").absolutePath());
-    tmpDir.setNameFilters(QStringList() << "*.*");
-    tmpDir.setFilter(QDir::Files);
-    foreach(QString dirFile, tmpDir.entryList())
-    {
-        tmpDir.remove(dirFile);
-    }
-    if (!tmpDir.exists()) {
-        tmpDir.mkpath(".");
-    }
+    std::string str(inArray.data(),inArray.length());
+    std::istringstream stream_in(str);
+    std::stringstream stream_out;
+    Botan::Pipe pipe(Botan::get_cipher("AES-256/OFB",key,iv,Botan::ENCRYPTION),
+                     new Botan::DataSink_Stream(stream_out));
+    pipe.start_msg();
+    stream_in >> pipe;
+    pipe.end_msg();
+    stream_out.flush();
+    std::string outta = stream_out.str();
+    outArray = QByteArray(outta.c_str(), outta.length());
+    qDebug("Encrypted!");
 }
 
 void Decrypt(Botan::SymmetricKey& key,
@@ -113,45 +89,19 @@ void DecryptByteArray(Botan::SymmetricKey& key,
                       QByteArray& inArray,
                       QByteArray& outArray)
 {
-    QString dirName1 = QDir::tempPath() + "/BotanTest/Encrypted/";
-    QString dirName2 = QDir::tempPath() + "/BotanTest/Decrypted/";
-    QDir dir(dirName1);
-    if(!dir.exists())
-    {
-        dir.mkpath(".");
-    }
-    dir = QDir(dirName2);
-    if(!dir.exists())
-    {
-        dir.mkpath(".");
-    }
-    QString plainText =
-            dirName1 + QString::number((qint64)QThread::currentThreadId(),16) + ".txt";
-    QString encrypted =
-            dirName2 + QString::number((qint64)QThread::currentThreadId(),16) + ".txt";
-    QFile file1(plainText);
-    file1.open(QIODevice::WriteOnly);
-    file1.write(inArray);
-    file1.close();
-    Decrypt(key,iv,plainText.toStdString(),encrypted.toStdString());
-    QFile file2(encrypted);
-    file2.open(QIODevice::ReadOnly);
-    outArray = file2.readAll();
-    file2.close();
-    QDir tmpDir(QFileInfo(QDir::tempPath()
-                       + "/BotanTest/").absolutePath());
-    tmpDir.setNameFilters(QStringList() << "*.*");
-    tmpDir.setFilter(QDir::Files);
-    foreach(QString dirFile, tmpDir.entryList())
-    {
-        tmpDir.remove(dirFile);
-    }
-    if (!tmpDir.exists()) {
-        tmpDir.mkpath(".");
-    }
+    std::string str(inArray.data(),inArray.length());
+    std::istringstream stream_in(str);
+    std::stringstream stream_out;
+    Botan::Pipe pipe(Botan::get_cipher("AES-256/OFB",key,iv,Botan::ENCRYPTION),
+                     new Botan::DataSink_Stream(stream_out));
+    pipe.start_msg();
+    stream_in >> pipe;
+    pipe.end_msg();
+    stream_out.flush();
+    std::string outta = stream_out.str();
+    outArray = QByteArray(outta.c_str(), outta.length());
+    qDebug("Decrypted!");
 }
-
-
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -175,14 +125,14 @@ int main(int argc, char *argv[])
     Botan::SymmetricKey key(key_and_IV, 32);
     Botan::InitializationVector iv(key_and_IV + 32, 16);
 
-    QByteArray inA = "победа!";
+    QByteArray inA = "victory!";
     QByteArray c;
     QByteArray p;
     EncryptByteArray(key,iv,inA,c);
     qDebug() << QString(inA) << QString(c);
     DecryptByteArray(key,iv,c,p);
 
-    qDebug() << QString(c) << QString(p);
+    qDebug() << QString::fromUtf8(c) << QString::fromUtf8(p);
 
     //    Encrypt(key,iv,plainText,encrypted);
     //    Decrypt(key,iv,encrypted,decrypted);

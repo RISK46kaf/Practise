@@ -13,6 +13,11 @@ UserSaver::UserSaver(QWidget *parent) :
     ui(new Ui::UserSaver)
 {
     ui->setupUi(this);
+    setWindowFlags(
+      Qt::WindowTitleHint
+    | Qt::WindowMinimizeButtonHint
+    | Qt::WindowCloseButtonHint
+    | Qt::CustomizeWindowHint);
     ui->lineDir->setText(QDir::homePath());
     _lastCorrectO = QDir::homePath();
     connect(ui->lineDir, &QLineEdit::textChanged,
@@ -53,6 +58,12 @@ UserSaver::UserSaver(QWidget *parent) :
                     ui->saveButton->setEnabled(true);
                     ui->statusBar->showMessage("Данные успешно сохранены",5000);
                  }
+            );
+    connect(_worker, &Worker::error, this,
+            [&](QString mess){
+                                ui->saveButton->setEnabled(true);
+                                ui->statusBar->showMessage(mess,5000);
+                             }
             );
     _worker->moveToThread(_workThread);
     _workThread->start();

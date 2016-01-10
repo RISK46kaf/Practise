@@ -19,16 +19,15 @@ public:
 
 signals:
     void workDone();
+    void error(QString mess);
 public slots:
     void startOperation(const QString& l, const QString& p, const QString& o);
     void Encrypt(Botan::SymmetricKey& key,
                  Botan::InitializationVector& iv,
-                 const std::string& inFile,
-                 const std::string& outFile);
+                 const std::string& file2encrypt);
     void Decrypt(Botan::SymmetricKey& key,
                  Botan::InitializationVector& iv,
-                 const std::string& inFile,
-                 const std::string& outFile);
+                 const std::string& file2encrypt);
 };
 
 #endif // WORKER_H

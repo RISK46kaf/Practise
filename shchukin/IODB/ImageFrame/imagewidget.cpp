@@ -1,4 +1,4 @@
-#include "imagewidget.h"
+﻿#include "imagewidget.h"
 
 inline void sortSize(QVector<QSize>& sizeList)
 {
@@ -68,7 +68,17 @@ void ImageWidget::openImage(bool)
     QString p = d.path();
     map->loadImage(d);
 
-    preview->setImage(d.path()+QString("/Preview/1_10.png"));
+    QDir dirry (d.path()+"/Preview/");
+
+    qDebug() << d.path();
+    QStringList sList;
+    /*qDebug() << "fucking" << */(sList = dirry.entryList(QDir::Files | QDir::NoDotAndDotDot));
+
+    if(sList.count())
+    {
+        qDebug() << dirry.path() + "/" + sList.last();
+    preview->setImage(dirry.path() + "/" + sList.last());
+    }
 
     QXmlStreamAttributes att;
 
