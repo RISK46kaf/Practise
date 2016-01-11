@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QColorDialog>
 
+
 using namespace Core;
 
 Input::Input(Core::DataBaseManager *dbManager, QWidget *parent) :
@@ -630,15 +631,17 @@ void Input::on_toolArrow_clicked()
 {
     for(uint i=0;i<markerList.size();++i)
     {
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(setFirstPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i],SLOT(setScecondPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(addPoint(QPoint)));
-
+        if(markerList[i].second != NULL)
+        {
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(setFirstPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i].second,SLOT(setScecondPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(addPoint(QPoint)));
+        }
     }
     if(_imageWidget)
     {
         Marker* m = new Marker();
-        m->id = markerID +1;
+
         connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),m,SLOT(setFirstPoint(QPoint)));
         connect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),m,SLOT(setScecondPoint(QPoint)));
         connect(_imageWidget->map,SIGNAL(scaleChanged(uint)),m,SLOT(setCurrentScale(uint)));
@@ -649,16 +652,15 @@ void Input::on_toolArrow_clicked()
         _imageWidget->scene->addItem(m->item);
         m->item->setZValue(4);
         _imageWidget->markers.push_back(m);
-        markerList.push_back(m);
-        //m->item->setScale(1.0);
         m->item->imageRect = _imageWidget->scene->sceneRect();
         m->setWidth(10);
         m->setColor(currentMarkerColor);
         m->item->update();
 
         QListWidgetItem * item = new QListWidgetItem;
-        item->setText(markerList.last()->name);
-        itemList.push_back(item);
+        item->setText(m->name);
+
+        markerList.push_back(qMakePair(item,m));
         ui->listWidget->addItem(item);
         ui->listWidget->setCurrentRow(ui->listWidget->count()-1);
     }
@@ -667,24 +669,28 @@ void Input::on_toolArrow_clicked()
 void Input::on_toolCol_clicked()
 {
     currentMarkerColor = QColorDialog::getRgba();
-    markerList[ui->listWidget->currentRow()]->setColor(currentMarkerColor);
+    markerList[ui->listWidget->currentRow()].second->setColor(currentMarkerColor);
 }
 
 void Input::on_toolEllipse_clicked()
 {
+    qDebug()<<"A";
 
     for(uint i=0;i<markerList.size();++i)
     {
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(setFirstPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i],SLOT(setScecondPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(addPoint(QPoint)));
-
+        if(markerList[i].second != NULL)
+        {
+            qDebug()<<markerList[i].second;
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(setFirstPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i].second,SLOT(setScecondPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(addPoint(QPoint)));
+        }
     }
+    qDebug()<<"B";
     if(_imageWidget)
     {
         Marker* m = new Marker();
-        m->id = markerID +1;
-        ++markerID;
+
         connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),m,SLOT(setFirstPoint(QPoint)));
         connect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),m,SLOT(setScecondPoint(QPoint)));
         connect(_imageWidget->map,SIGNAL(scaleChanged(uint)),m,SLOT(setCurrentScale(uint)));
@@ -695,7 +701,6 @@ void Input::on_toolEllipse_clicked()
         _imageWidget->scene->addItem(m->item);
         m->item->setZValue(4);
         _imageWidget->markers.push_back(m);
-        markerList.push_back(m);
         //m->item->setScale(1.0);
         m->item->imageRect = _imageWidget->scene->sceneRect();
         m->setWidth(10);
@@ -703,10 +708,14 @@ void Input::on_toolEllipse_clicked()
         m->item->update();
 
         QListWidgetItem * item = new QListWidgetItem;
-        item->setText(markerList.last()->name);
-        itemList.push_back(item);
+        markerList.push_back(qMakePair(item,m));
+        item->setText(m->name);
         ui->listWidget->addItem(item);
         ui->listWidget->setCurrentRow(ui->listWidget->count()-1);
+        for(uint i=0;i<markerList.size();++i)
+        {
+            qDebug()<<"mark "<<i<<markerList[i];
+        }
     }
 }
 
@@ -714,10 +723,12 @@ void Input::on_toolRect_clicked()
 {
     for(uint i=0;i<markerList.size();++i)
     {
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(setFirstPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i],SLOT(setScecondPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(addPoint(QPoint)));
-
+        if(markerList[i].second != NULL)
+        {
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(setFirstPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i].second,SLOT(setScecondPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(addPoint(QPoint)));
+        }
     }
     if(_imageWidget)
     {
@@ -733,7 +744,6 @@ void Input::on_toolRect_clicked()
         _imageWidget->scene->addItem(m->item);
         m->item->setZValue(4);
         _imageWidget->markers.push_back(m);
-        markerList.push_back(m);
         m->item->setScale(1.0);
         m->item->imageRect = _imageWidget->scene->sceneRect();
         m->setWidth(10);
@@ -742,8 +752,8 @@ void Input::on_toolRect_clicked()
         qDebug()<<"markerList.size() "<<markerList.size();
 
         QListWidgetItem * item = new QListWidgetItem;
-        item->setText(markerList.last()->name);
-        itemList.push_back(item);
+        markerList.push_back(qMakePair(item,m));
+        item->setText(m->name);
         ui->listWidget->addItem(item);
         ui->listWidget->setCurrentRow(ui->listWidget->count()-1);
     }
@@ -753,9 +763,12 @@ void Input::on_toolPoly_clicked()
 {
     for(uint i=0;i<markerList.size();++i)
     {
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(setFirstPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i],SLOT(setScecondPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(addPoint(QPoint)));
+        if(markerList[i].second != NULL)
+        {
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(setFirstPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i].second,SLOT(setScecondPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(addPoint(QPoint)));
+        }
     }
     if(_imageWidget)
     {
@@ -773,7 +786,6 @@ void Input::on_toolPoly_clicked()
         _imageWidget->scene->addItem(m->advancedItem);
         m->advancedItem->setZValue(4);
         _imageWidget->markers.push_back(m);
-        markerList.push_back(m);
         m->advancedItem->setScale(1.0);
         qDebug()<<"D";
         m->advancedItem->imageRect = _imageWidget->scene->sceneRect();
@@ -785,8 +797,9 @@ void Input::on_toolPoly_clicked()
 
 
         QListWidgetItem * item = new QListWidgetItem;
-        item->setText(markerList.last()->name);
-        itemList.push_back(item);
+        markerList.push_back(qMakePair(item,m));
+
+        item->setText(m->name);
         ui->listWidget->addItem(item);
         ui->listWidget->setCurrentRow(ui->listWidget->count()-1);
     }
@@ -797,8 +810,7 @@ void Input::on_toolConf_clicked()
     if(_imageWidget)
     {
         QListWidgetItem * item = new QListWidgetItem;
-        item->setText(markerList.last()->name);
-        itemList.push_back(item);
+        item->setText(markerList.last().second->name);
         ui->listWidget->addItem(item);
     }
 }
@@ -807,45 +819,62 @@ void Input::on_listWidget_itemClicked(QListWidgetItem *item)
 {
     for(uint i=0;i<markerList.size();++i)
     {
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(setFirstPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i],SLOT(setScecondPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(addPoint(QPoint)));
-    }
-    qDebug()<<"ui->listWidget->currentRow()"<<ui->listWidget->currentRow();
-    qDebug()<<"markerList.size()"<<markerList.size();
 
-    if(markerList[ui->listWidget->currentRow()]->name == "Polygon")
-    {
-        connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[ui->listWidget->currentRow()],SLOT(addPoint(QPoint)));
+
+        if((markerList[i].first == item)&&(item != NULL))
+        {
+            qDebug()<<"A";
+            qDebug()<<markerList[i].first;
+            qDebug()<<markerList[i].second;
+            if(markerList[i].second->name == "Polygon")
+            {
+                qDebug()<<"B";
+                connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(addPoint(QPoint)));
+            }
+            else
+            {
+                qDebug()<<"C";
+                connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(setFirstPoint(QPoint)));
+                connect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i].second,SLOT(setScecondPoint(QPoint)));
+            }
+            qDebug()<<"D";
+            ui->plainTextEdit->setPlainText(markerList[i].second->text);
+            qDebug()<<"E";
+        }
     }
-    else
-    {
-        connect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[ui->listWidget->currentRow()],SLOT(setFirstPoint(QPoint)));
-        connect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[ui->listWidget->currentRow()],SLOT(setScecondPoint(QPoint)));
-    }
-    ui->plainTextEdit->setPlainText(markerList[ui->listWidget->currentRow()]->text);
+
+
 }
 
 void Input::on_plainTextEdit_textChanged()
 {
-    markerList[ui->listWidget->currentRow()]->text = ui->plainTextEdit->document()->toPlainText();
+    markerList[ui->listWidget->currentRow()].second->text = ui->plainTextEdit->document()->toPlainText();
 }
 
 void Input::on_toolRem_clicked()
 {
+    qDebug()<<"currentRow "<<ui->listWidget->currentRow();
+    qDebug()<<"markerList.size "<<markerList.size();
     for(uint i=0;i<markerList.size();++i)
     {
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(setFirstPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i],SLOT(setScecondPoint(QPoint)));
-        disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i],SLOT(addPoint(QPoint)));
-    }
-    if(ui->listWidget->currentRow() >= 0)
-    {
-        _imageWidget->scene->removeItem(markerList[ui->listWidget->currentRow()]->item);
+        if(ui->listWidget->currentItem() == markerList[i].first)
+        {
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(setFirstPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mouseReleasePos(QPoint)),markerList[i].second,SLOT(setScecondPoint(QPoint)));
+            disconnect(_imageWidget->scene, SIGNAL(mousePressPos(QPoint)),markerList[i].second,SLOT(addPoint(QPoint)));
 
-        //delete markerList[ui->listWidget->currentRow()];
-        delete itemList[ui->listWidget->currentRow()];
-        markerList.removeAt(ui->listWidget->currentRow());
-        itemList.removeAt(ui->listWidget->currentRow());
+            _imageWidget->scene->removeItem(markerList[i].second->item);
+            ui->listWidget->removeItemWidget(markerList[i].first);
+            delete markerList[i].first;
+            delete markerList[i].second;
+            markerList.removeAt(i);
+        }
     }
+    for(uint i=0;i<markerList.size();++i)
+    {
+        qDebug()<<"mark "<<i<<markerList[i];
+    }
+    _imageWidget->view->update();
+    _imageWidget->scene->update();
+    qDebug()<<"END";
 }

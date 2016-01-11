@@ -22,8 +22,11 @@ public:
     void reDraw();
     RectItem *getRectItem();
     QGraphicsPixmapItem pixItem;
+    QSize originalSize;
+    double previewImageScale;
     void setMaxScale(int max);
     void setImage(QString path);
+    void setOriginalSize(QSize orig_size);
 signals:
 
 public slots:

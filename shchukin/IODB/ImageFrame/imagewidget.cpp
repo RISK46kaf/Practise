@@ -120,13 +120,12 @@ void ImageWidget::openImage(bool)
                 }
                 tileAmount.push_back(tsize);
             }
-
-
         }
     }
 
     sortSize(imgSizes);
     sortSize(tileAmount);
+    preview->setOriginalSize(imgSizes[0]);
     preview->setMaxScale(imgSizes.size()-1);
     map->setScale(tileAmount[0],scale);
     map->setImgSizes(imgSizes);

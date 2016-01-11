@@ -13,11 +13,13 @@ public:
     ~RectItem();
     QRect rect;
     uint scale;
+    int factor;
     QRectF br;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     QRectF boundingRect() const;
     void setRect(QRect r);
     QPointF centerPos;
+    void setFactor(int f);
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 };

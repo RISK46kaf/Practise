@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <ImageFrame/imagewidget.h>
 #include <Markers/marker.h>
-
+#include <QPair>
 
 namespace Ui {
 class Input;
@@ -49,9 +49,8 @@ private:
     Core::ProfileManager* _profileManager;
     Core::DataBaseManager* _dbManager;
     ImageWidget* _imageWidget;
-    QList<Marker*> markerList;
     QRgb currentMarkerColor;
-    QList<QListWidgetItem*> itemList;
+    QVector<QPair<QListWidgetItem*,Marker*> > markerList;
     void init();
     void clear();
     int markerID;

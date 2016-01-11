@@ -6,6 +6,7 @@ PreviewView::PreviewView()
     scene = new QGraphicsScene();
     this->setScene(scene);
     //QPixmap img("5/scale=5.jpeg");
+    scale = 1;
 
 }
 
@@ -15,26 +16,19 @@ PreviewView::~PreviewView()
 
 void PreviewView::setR(QRect r)
 {
-    int p1 = r.size().width()*scale/max_scale;
-    int p2 = r.size().height()*scale/max_scale;
+    int p1 = r.size().width()*scale/previewImageScale;
+    int p2 = r.size().height()*scale/previewImageScale;
     rect.setTopLeft(QPoint(0,0));
     rect.setBottomRight(QPoint(p1,p2));
     rectItem->setRect(getViewField(rect));
-    //qDebug()<<"r tl"<<r.topLeft();
-    //qDebug()<<"r br"<<r.bottomRight();
-    //qDebug()<<"scene br "<<scene->sceneRect().bottomRight();
-    //qDebug()<<"rect to scene"<<getViewField(r);
-    //rectItem->setScale();
-    //rectItem->setPos(pixItem.mapFromScene(r.topLeft()/1));
-    //qDebug()<<rectItem->pos();
-    //reDraw();
+
     update();
 }
 
 void PreviewView::setP(QPointF p)
 {   
 
-    rectItem->setPos(pixItem.mapToScene(p).toPoint()*scale/10);
+    rectItem->setPos(pixItem.mapToScene(p).toPoint()*scale/previewImageScale);
     //rectItem->setPos(pixItem.mapToScene(rect.topLeft()/(6-scale)).toPoint());
     update();
 }
@@ -74,9 +68,18 @@ void PreviewView::setMaxScale(int max)
     max_scale = max;
 }
 
+void PreviewView::setOriginalSize(QSize orig_size)
+{
+    originalSize = orig_size;
+    double w = pixItem.pixmap().size().width();
+    previewImageScale = originalSize.width()/w;
+    qDebug()<<"previewImageScale "<<previewImageScale;
+    rectItem->setFactor(previewImageScale);
+}
+
 void PreviewView::setImage(QString path)
 {
-    QPixmap img(path,"JPG");
+    QPixmap img(path,"PNG");
     pixItem.setPixmap(img);
     scene->addItem(&pixItem);
     //scene->addPixmap(img);

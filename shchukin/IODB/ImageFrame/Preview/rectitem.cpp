@@ -19,7 +19,7 @@ void RectItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(widget);
     QPen pn;
     pn.setColor(QColor(Qt::green));
-    pn.setWidth(15);
+    pn.setWidth(10/factor);
     painter->setPen(pn);
     painter->drawRect(rect);
 
@@ -38,6 +38,11 @@ void RectItem::setRect(QRect r)
     rect.setTopLeft(p1);
     rect.setBottomRight(p2);
     update();
+}
+
+void RectItem::setFactor(int f)
+{
+    factor = f;
 }
 
 void RectItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
