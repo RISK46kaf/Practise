@@ -1,4 +1,4 @@
-#ifndef RECTMARKER_H
+﻿#ifndef RECTMARKER_H
 #define RECTMARKER_H
 #include "abstractfigure.h"
 #include <QGraphicsRectItem>
@@ -10,7 +10,7 @@
 #include <QDebug>
 #include <QtMath>
 
-class RectMarker  : public QObject, public AbstractFigure
+class RectMarker  : public AbstractFigure
 {
 public:
     RectMarker();

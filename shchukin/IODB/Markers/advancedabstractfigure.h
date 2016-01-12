@@ -1,11 +1,11 @@
-#ifndef ADVANCEDABSTRACTFIGURE_H
+﻿#ifndef ADVANCEDABSTRACTFIGURE_H
 #define ADVANCEDABSTRACTFIGURE_H
 #include <QPoint>
 #include <QObject>
 #include <QGraphicsItem>
 #include <QDebug>
 
-class AdvancedAbstractFigure : public QObject, public QGraphicsItem
+class AdvancedAbstractFigure : public QGraphicsItem
 {
 public:
     AdvancedAbstractFigure();

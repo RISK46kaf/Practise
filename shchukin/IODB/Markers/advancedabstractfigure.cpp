@@ -1,4 +1,4 @@
-#include "advancedabstractfigure.h"
+﻿#include "advancedabstractfigure.h"
 
 AdvancedAbstractFigure::AdvancedAbstractFigure()
 {
@@ -7,6 +7,13 @@ AdvancedAbstractFigure::AdvancedAbstractFigure()
     maxBottom = 0;
     maxLeft = INT32_MAX;
     maxRight = 0;
+}
+
+AdvancedAbstractFigure::AdvancedAbstractFigure(uint scale, uint w, QRgb c)
+{
+    firstScale = scale;
+    width = w;
+    color = c;
 }
 
 

@@ -386,6 +386,14 @@ void Output::init()
             }
             );
     connect(_profileManager,
+            &Core::ProfileManager::lineDiagnLChanged,
+            [=](QString diagnLast)
+            {
+                qDebug() << "НЕТ КОНЕЧНОГО ДИАГНОЗА В ВЫВОДЕ" <<diagnLast;
+          //      ui->lineDianosisL->setText(diagnLast);
+            }
+            );
+    connect(_profileManager,
             &Core::ProfileManager::lineRegRChanged,
             [=](QString str)
             {

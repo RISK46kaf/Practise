@@ -1,11 +1,11 @@
-#ifndef ABSTRACTFIGURE_H
+﻿#ifndef ABSTRACTFIGURE_H
 #define ABSTRACTFIGURE_H
 #include <QPoint>
 #include <QObject>
 #include <QGraphicsItem>
 #include <QDebug>
 
-class AbstractFigure : public QObject, public QGraphicsItem
+class AbstractFigure : public QGraphicsItem
 {
 public:
     AbstractFigure();

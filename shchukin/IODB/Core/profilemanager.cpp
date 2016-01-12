@@ -22,6 +22,7 @@ ProfileManager::ProfileManager(const ProfileManager &other)
     _lineName = other._lineName;
     _dateBth = other._dateBth;
     _sex = other._sex;
+    _lineDiagnL = other._lineDiagnL;
     _lineRegR = other._lineRegR;
     _lineDistrR = other._lineDistrR;
     _lineLocR = other._lineLocR;
@@ -48,6 +49,7 @@ ProfileManager &ProfileManager::operator=(const ProfileManager &other)
     _lineSale = other._lineSale;
     _textSale = other._textSale;
     _lineName = other._lineName;
+    _lineDiagnL = other._lineDiagnL;
     _dateBth = other._dateBth;
     _sex = other._sex;
     _lineRegR = other._lineRegR;
@@ -235,6 +237,23 @@ void ProfileManager::unsetSex()
 {
     _sex = true;
     sexChanged(_sex);
+}
+
+QString ProfileManager::lineDiagnL() const
+{
+    return _lineDiagnL;
+}
+
+void ProfileManager::setLineDiagnL(const QString &lineDiagnL)
+{
+    _lineDiagnL = lineDiagnL;
+    lineDiagnLChanged(_lineDiagnL);
+}
+
+void ProfileManager::unsetLineDiagnL()
+{
+    _lineDiagnL.clear();
+    lineDiagnLChanged(_lineDiagnL);
 }
 
 QString ProfileManager::lineRegR() const

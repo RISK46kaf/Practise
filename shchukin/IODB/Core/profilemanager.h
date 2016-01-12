@@ -30,6 +30,8 @@ class ProfileManager : public QObject
                RESET unsetDateBth NOTIFY dateBthChanged)
     Q_PROPERTY(bool sex READ sex WRITE setSex
                RESET unsetSex  NOTIFY sexChanged)
+    Q_PROPERTY(QString lineDiagnL READ lineDiagnL WRITE setLineDiagnL
+               RESET unsetLineDiagnL  NOTIFY lineDiagnLChanged)
     Q_PROPERTY(QString lineRegR READ lineRegR WRITE setLineRegR
                RESET unsetLineRegR NOTIFY lineRegRChanged)
     Q_PROPERTY(QString lineDistrR READ lineDistrR WRITE setLineDistrR
@@ -74,6 +76,7 @@ public:
     QString lineName() const;
     QDate dateBth() const;
     bool sex() const;
+    QString lineDiagnL() const;
     QString lineRegR() const;
     QString lineDistrR() const;
     QString lineLocR() const;
@@ -100,6 +103,7 @@ private:
     QString _lineName;
     QDate _dateBth;
     bool _sex;
+    QString _lineDiagnL;
     QString _lineRegR;
     QString _lineDistrR;
     QString _lineLocR;
@@ -125,6 +129,7 @@ signals:
     void lineNameChanged(QString);
     void dateBthChanged(QDate);
     void sexChanged(bool);
+    void lineDiagnLChanged(QString);
     void lineRegRChanged(QString);
     void lineDistrRChanged(QString);
     void lineLocRChanged(QString);
@@ -161,6 +166,8 @@ public slots:
     void unsetDateBth();
     void setSex(bool sex);
     void unsetSex();
+    void setLineDiagnL(const QString& lineDiagnL);
+    void unsetLineDiagnL();
     void setLineRegR(const QString& lineRegR);
     void unsetLineRegR();
     void setLineDistrR(const QString& lineDistrR);

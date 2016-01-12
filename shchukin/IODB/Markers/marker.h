@@ -1,4 +1,4 @@
-#ifndef MARKER_H
+﻿#ifndef MARKER_H
 #define MARKER_H
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
@@ -21,7 +21,7 @@ class Marker : public QObject
 {
     Q_OBJECT
 public:
-    Marker();
+    Marker(QObject* parent = 0);
     ~Marker();
     void drawArrow();
     void drawEllipse();

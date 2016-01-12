@@ -1,6 +1,6 @@
-#include "marker.h"
+﻿#include "marker.h"
 
-Marker::Marker()
+Marker::Marker(QObject* parent) : QObject(parent)
 {
     currentScale = 1;
     item = NULL;

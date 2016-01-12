@@ -1,4 +1,4 @@
-#ifndef POLYGONMARKER_H
+﻿#ifndef POLYGONMARKER_H
 #define POLYGONMARKER_H
 #include "advancedabstractfigure.h"
 #include <QGraphicsRectItem>
@@ -10,7 +10,7 @@
 #include <QDebug>
 #include <QtMath>
 
-class PolygonMarker  : public QObject, public AdvancedAbstractFigure
+class PolygonMarker  : public AdvancedAbstractFigure
 {
 public:
     PolygonMarker();

@@ -63,7 +63,7 @@ void CutterRunnable::imageScales(vips::VImage& image,
     int last_pixel_y = 0;
     QString dirName = outputDir;
     QString previewDir = dirName + "/Preview";
-    QString originDir = dirName + "/Original";
+    QString originDir = dirName + "/Morph";
     dirName = dirName + "/1_" + QString::number(i);
     QDir dir(dirName);
     //m.lock();
@@ -79,7 +79,7 @@ void CutterRunnable::imageScales(vips::VImage& image,
     QString pathP =
             previewDir + "/1_" + QString::number(i*5) + ".jpg[Q=35,optimize_coding]";
     QString pathO =
-            originDir + "/1_" + QString::number(i) + ".png[compression=9]";
+            originDir + "/morph.png[compression=9]";
     for(int h = 0; h < tile_amount_h; ++h)
     {
         last_pixel_y = tileSize[1];
@@ -146,7 +146,7 @@ void CutterRunnable::imageScales(vips::VImage& image,
         vips::VImage image = scaled_image.similarity( vips::VImage::option()->set( "scale", 0.2 ) );
         image.write_to_file(pathP.toStdString().c_str());
     }
-    if(i == 1)
+    if(i == 10)
     {
         scaled_image.write_to_file(pathO.toStdString().c_str());
     }

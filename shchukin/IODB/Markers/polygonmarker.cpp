@@ -1,4 +1,4 @@
-#include "polygonmarker.h"
+﻿#include "polygonmarker.h"
 
 PolygonMarker::PolygonMarker()
 {

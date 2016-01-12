@@ -1,4 +1,4 @@
-#ifndef ELLIPSEMARKER_H
+﻿#ifndef ELLIPSEMARKER_H
 #define ELLIPSEMARKER_H
 #include "abstractfigure.h"
 #include <QGraphicsRectItem>
@@ -10,7 +10,7 @@
 #include <QDebug>
 #include <QtMath>
 
-class EllipseMarker  : public QObject, public AbstractFigure
+class EllipseMarker  :  public AbstractFigure
 {
 public:
     EllipseMarker();

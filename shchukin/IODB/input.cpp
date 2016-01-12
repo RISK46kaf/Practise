@@ -6,6 +6,7 @@
 #include "Core/databasemanager.h"
 #include <QDebug>
 #include <QColorDialog>
+#include "sender.h"
 
 
 using namespace Core;
@@ -32,12 +33,15 @@ void Input::init()
     _anamnesManager = new AnamnesManager(this);
     _profileManager = new ProfileManager(this);
     _imageWidget = new ImageWidget(this);
+//    _imageWidget->setMinimumWidth(800);
+//    ui->frame_2->setMinimumWidth(800);
+    this->setMinimumWidth(1200);
 
     ui->imageViewLayout->addWidget(_imageWidget);
 
     _dbManager->setParent(this);
 
-
+    _sender = new Sender(this);
 
     connect(ui->actionSetPersonalData,
             &QAction::triggered,
@@ -67,6 +71,7 @@ void Input::init()
                          _profileManager,
                          anamnesId
                          );
+        _sender->startOperation(_imageWidget->getPath(), _dbManager, _anamnesManager, _profileManager, &markerList );
     }
     );
     connect(ui->dateSince,
@@ -439,6 +444,14 @@ void Input::init()
     {
         blockSignals(true);
         _profileManager->setSex(!checked);
+        blockSignals(false);
+    }
+    );
+    connect(ui->lineDiagnosisL,
+            &QLineEdit::textChanged,
+            [=]() {
+        blockSignals(true);
+        _profileManager->setLineDiagnL(ui->lineDiagnosisL->text());
         blockSignals(false);
     }
     );

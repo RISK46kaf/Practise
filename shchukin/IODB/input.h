@@ -1,4 +1,4 @@
-#ifndef INPUT_H
+﻿#ifndef INPUT_H
 #define INPUT_H
 
 #include <QMainWindow>
@@ -9,6 +9,8 @@
 namespace Ui {
 class Input;
 }
+
+class Sender;
 
 namespace Core {
 class AnamnesManager;
@@ -49,6 +51,7 @@ private:
     Core::ProfileManager* _profileManager;
     Core::DataBaseManager* _dbManager;
     ImageWidget* _imageWidget;
+    Sender*      _sender;
     QRgb currentMarkerColor;
     QVector<QPair<QListWidgetItem*,Marker*> > markerList;
     void init();

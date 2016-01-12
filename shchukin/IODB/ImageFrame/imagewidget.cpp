@@ -23,14 +23,26 @@ ImageWidget::ImageWidget(QWidget *parent) : QWidget(parent)
     scene = new MyGraphicsScene();
     preview = new PreviewView();
     layout = new QGridLayout(this);
-    openButton = new QPushButton(this);
-    layout->addWidget(preview);
-    layout->addWidget(view);
-    layout->addWidget(openButton);
+    openButton = new QPushButton("Открыть изображение", this);
+//    layout->addWidget(openButton,0,1);
+    layout->addWidget(preview,0,0);
+    subLayout = new QVBoxLayout(this);
+    comenLab = new QLabel("Краткий комментарий об изображении");
+    comenLab->setMaximumHeight(21);
+    comenLab->setAlignment(Qt::AlignCenter);
+    textComen = new QTextEdit();
+    //
+    subLayout->addWidget(openButton);
+    subLayout->addWidget(comenLab);
+    subLayout->addWidget(textComen);
+    layout->addLayout(subLayout,0,1);
+    layout->addWidget(view,1,0,1,0,0);
+//    layout->addWidget(view,1,0,1,0,1);
     connect(openButton,SIGNAL(clicked(bool)),this,SLOT(openImage(bool)));
     view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     view->setStyleSheet( "QGraphicsView { border-style: none; }" );
     view->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    view->setMinimumWidth(1000);
     //view->setDragMode(QGraphicsView::ScrollHandDrag);
     scale = 1;
 
@@ -45,34 +57,30 @@ ImageWidget::ImageWidget(QWidget *parent) : QWidget(parent)
     view->setScene(scene);
     view->verticalScrollBar()->setSingleStep(1);
 
+    comenLab->setMaximumHeight(21);
+    openButton->setMaximumHeight(21);
+    textComen->setMaximumHeight(preview->height()
+                                - comenLab->height() - openButton->height());
+//    textComen->setMinimumWidth();
+    openButton->setMaximumWidth(textComen->width());
     preview->setScale(1);
 }
 
-void ImageWidget::openImage(bool)
+void ImageWidget::openByName(const QString &path)
 {
-    connect(view, SIGNAL(resized()),map,SLOT(viewResized()));
-    connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), map, SLOT(scrolledVertical(int)));
-    connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), map, SLOT(scrolledHorizontal(int)));
-    connect(view, SIGNAL(zoomOut(QPoint)),map,SLOT(zoomOut(QPoint)));
-    connect(view, SIGNAL(zoomIn(QPoint)),map,SLOT(zoomIn(QPoint)));
-    //connect(t, SIGNAL(timeout()),map,SLOT(timeout()));
-    connect(map, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
-    connect(map, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
-    connect(map,SIGNAL(scaleChanged(uint)),this,SLOT(markerScaleChange(uint)));
-
-    QString fileName;
-    fileName = QFileDialog::getOpenFileName(this,tr("Open"),tr(""),tr("Files(*.xml)"));
-
-    QDir d(fileName);
+    filename = path + "/image.xml";
+    qDebug() << "filename 777" << filename;
+    QDir d(filename);
     d.cd("../");
     QString p = d.path();
     map->loadImage(d);
 
-    QDir dirry (d.path()+"/Preview/");
+    QDir dirry (path+"/Preview/");
 
     qDebug() << d.path();
+//    path = d.path();
     QStringList sList;
-    /*qDebug() << "fucking" << */(sList = dirry.entryList(QDir::Files | QDir::NoDotAndDotDot));
+    qDebug() << "fucking" << (sList = dirry.entryList(QDir::Files | QDir::NoDotAndDotDot));
 
     if(sList.count())
     {
@@ -86,7 +94,7 @@ void ImageWidget::openImage(bool)
     QVector<QSize> tileAmount;
 
 
-    QFile* file = new QFile(fileName);
+    QFile* file = new QFile(filename);
     if (file->open(QIODevice::ReadOnly))
     {
 
@@ -127,10 +135,47 @@ void ImageWidget::openImage(bool)
     sortSize(tileAmount);
     preview->setOriginalSize(imgSizes[0]);
     preview->setMaxScale(imgSizes.size()-1);
-    map->setScale(tileAmount[0],scale);
+    scale = tileAmount.count();
+    qDebug() << "SCAAAAALEEE "<< scale;
+    map->setScale(tileAmount.last(),scale);
     map->setImgSizes(imgSizes);
     map->setTileAmount(tileAmount);
     map->drawViewField(getViewField());
+}
+
+QString ImageWidget::getFilename() const
+{
+    return filename;
+}
+
+QString ImageWidget::getPath() const
+{
+    return path;
+}
+
+void ImageWidget::openImage(bool)
+{
+    connect(view, SIGNAL(resized()),map,SLOT(viewResized()));
+    connect(view->verticalScrollBar(), SIGNAL(valueChanged(int)), map, SLOT(scrolledVertical(int)));
+    connect(view->horizontalScrollBar(), SIGNAL(valueChanged(int)), map, SLOT(scrolledHorizontal(int)));
+    connect(view, SIGNAL(zoomOut(QPoint)),map,SLOT(zoomOut(QPoint)));
+    connect(view, SIGNAL(zoomIn(QPoint)),map,SLOT(zoomIn(QPoint)));
+    //connect(t, SIGNAL(timeout()),map,SLOT(timeout()));
+    connect(map, SIGNAL(viewRect(QRect)), preview, SLOT(setR(QRect)));
+    connect(map, SIGNAL(topLeftPointEvent(QPointF)), preview, SLOT(setP(QPointF)));
+    connect(map,SIGNAL(scaleChanged(uint)),this,SLOT(markerScaleChange(uint)));
+
+    QString fileName;
+    fileName = QFileDialog::getOpenFileName(this,tr("Open"),tr(""),tr("Files(*.xml)"));
+
+    if(!QFileInfo(fileName).exists())
+        return;
+    filename = fileName;
+    qDebug() << "filename 777" << filename;
+    QDir d(filename);
+    d.cd("../");
+    path = d.path();
+    openByName(path);
 }
 
 void ImageWidget::setViewPos(QPointF pnt)

@@ -1,11 +1,13 @@
-#ifndef DATABASEMANAGER_H
+﻿#ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
 #include <QObject>
 #include <QSqlDatabase>
 #include <QHash>
 
+struct MorphData;
 class QTimer;
+class Marker;
 
 namespace Core {
 
@@ -29,6 +31,8 @@ public:
                  const QString& pass, int mode);
     qint64 writeProfile(ProfileManager* profileManager, qint64 anamnesId);
     qint64 writeAnamnes(AnamnesManager* anamnesManager);
+    qint64 writeMarker(Marker* marker, QString imgPath, qint64 profileId);
+    qint64 writeMorphology(MorphData& data, qint64 markerId);
     void readPreview(QList<QPair<qint64, QString> >* previewList);
     bool readProfileAndAnamnes(ProfileManager* profileManager, AnamnesManager* anamnesManager, qint64 profileId);
     bool readAnamnes(AnamnesManager* anamnesManager, qint64 profileId);

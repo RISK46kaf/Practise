@@ -1,4 +1,4 @@
-#include "abstractfigure.h"
+﻿#include "abstractfigure.h"
 
 
 AbstractFigure::AbstractFigure()

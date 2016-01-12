@@ -24,7 +24,13 @@ SOURCES += main.cpp\
     Markers/ellipsemarker.cpp \
     Markers/rectmarker.cpp \
     Markers/advancedabstractfigure.cpp \
-    Markers/polygonmarker.cpp
+    Markers/polygonmarker.cpp \
+    sender.cpp \
+    recognizemediator.cpp \
+    Recognizer/trecognizer.cpp \
+    Recognizer/tregmode.cpp \
+    Recognizer/treservationrules.cpp \
+    Recognizer/tthing.cpp
 
 SOURCES +=   ImageFrame/Preview/rectitem.cpp \
     ImageFrame/Preview/previewview.cpp \
@@ -38,7 +44,11 @@ SOURCES +=    Markers/marker.cpp \
     Markers/abstractfigure.cpp \
     Markers/arrowmarker.cpp
 
+INCLUDEPATH += /usr/local/include
 
+LIBS += /usr/local/lib/libopencv_core.3.0.0.dylib
+LIBS += /usr/local/lib/libopencv_highgui.3.0.0.dylib
+LIBS += /usr/local/lib/libopencv_imgproc.3.0.0.dylib
 
 HEADERS  += welcome.h \
     Core/anamnesmanager.h \
@@ -49,7 +59,19 @@ HEADERS  += welcome.h \
     Markers/ellipsemarker.h \
     Markers/rectmarker.h \
     Markers/advancedabstractfigure.h \
-    Markers/polygonmarker.h
+    Markers/polygonmarker.h \
+    sender.h \
+    recognizemediator.h \
+    Recognizer/pixrec.h \
+    Recognizer/tlayerb.h \
+    Recognizer/tlayerrec.h \
+    Recognizer/tlayert.h \
+    Recognizer/tmatrixt.h \
+    Recognizer/trecognizer.h \
+    Recognizer/tregmode.h \
+    Recognizer/treservationrules.h \
+    Recognizer/tthing.h \
+    morphdata.h
 
 HEADERS  +=    ImageFrame/Preview/previewview.h\
     ImageFrame/Preview/rectitem.h \

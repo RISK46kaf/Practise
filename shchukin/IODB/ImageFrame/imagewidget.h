@@ -1,4 +1,4 @@
-#ifndef IMAGEWIDGET_H
+﻿#ifndef IMAGEWIDGET_H
 #define IMAGEWIDGET_H
 
 #include <QWidget>
@@ -17,7 +17,8 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QObject>
-
+#include <QLabel>
+#include <QTextEdit>
 
 class ImageWidget : public QWidget
 {
@@ -31,9 +32,16 @@ public:
     TileMap* map;
     QVector<Marker*> markers;
     uint scale;
+    void openByName(const QString& filename);
+    QString getFilename() const;
+    QString getPath() const;
+
 private:
     QGridLayout* layout;
-    QPushButton * openButton;
+    QVBoxLayout* subLayout;
+    QLabel*      comenLab;
+    QTextEdit*   textComen;
+    QPushButton* openButton;
 
     QGraphicsPixmapItem *centralItem;
     QStringList paths;
@@ -46,6 +54,9 @@ private:
     QStringList imageList;
     QVector<QListWidgetItem*> items;
     QTimer* t;
+    QString filename;
+    QString path;
+
 
     void setXML(QString path);
     void setPreview(QString path);

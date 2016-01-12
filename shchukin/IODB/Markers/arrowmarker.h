@@ -1,4 +1,4 @@
-#ifndef ARROWMARKER_Hn
+﻿#ifndef ARROWMARKER_H
 #define ARROWMARKER_H
 #include "abstractfigure.h"
 #include <QGraphicsRectItem>
@@ -10,7 +10,7 @@
 #include <QDebug>
 #include <QtMath>
 
-class ArrowMarker  : public QObject, public AbstractFigure
+class ArrowMarker  : public AbstractFigure
 {
 public:
     ArrowMarker();

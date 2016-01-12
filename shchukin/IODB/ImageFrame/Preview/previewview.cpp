@@ -79,7 +79,7 @@ void PreviewView::setOriginalSize(QSize orig_size)
 
 void PreviewView::setImage(QString path)
 {
-    QPixmap img(path,"PNG");
+    QPixmap img(path);
     pixItem.setPixmap(img);
     scene->addItem(&pixItem);
     //scene->addPixmap(img);

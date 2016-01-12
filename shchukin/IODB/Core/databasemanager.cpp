@@ -1,6 +1,8 @@
 ﻿#include "databasemanager.h"
 #include "anamnesmanager.h"
 #include "profilemanager.h"
+#include "Markers/marker.h"
+#include "morphdata.h"
 
 #include <QDebug>
 #include <QSqlError>
@@ -73,7 +75,7 @@ qint64 DataBaseManager::writeProfile(ProfileManager *profileManager, qint64 anam
                       ":a1, :a2, :a3, :a4, :a5, :a6, :a7,"
                       ":b1, :b2, :b3, :b4, :b5, :b6, :b7);");
         query.bindValue(":sexIn", QVariant::fromValue(profileManager->sex()));
-        query.bindValue(":diagName", QVariant());
+        query.bindValue(":diagName", QVariant::fromValue(profileManager->lineDiagnL()));
         query.bindValue(":SNILSIn", QVariant::fromValue(profileManager->lineSnilsID()));
         query.bindValue(":INNin", QVariant());
         query.bindValue(":passportIn", QVariant());
@@ -199,6 +201,146 @@ qint64 DataBaseManager::writeAnamnes(AnamnesManager *anamnesManager)
     return retVal;
 }
 
+qint64 DataBaseManager::writeMarker(Marker *marker, QString imgPath, qint64 profileId)
+{
+    qDebug("call writeMarker");
+    qint64 retVal = - 1;
+    if(_db.isOpen())
+    {
+        _db.transaction();
+        bool ok = true;
+        QSqlQuery query;
+        query.prepare("call Fill_FMarker(:mName,"
+                      ":color, :thickness, :scale,"
+                      ":inURL, :firstX, :firstY, :form);");
+        query.bindValue(":mName", QVariant::fromValue(marker->text));
+        query.bindValue(":thickness", QVariant());
+        query.bindValue(":scale", QVariant());
+        query.bindValue(":inURL", QVariant::fromValue(imgPath));
+        query.bindValue(":form", marker->name);
+        if(marker->name != "Polygon")
+        {
+            query.bindValue(":color", QVariant::fromValue(marker->item->color));
+            qDebug() << "firstPoint" << marker->item->firstPoint;
+            query.bindValue(":firstX", QVariant::fromValue(marker->item->firstPoint.x()));
+            query.bindValue(":firstY", QVariant::fromValue(marker->item->firstPoint.y()));
+            ok = query.exec();
+            query.next();
+//            _db.commit();
+            qDebug() << query.lastError().text();
+            qDebug() << "saasd" << ok; // zero means add to last added;
+//            _db.transaction();
+            query.prepare("CALL Fill_Point(:x, :y, :zero);");
+            qDebug() << "secondPoint" << marker->item->secondPoint;
+            query.bindValue(":x", QVariant::fromValue(marker->item->secondPoint.x()));
+            query.bindValue(":y", QVariant::fromValue(marker->item->secondPoint.y()));
+            query.bindValue(":zero", QVariant::fromValue(0));
+            ok &= query.exec();
+            query.next();
+//            _db.commit();
+            qDebug() << query.lastError().text();
+            qDebug() << "saasd" << ok; // zero means add to last added;
+        }
+        else
+        {
+            query.bindValue(":color", QVariant::fromValue(marker->advancedItem->color));
+            query.bindValue(":firstX", QVariant::fromValue(marker->advancedItem->points[0].x()));
+            query.bindValue(":firstY", QVariant::fromValue(marker->advancedItem->points[0].y()));
+            ok = query.exec();
+            query.next();
+//            _db.commit();
+            qDebug() << query.lastError().text();
+            qDebug() << "saasd" << ok; // zero means add to last added;
+            for(int i = 1; i < marker->advancedItem->points.count(); ++i)
+            {
+//                _db.transaction();
+                query.prepare("CALL Fill_Point(:x, :y, :zero);");
+                qDebug() << marker->advancedItem->points[i];
+                query.bindValue(":x", QVariant::fromValue(marker->advancedItem->points[i].x()));
+                query.bindValue(":y", QVariant::fromValue(marker->advancedItem->points[i].y()));
+                query.bindValue(":zero", QVariant::fromValue(0));
+                ok &= query.exec();
+                query.next();
+//                _db.commit();
+                qDebug() << query.lastError().text();
+                qDebug() << "saasd" << ok; // zero means add to last added;
+            }
+        }
+        query.prepare("call Connector_entry(:URL, :PatId);");
+        query.bindValue(":URL", QVariant::fromValue(imgPath));
+        query.bindValue(":PatId", QVariant::fromValue(profileId));
+        ok &= query.exec();
+        query.next();
+//                _db.commit();
+        qDebug() << query.lastError().text();
+        qDebug() << "saasd" << ok; // zero means add to last added;
+//        _db.transaction();
+        ok &= query.exec("SELECT MAX(id) from markFull;");
+        query.next();
+        retVal = query.value(0).toInt(&ok);
+        qDebug() << query.lastError().text();
+        _db.commit();
+        qDebug() << "ok?" << ok;
+    }
+    return retVal;
+}
+
+qint64 DataBaseManager::writeMorphology(MorphData &data, qint64 markerId)
+{
+    qDebug("call writeMarker");
+    qint64 retVal = - 1;
+    if(_db.isOpen())
+    {
+        _db.transaction();
+        bool ok = true;
+        QSqlQuery query;
+        query.prepare("call Fill_Morph(:Spots, "
+                      ":SpotsSquare, :ExtCircuit8Len, :ExtCircuit4Len, :ExtPerimetr, "
+                      ":IntCircuit8Len, :IntCircuit4Len, :IntPerimetr, :Square, "
+                      ":Fullness, :ShapeFactor, :MarkF_id, :MinDiametr, :AngleMin, "
+                      ":MaxDiametr, :AngleMax, :AverageDiametr, :MeanSquareDiametr, "
+                      ":RadValid, :MaxRadius, :MinRadius, :AverageRadius, :MeanSquareRadius, "
+                      ":InertiaMoment, :RelInertiaMoment, :FerValid);");
+        query.bindValue(":Spots", QVariant::fromValue(data.Spots));
+        query.bindValue(":SpotsSquare", QVariant::fromValue(data.SpotsSquare));
+        query.bindValue(":ExtCircuit8Len", QVariant::fromValue(data.ExtCircuit8Len));
+        query.bindValue(":ExtCircuit4Len", QVariant::fromValue(data.ExtCircuit4Len));
+        query.bindValue(":ExtPerimetr", QVariant::fromValue(data.ExtPerimetr));
+        query.bindValue(":IntCircuit8Len", QVariant::fromValue(data.IntCircuit8Len));
+        query.bindValue(":IntCircuit4Len", QVariant::fromValue(data.IntCircuit4Len));
+        query.bindValue(":IntPerimetr", QVariant::fromValue(data.IntPerimetr));
+        query.bindValue(":Square", QVariant::fromValue(data.Square));
+        query.bindValue(":Fullness", QVariant::fromValue(data.Fullness));
+        query.bindValue(":ShapeFactor", QVariant::fromValue(data.ShapeFactor));
+        query.bindValue(":MarkF_id", QVariant::fromValue(markerId));
+        query.bindValue(":MinDiametr", QVariant::fromValue(data.MinDiametr));
+        query.bindValue(":AngleMin", QVariant::fromValue(data.AngleMin));
+        query.bindValue(":MaxDiametr", QVariant::fromValue(data.MaxDiametr));
+        query.bindValue(":AngleMax", QVariant::fromValue(data.AngleMax));
+        query.bindValue(":AverageDiametr", QVariant::fromValue(data.AverageDiametr));
+        query.bindValue(":MeanSquareDiametr", QVariant::fromValue(data.MeanSquareDiametr));
+        query.bindValue(":RadValid", QVariant::fromValue(data.RadValid));
+        query.bindValue(":MaxRadius", QVariant::fromValue(data.MaxRadius));
+        query.bindValue(":MinRadius", QVariant::fromValue(data.MinRadius));
+        query.bindValue(":AverageRadius", QVariant::fromValue(data.AverageRadius));
+        query.bindValue(":MeanSquareRadius", QVariant::fromValue(data.MeanSquareRadius));
+        query.bindValue(":InertiaMoment", QVariant::fromValue(data.InertiaMoment));
+        query.bindValue(":RelInertiaMoment", QVariant::fromValue(data.RelInertiaMoment));
+        query.bindValue(":FerValid", QVariant::fromValue(data.FerValid));
+        ok = query.exec();
+        query.next();
+        qDebug() << query.lastError().text();
+        qDebug() << "saasd" << ok; // zero means add to last added;
+        query.exec("SELECT MAX(id) from morph_tthing;");
+        query.next();
+        retVal = query.value(0).toInt(&ok);
+        qDebug() << query.lastError().text();
+        _db.commit();
+        qDebug() << "ok?" << ok;
+    }
+    return retVal;
+}
+
 void DataBaseManager::readPreview(QList<QPair<qint64, QString> > *previewList)
 {
     _previewList =  previewList;
@@ -254,6 +396,7 @@ bool DataBaseManager::readProfileAndAnamnes(ProfileManager* profileManager,Anamn
         {
             qDebug("whoa");
             profileManager->setSex(query.value(1).toBool());
+            profileManager->setLineDiagnL(query.value(2).toString());
             profileManager->setLineSnilsID(query.value(3).toString());
             profileManager->setLineName(query.value(7).toString());
             profileManager->setLineMedValID(query.value(8).toString());
