@@ -1,9 +1,12 @@
-Добавление:
+﻿Добавление:
 
-
+Соединитель маркера/пациента
+`Connector_entry` (in URL TEXT, in PatId int)
+URL - путь к картинке
+PatId - id пациента
 
 Добавлениие маркера
-`Fill_FMarker` (in mName text, in color int, in thickness int, in scale int, in inURL text, in x int, in y int)
+`Fill_FMarker` (in mName text, in color int, in thickness int, in scale int, in inURL text, in x int, in y int, in form text)
 mName - название (тут по сути может быть что угодно, но лучше что то уникальное)
 color - цвет
 thickness - толщина линии
@@ -12,6 +15,7 @@ URL - адрес. К чему конкретно не важно, но по не
 Если адрес уже есть в базе - маркер привяжется к существующей записи, если нет - сгенерируется новая
 x -
 y - координаты начальной точки маркера
+form - форма маркера
 
 
 
@@ -92,8 +96,8 @@ in c1 float, in c2 float, in c3 float, in c4 int, in c5 float, in c6 float, in c
 
 Просмотр информации о маркере
 `View_FMark` (in vmode int, in input text)
-по id (vmode=0) маркера показывает его название, цвет, толщину, масштаб
-по названию (vmode!=0) маркера показывает его цвет, толщину, масштаб
+по id (vmode=0) маркера показывает его название, цвет, толщину, масштаб, форма
+по названию (vmode!=0) маркера показывает его цвет, толщину, масштаб, форма
 
 
 
