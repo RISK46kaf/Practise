@@ -1,9 +1,10 @@
 ﻿Добавление:
 
 Соединитель маркера/пациента
-`Connector_entry` (in URL TEXT, in PatId int)
+`Connector_entry` (in URL TEXT, in PatId int, in Ename text)
 URL - путь к картинке
 PatId - id пациента
+Ename - название/описание записи
 
 Добавлениие маркера
 `Fill_FMarker` (in mName text, in color int, in thickness int, in scale int, in inURL text, in x int, in y int, in form text)
@@ -182,4 +183,20 @@ in c1 float, in c2 float, in c3 float, in c4 int, in c5 float, in c6 float, in c
 `rel_inertia` float,
 `valid_r` bool
 
+Просмотр анамнезов по диагнозу
+`View_AnamnByDiag` (in DiagF int)
 
+Просмотр информации о пациентах по диагнозу
+`View_PatInfoById` (in IdDiag int)
+
+Просмотр списка маркеров по диагнозу
+`View_FMark_byDiag` (in diagId int)
+
+Просмотр информации всех пациентов по диагнозу
+`View_PatInfoByDiag` (in IdDiag int)
+
+Просмотр всех анамнезов по диагнозу пациента
+`View_AnamnByDiag` (in DiagF int)
+
+Просмотр всех маркеров по диагнозу
+`View_FMark_byDiag` (in diagId int)
