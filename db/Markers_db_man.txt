@@ -33,7 +33,7 @@ y - координаты новой точки, которая будет отн
 in a5 int, in a6 int, in a7 int, in a8 int, in a9 int,
 in a10 float, in a11 float, in MarkId int, 
 in b1 float, in b2 int, in b3 float, in b4 int, in b5 float, in b6 float, in b7 bool,
-in c1 float, in c2 float, in c3 float, in c4 int, in c5 float, in c6 float, in c7 bool)
+in c1 float, in c2 float, in c3 float, in c4 float, in c5 float, in c6 float, in c7 bool)
 
 `Spots`, - тут всё как у зайцева, вроде, минус точки
 `SpotsSquare`,
@@ -143,7 +143,7 @@ in c1 float, in c2 float, in c3 float, in c4 int, in c5 float, in c6 float, in c
 `max_rad` float, - "Radius"
 `min_rad` float,
 `avg_rad` float,
-`mean_sq_r` int,
+`mean_sq_r` float,
 `inertia` float,
 `rel_inertia` float,
 `valid_r` bool
@@ -178,7 +178,7 @@ in c1 float, in c2 float, in c3 float, in c4 int, in c5 float, in c6 float, in c
 `max_rad` float, - "Radius"
 `min_rad` float,
 `avg_rad` float,
-`mean_sq_r` int,
+`mean_sq_r` float,
 `inertia` float,
 `rel_inertia` float,
 `valid_r` bool
