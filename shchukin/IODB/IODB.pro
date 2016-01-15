@@ -19,18 +19,19 @@ SOURCES += main.cpp\
     Core/anamnesmanager.cpp \
     Core/profilemanager.cpp \
     Core/databasemanager.cpp \
-    input.cpp \
-    output.cpp \
     Markers/ellipsemarker.cpp \
     Markers/rectmarker.cpp \
     Markers/advancedabstractfigure.cpp \
     Markers/polygonmarker.cpp \
-    sender.cpp \
-    recognizemediator.cpp \
-    Recognizer/trecognizer.cpp \
-    Recognizer/tregmode.cpp \
-    Recognizer/treservationrules.cpp \
-    Recognizer/tthing.cpp
+    Core/sender.cpp \
+    Core/recognizemediator.cpp \
+    Core/Recognizer/trecognizer.cpp \
+    Core/Recognizer/tregmode.cpp \
+    Core/Recognizer/treservationrules.cpp \
+    Core/Recognizer/tthing.cpp \
+    Core/analisator.cpp \
+    ioput.cpp \
+    Core/morphdatareal.cpp
 
 SOURCES +=   ImageFrame/Preview/rectitem.cpp \
     ImageFrame/Preview/previewview.cpp \
@@ -54,24 +55,25 @@ HEADERS  += welcome.h \
     Core/anamnesmanager.h \
     Core/profilemanager.h \
     Core/databasemanager.h \
-    input.h \
-    output.h \
     Markers/ellipsemarker.h \
     Markers/rectmarker.h \
     Markers/advancedabstractfigure.h \
     Markers/polygonmarker.h \
-    sender.h \
-    recognizemediator.h \
-    Recognizer/pixrec.h \
-    Recognizer/tlayerb.h \
-    Recognizer/tlayerrec.h \
-    Recognizer/tlayert.h \
-    Recognizer/tmatrixt.h \
-    Recognizer/trecognizer.h \
-    Recognizer/tregmode.h \
-    Recognizer/treservationrules.h \
-    Recognizer/tthing.h \
-    morphdata.h
+    Core/sender.h \
+    Core/recognizemediator.h \
+    Core/Recognizer/pixrec.h \
+    Core/Recognizer/tlayerb.h \
+    Core/Recognizer/tlayerrec.h \
+    Core/Recognizer/tlayert.h \
+    Core/Recognizer/tmatrixt.h \
+    Core/Recognizer/trecognizer.h \
+    Core/Recognizer/tregmode.h \
+    Core/Recognizer/treservationrules.h \
+    Core/Recognizer/tthing.h \
+    Core/analisator.h \
+    ioput.h \
+    Core/morphdata.h \
+    Core/morphdatareal.h
 
 HEADERS  +=    ImageFrame/Preview/previewview.h\
     ImageFrame/Preview/rectitem.h \
@@ -86,8 +88,7 @@ HEADERS  +=    Markers/marker.h \
     Markers/arrowmarker.h
 
 FORMS    += welcome.ui \
-    input.ui \
-    output.ui
+    ioput.ui
 
 RESOURCES += \
     rsc/resources.qrc

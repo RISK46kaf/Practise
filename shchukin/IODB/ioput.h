@@ -1,5 +1,5 @@
-﻿#ifndef INPUT_H
-#define INPUT_H
+﻿#ifndef IOPUT_H
+#define IOPUT_H
 
 #include <QMainWindow>
 #include <ImageFrame/imagewidget.h>
@@ -7,24 +7,25 @@
 #include <QPair>
 
 namespace Ui {
-class Input;
+class IOput;
 }
-
-class Sender;
 
 namespace Core {
 class AnamnesManager;
 class ProfileManager;
 class DataBaseManager;
+class Sender;
+class Analisator;
 }
 
-class Input : public QMainWindow
+class IOput : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit Input(Core::DataBaseManager* dbManager, QWidget *parent = 0);
-    ~Input();
+    explicit IOput(Core::DataBaseManager* dbManager, bool analisisVer = false,
+                   QWidget *parent = 0);
+    ~IOput();
 
 private slots:
     void on_toolArrow_clicked();
@@ -46,12 +47,14 @@ private slots:
     void on_toolRem_clicked();
 
 private:
-    Ui::Input *ui;
+    Ui::IOput *ui;
     Core::AnamnesManager* _anamnesManager;
     Core::ProfileManager* _profileManager;
     Core::DataBaseManager* _dbManager;
+    bool _anlisisVersion;
     ImageWidget* _imageWidget;
-    Sender*      _sender;
+    Core::Sender* _sender;
+    Core::Analisator* _analisator;
     QRgb currentMarkerColor;
     QVector<QPair<QListWidgetItem*,Marker*> > markerList;
     void init();
@@ -59,4 +62,4 @@ private:
     int markerID;
 };
 
-#endif // INPUT_H
+#endif // IOPUT_H

@@ -1,25 +1,26 @@
-﻿#include "input.h"
-#include "ui_input.h"
+﻿#include "ioput.h"
+#include "ui_ioput.h"
 
 #include "Core/anamnesmanager.h"
 #include "Core/profilemanager.h"
 #include "Core/databasemanager.h"
 #include <QDebug>
 #include <QColorDialog>
-#include "sender.h"
-
+#include "Core/sender.h"
+#include "Core/analisator.h"
+#include <QMessageBox>
 
 using namespace Core;
 
-Input::Input(Core::DataBaseManager *dbManager, QWidget *parent) :
+IOput::IOput(Core::DataBaseManager *dbManager, bool analisisVer, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::Input), _dbManager(dbManager)
+    ui(new Ui::IOput), _dbManager(dbManager), _anlisisVersion(analisisVer)
 {
     ui->setupUi(this);
     init();
 }
 
-void Input::init()
+void IOput::init()
 {
     markerID = 0;
     ui->pageProfile->setLayout(ui->verticalLayoutProfile);
@@ -29,19 +30,28 @@ void Input::init()
     ui->page_3->setLayout(ui->verticalLayoutAnamnez3);
     ui->page_4->setLayout(ui->verticalLayoutAnamnez4);
     ui->frameMtools->setLayout(ui->gridLayoutMtools);
-    ui->pageMarkers->setLayout(ui->verticalLayoutMarkers);
     _anamnesManager = new AnamnesManager(this);
     _profileManager = new ProfileManager(this);
     _imageWidget = new ImageWidget(this);
 //    _imageWidget->setMinimumWidth(800);
 //    ui->frame_2->setMinimumWidth(800);
     this->setMinimumWidth(1200);
+//    ui->actionSend->setText()
 
     ui->imageViewLayout->addWidget(_imageWidget);
 
     _dbManager->setParent(this);
 
-    _sender = new Sender(this);
+    if(_anlisisVersion)
+    {
+        _analisator = new Analisator(this);
+        _sender = NULL;
+    }
+    else
+    {
+        _analisator = NULL;
+        _sender = new Sender(this);
+    }
 
     connect(ui->actionSetPersonalData,
             &QAction::triggered,
@@ -61,19 +71,50 @@ void Input::init()
         ui->stackedWidget->setCurrentIndex(2);
     }
     );
-    connect(ui->actionSend,
-            &QAction::triggered,
-            [=]() {
-        qint64 anamnesId = _dbManager->writeAnamnes(_anamnesManager);
-        qDebug() <<  anamnesId <<  "profile id" <<
-                     _dbManager->
-                     writeProfile(
-                         _profileManager,
-                         anamnesId
-                         );
-        _sender->startOperation(_imageWidget->getPath(), _dbManager, _anamnesManager, _profileManager, &markerList );
+    if(_anlisisVersion)
+    {
+        ui->actionSend->setText("Анализировать");
+        ui->actionSetAnamnes->setEnabled(false);
+        ui->actionSetPersonalData->setEnabled(false);
+        _imageWidget->setAnalisisVersion();
+        ui->stackedWidget->setCurrentIndex(2);
+        connect(ui->actionSend,
+                &QAction::triggered,
+                [=]() {
+            QString answer;
+            _analisator->startOperation
+                    (
+                        _imageWidget->getPath(),
+                        _dbManager,
+                        &markerList,
+                        answer
+                    );
+            QMessageBox::information(this, "Результат Анализа", answer);
+        }
+        );
     }
-    );
+    else
+        connect(ui->actionSend,
+                &QAction::triggered,
+                [=]() {
+            //        qint64 anamnesId = _dbManager->writeAnamnes(_anamnesManager);
+            //        qDebug() <<  anamnesId <<  "profile id" <<
+            //                     _dbManager->
+            //                     writeProfile(
+            //                         _profileManager,
+            //                         anamnesId
+            //                         );
+            _sender->startOperation
+                    (
+                        _imageWidget->getPath(),
+                        _imageWidget->getAbout(),
+                        _dbManager,
+                        _anamnesManager,
+                        _profileManager,
+                        &markerList
+                    );
+        }
+        );
     connect(ui->dateSince,
             &QDateEdit::editingFinished,
             [=]() {
@@ -569,7 +610,7 @@ void Input::init()
     );
 }
 
-void Input::clear()
+void IOput::clear()
 {
     ui->dateSince->setDate(QDate::fromString("01.01.2000","dd.MM.yyyy"));
     ui->textComplaint->clear();
@@ -634,15 +675,15 @@ void Input::clear()
     ui->lineApC->clear();
 }
 
-Input::~Input()
+IOput::~IOput()
 {
     delete ui;
 }
 
 
-void Input::on_toolArrow_clicked()
+void IOput::on_toolArrow_clicked()
 {
-    for(uint i=0;i<markerList.size();++i)
+    for(int i=0;i<markerList.size();++i)
     {
         if(markerList[i].second != NULL)
         {
@@ -679,17 +720,17 @@ void Input::on_toolArrow_clicked()
     }
 }
 
-void Input::on_toolCol_clicked()
+void IOput::on_toolCol_clicked()
 {
     currentMarkerColor = QColorDialog::getRgba();
     markerList[ui->listWidget->currentRow()].second->setColor(currentMarkerColor);
 }
 
-void Input::on_toolEllipse_clicked()
+void IOput::on_toolEllipse_clicked()
 {
     qDebug()<<"A";
 
-    for(uint i=0;i<markerList.size();++i)
+    for(int i=0;i<markerList.size();++i)
     {
         if(markerList[i].second != NULL)
         {
@@ -725,16 +766,16 @@ void Input::on_toolEllipse_clicked()
         item->setText(m->name);
         ui->listWidget->addItem(item);
         ui->listWidget->setCurrentRow(ui->listWidget->count()-1);
-        for(uint i=0;i<markerList.size();++i)
+        for(int i=0;i<markerList.size();++i)
         {
             qDebug()<<"mark "<<i<<markerList[i];
         }
     }
 }
 
-void Input::on_toolRect_clicked()
+void IOput::on_toolRect_clicked()
 {
-    for(uint i=0;i<markerList.size();++i)
+    for(int i=0;i<markerList.size();++i)
     {
         if(markerList[i].second != NULL)
         {
@@ -772,9 +813,9 @@ void Input::on_toolRect_clicked()
     }
 }
 
-void Input::on_toolPoly_clicked()
+void IOput::on_toolPoly_clicked()
 {
-    for(uint i=0;i<markerList.size();++i)
+    for(int i=0;i<markerList.size();++i)
     {
         if(markerList[i].second != NULL)
         {
@@ -818,7 +859,7 @@ void Input::on_toolPoly_clicked()
     }
 }
 
-void Input::on_toolConf_clicked()
+void IOput::on_toolConf_clicked()
 {
     if(_imageWidget)
     {
@@ -828,9 +869,9 @@ void Input::on_toolConf_clicked()
     }
 }
 
-void Input::on_listWidget_itemClicked(QListWidgetItem *item)
+void IOput::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-    for(uint i=0;i<markerList.size();++i)
+    for(int i=0;i<markerList.size();++i)
     {
 
 
@@ -859,16 +900,16 @@ void Input::on_listWidget_itemClicked(QListWidgetItem *item)
 
 }
 
-void Input::on_plainTextEdit_textChanged()
+void IOput::on_plainTextEdit_textChanged()
 {
     markerList[ui->listWidget->currentRow()].second->text = ui->plainTextEdit->document()->toPlainText();
 }
 
-void Input::on_toolRem_clicked()
+void IOput::on_toolRem_clicked()
 {
     qDebug()<<"currentRow "<<ui->listWidget->currentRow();
     qDebug()<<"markerList.size "<<markerList.size();
-    for(uint i=0;i<markerList.size();++i)
+    for(int i=0;i<markerList.size();++i)
     {
         if(ui->listWidget->currentItem() == markerList[i].first)
         {
@@ -883,7 +924,7 @@ void Input::on_toolRem_clicked()
             markerList.removeAt(i);
         }
     }
-    for(uint i=0;i<markerList.size();++i)
+    for(int i=0;i<markerList.size();++i)
     {
         qDebug()<<"mark "<<i<<markerList[i];
     }

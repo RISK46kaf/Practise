@@ -1,26 +1,25 @@
 ﻿#include "sender.h"
-#include "Core/anamnesmanager.h"
-#include "Core/profilemanager.h"
-#include "Core/databasemanager.h"
+#include "anamnesmanager.h"
+#include "profilemanager.h"
+#include "databasemanager.h"
 #include <QListWidgetItem>
 #include <Markers/marker.h>
 #include "recognizemediator.h"
+#include <QListWidgetItem>
+#include "morphdata.h"
+
+using namespace Core;
 
 Sender::Sender(QObject *parent) : QObject(parent)
 {
     mediator = new RecognizeMediator(this);
- /*   connect(mediator, &RecognizeMediator::result, this,
-            [&](MorphData d)
-    {
-        qDebug() << "lalsad"  << d.AverageRadius;
-    }
-    )*/;
 }
 
 void Sender::startOperation(const QString &path,
-                            Core::DataBaseManager *dbm,
-                            Core::AnamnesManager *am,
-                            Core::ProfileManager *pm,
+                            const QString &about,
+                            DataBaseManager *dbm,
+                            AnamnesManager *am,
+                            ProfileManager *pm,
                             QVector<QPair<QListWidgetItem *, Marker *> > *markers)
 {
     if(path.isEmpty())
@@ -28,7 +27,8 @@ void Sender::startOperation(const QString &path,
         qDebug() << "path" << path;
         return;
     }
-    anamnesId = dbm->writeAnamnes(am);
+    qint64 anamnesId = dbm->writeAnamnes(am);
+    qint64 profileId = -1;
     QImage image;
     image.load(path + "/Morph/morph.png");
     qDebug() <<  anamnesId <<  "profile id" <<
@@ -37,7 +37,6 @@ void Sender::startOperation(const QString &path,
                      pm,
                      anamnesId
                      ));
-    dbM = dbm;
 
     for(int i = 0; i < markers->count(); ++ i)
     {
@@ -62,7 +61,7 @@ void Sender::startOperation(const QString &path,
         qDebug() << "tmp" << tmp;
         tmp = tmp.normalized();
         MorphData data;
-        qint64 markerID = dbm->writeMarker(marker,path, profileId);
+        qint64 markerID = dbm->writeMarker(marker,path, about, profileId);
         qDebug() << "lalsad"  << markerID <<
         (data = mediator->calculate(tmp,image)).AverageRadius;
         qDebug() << "marph" << dbm->writeMorphology(data, markerID);

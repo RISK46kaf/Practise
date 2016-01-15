@@ -5,6 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+namespace Core {
 namespace Recognizer {
 
 template <class T>
@@ -147,5 +148,6 @@ private:
     cv::Mat* matrix;
 };
 
-}
+} // namespace Recognizer
+} // namespace Core
 #endif // TLAYERT_H

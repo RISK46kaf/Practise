@@ -1,6 +1,6 @@
 ﻿#include "trecognizer.h"
 
-using namespace Recognizer;
+using namespace Core::Recognizer;
 
 qreal m_sqrt2=     1.41421356237309504880; //  sqrt(2)
 qreal m_1_2sqrtpi= 0.28209479177387814347; //  1/(2*sqrt(pi))
@@ -963,5 +963,5 @@ for_each_intcircuitpoint_bits(const TThing* Thing, TernaryFunctor F)
     return F;
 }
 
-template class Recognizer::TRecognizer<true>;
-//template class Recognizer::TRecognizer<false>;
+template class Core::Recognizer::TRecognizer<true>;
+//template class Core::Recognizer::TRecognizer<false>;

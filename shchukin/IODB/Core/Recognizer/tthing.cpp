@@ -1,6 +1,6 @@
 ﻿#include "tthing.h"
 
-using namespace Recognizer;
+using namespace Core::Recognizer;
 
 QVector<QPoint> TThing::ExtCircuitPoints()const
 {

@@ -2,8 +2,7 @@
 #include "ui_welcome.h"
 #include <QPainter>
 
-#include "input.h"
-#include "output.h"
+#include "ioput.h"
 #include "Core/databasemanager.h"
 
 #include <QDebug>
@@ -38,8 +37,7 @@ Welcome::Welcome(QWidget *parent) :
     }
     _dbManager = new DataBaseManager(this);
     connect(_dbManager,SIGNAL(openMode(int)),this, SLOT(onOpenMode(int)));
-    _input = NULL;
-    _output = NULL;
+    _ioput = NULL;
 //    ui->comboBoxMode->setStyleSheet("QComboBox:item {text-align: center; }");
 //    ui->comboBoxMode->lineEdit()->setReadOnly(true);
 //    ui->comboBoxMode->lineEdit()->setAlignment(Qt::AlignCenter);
@@ -48,8 +46,7 @@ Welcome::Welcome(QWidget *parent) :
 Welcome::~Welcome()
 {
     delete ui;
-    /*if(_input !==) */delete _input;
-    /*if(_output) */delete _output;
+    /*if(_ioput !==) */delete _ioput;
 }
 
 void Welcome::paintEvent(QPaintEvent *event)
@@ -78,16 +75,20 @@ void Welcome::on_pushButton_clicked()
 void Welcome::onOpenMode(int mode)
 {
     qDebug() << "on" << mode;
-    if(mode == (int)(Mode::Write) && !_input)
+    if(_ioput)
+        return;
+    if(mode == (int)(Mode::Write))
     {
-        _input = new Input(_dbManager);
-        _input->show();
+        _ioput = new IOput(_dbManager);
+        _ioput->show();
         close();
     }
-    else if(mode == (int)(Mode::Read) && !_output)
+    else if(mode == (int)(Mode::Read))
     {
-        _output = new Output(_dbManager);
-        _output->show();
+//        _output = new Output(_dbManager);
+//        _output->show();
+        _ioput = new IOput(_dbManager,true);
+        _ioput->show();
         close();
     }
 }

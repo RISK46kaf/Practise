@@ -77,8 +77,8 @@ void TileMap::drawField(uint width, uint height, QPoint center)
             if(matrix[y][x] == false)
             {
                 matrix[y][x] = true;
-                QString path = image_path + "1_" + QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".jpg";
-                Tile * t = new Tile(QPixmap(path,"JPG"),QPoint(x,y));
+                QString path = image_path + "1_" + QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".png";
+                Tile * t = new Tile(QPixmap(path),QPoint(x,y));
                 storage.push_back(t);
                 scene->addItem(storage.last());
             }
@@ -101,9 +101,9 @@ void TileMap::drawViewField(QRect r)
         uint bottomBorder = r.bottom()/256 +1;
         uint leftBorder = r.left()/256;
         uint rightBorder = r.right()/256 +1;
-        if((rightBorder-1) == map_size.width())
+        if((rightBorder-1) == (uint)map_size.width())
             --rightBorder;
-        if((bottomBorder-1) == map_size.height())
+        if((bottomBorder-1) == (uint)map_size.height())
             --bottomBorder;
         for(uint y=topBorder;y<bottomBorder;++y)
         {
@@ -112,8 +112,8 @@ void TileMap::drawViewField(QRect r)
                 if(matrix[y][x] == false)
                 {
                     matrix[y][x] = true;
-                    QString path = image_path + "1_" + QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".jpg";
-                    Tile * t = new Tile(QPixmap(path,"JPG"),QPoint(x,y));
+                    QString path = image_path + "1_" + QString::number(scale)+"/"+QString("y=")+QString::number(y)+"x="+QString::number(x)+".png";
+                    Tile * t = new Tile(QPixmap(path),QPoint(x,y));
                     storage.push_back(t);
                     scene->addItem(storage.last());
                 }
@@ -205,7 +205,7 @@ void TileMap::clear(QRect r)
 void TileMap::clearAll()
 {
     //qDebug()<<"storage size: "<<storage.size();
-    for(uint i=0;i<storage.size();++i)
+    for(int i=0;i<storage.size();++i)
         delete storage[i];
     storage.clear();
     //qDebug()<<"storage size then: "<<storage.size();
@@ -220,7 +220,7 @@ void TileMap::clearAll()
 
 void TileMap::updateItems()
 {
-    for(uint i=0;i<storage.size();++i)
+    for(int i=0;i<storage.size();++i)
     {
         storage[i]->update();
     }
@@ -242,6 +242,7 @@ void TileMap::viewResized()
 
 void TileMap::scrolledVertical(int value)
 {
+    Q_UNUSED(value)
     emit viewRect(getViewField());
     emit topLeftPointEvent(getLeftPoint());
 
@@ -256,6 +257,7 @@ void TileMap::scrolledVertical(int value)
 
 void TileMap::scrolledHorizontal(int value)
 {
+    Q_UNUSED(value)
     emit viewRect(getViewField());
     emit topLeftPointEvent(getLeftPoint());
     view->horizontalScrollBar()->blockSignals(true);
@@ -270,7 +272,7 @@ void TileMap::zoomOut(QPoint pnt)
     QPoint npnt = view->mapToScene(pnt).toPoint();
     QPoint c = view->mapToScene(view->size().width()/2,view->size().height()/2).toPoint();
 
-    int d1 = qSqrt(qPow(npnt.x() - c.x(),2) + qPow(npnt.y() - c.y(),2));
+//    int d1 = qSqrt(qPow(npnt.x() - c.x(),2) + qPow(npnt.y() - c.y(),2));
     if((int)scale < (tileAmount.size()))
     {
         clearAll();
@@ -281,7 +283,7 @@ void TileMap::zoomOut(QPoint pnt)
         int px = scale*c.x()/(scale+1);//центр
         int py = scale*c.y()/(scale+1);
 
-        int d2 = qSqrt(qPow(x - px,2) + qPow(y - py,2));
+//        int d2 = qSqrt(qPow(x - px,2) + qPow(y - py,2));
 
 
         ++scale;
@@ -315,7 +317,7 @@ void TileMap::zoomIn(QPoint pnt)
     QPoint npnt = view->mapToScene(pnt).toPoint();
     QPoint c = view->mapToScene(view->size().width()/2,view->size().height()/2).toPoint();
 
-    int d = qSqrt(qPow(pnt.x(),2) + qPow(pnt.y(),2));
+//    int d = qSqrt(qPow(pnt.x(),2) + qPow(pnt.y(),2));
     if((int)scale > 1)
     {
         clearAll();
@@ -326,7 +328,7 @@ void TileMap::zoomIn(QPoint pnt)
         int px = scale*c.x()/(scale-1);
         int py = scale*c.y()/(scale-1);
 
-        int d2 = qSqrt(qPow(x - px,2) + qPow(y - py,2));
+//        int d2 = qSqrt(qPow(x - px,2) + qPow(y - py,2));
 
 
 
@@ -358,8 +360,9 @@ void TileMap::zoomIn(QPoint pnt)
 
 void TileMap::changeScale(QPoint pnt, uint s)
 {
+    Q_UNUSED(pnt)
     clearAll();
-    QPoint npnt = view->mapToScene(pnt).toPoint();
+//    QPoint npnt = view->mapToScene(pnt).toPoint();
     QPoint c = view->mapToScene(view->size().width()/2,view->size().height()/2).toPoint();
     view->centerOn(c);
     scale = s;
@@ -371,7 +374,7 @@ void TileMap::changeScale(QPoint pnt, uint s)
 
 TileMap::~TileMap()
 {
-    for(uint i=0;i<storage.size();++i)
+    for(int i=0;i<storage.size();++i)
     {
         delete storage[i];
     }

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Input</class>
- <widget class="QMainWindow" name="Input">
+ <class>IOput</class>
+ <widget class="QMainWindow" name="IOput">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Input</string>
+   <string>IOput</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="minimumSize">
@@ -51,7 +51,7 @@
        <enum>QFrame::Sunken</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="pageProfile">
        <property name="sizePolicy">
@@ -2231,13 +2231,6 @@
           <widget class="QListWidget" name="listWidget"/>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QFrame" name="frameMtools">
            <property name="enabled">
             <bool>true</bool>
@@ -2276,25 +2269,6 @@
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayoutMtools">
-             <item row="3" column="1">
-              <widget class="QPushButton" name="toolArrow">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>94</horstretch>
-                 <verstretch>22</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>94</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Стрела</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="0">
               <widget class="QPushButton" name="toolCol">
                <property name="sizePolicy">
@@ -2314,11 +2288,8 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0">
-              <widget class="QPushButton" name="toolConf">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
+             <item row="3" column="1">
+              <widget class="QPushButton" name="toolArrow">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>94</horstretch>
@@ -2332,29 +2303,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>Подтвердить</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <widget class="QPushButton" name="toolEdit">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>94</horstretch>
-                 <verstretch>22</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>94</width>
-                 <height>22</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Редактировать выделенное</string>
+                <string>Стрела</string>
                </property>
               </widget>
              </item>
@@ -2440,71 +2389,6 @@
          </item>
          <item>
           <widget class="QPlainTextEdit" name="plainTextEdit"/>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="pageMarkers">
-       <widget class="QWidget" name="layoutWidget_8">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>50</y>
-          <width>380</width>
-          <height>401</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayoutMarkers">
-         <item>
-          <widget class="QListWidget" name="listWidgetMarkers"/>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_20">
-           <property name="spacing">
-            <number>6</number>
-           </property>
-           <item>
-            <widget class="QToolButton" name="toolReM">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Удалить маркер</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="toolEdM">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Редактировать маркер</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
          </item>
         </layout>
        </widget>

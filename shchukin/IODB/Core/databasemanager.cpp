@@ -201,7 +201,10 @@ qint64 DataBaseManager::writeAnamnes(AnamnesManager *anamnesManager)
     return retVal;
 }
 
-qint64 DataBaseManager::writeMarker(Marker *marker, QString imgPath, qint64 profileId)
+qint64 DataBaseManager::writeMarker(Marker *marker,
+                                    const QString& imgPath,
+                                    const QString& about,
+                                    qint64 profileId)
 {
     qDebug("call writeMarker");
     qint64 retVal = - 1;
@@ -266,14 +269,15 @@ qint64 DataBaseManager::writeMarker(Marker *marker, QString imgPath, qint64 prof
                 qDebug() << "saasd" << ok; // zero means add to last added;
             }
         }
-        query.prepare("call Connector_entry(:URL, :PatId);");
+        query.prepare("call Connector_entry(:URL, :PatId, :about);");
         query.bindValue(":URL", QVariant::fromValue(imgPath));
         query.bindValue(":PatId", QVariant::fromValue(profileId));
+        query.bindValue(":about", QVariant::fromValue(about));
         ok &= query.exec();
         query.next();
 //                _db.commit();
         qDebug() << query.lastError().text();
-        qDebug() << "saasd" << ok; // zero means add to last added;
+        qDebug() << "CONNECTOR!!!111" << ok; // zero means add to last added;
 //        _db.transaction();
         ok &= query.exec("SELECT MAX(id) from markFull;");
         query.next();
@@ -338,6 +342,29 @@ qint64 DataBaseManager::writeMorphology(MorphData &data, qint64 markerId)
         _db.commit();
         qDebug() << "ok?" << ok;
     }
+    return retVal;
+}
+
+QString DataBaseManager::readDiagnosisById(qint64 id, bool* ok)
+{
+    bool myOk = false;
+    QString retVal;
+    if(_db.isOpen())
+    {
+        _db.transaction();
+        QSqlQuery query;
+        myOk = query.exec(QString("SELECT name FROM diagnoses WHERE id = %1;")
+                            .arg(id));
+        if(query.next())
+        {
+            retVal = query.value(0).toString();
+        }
+        qDebug() << query.lastError().text();
+        qDebug() << "readDiagnosisById is ok" << myOk;
+        _db.commit();
+    }
+    if(ok != NULL)
+        *ok = myOk;
     return retVal;
 }
 
@@ -472,6 +499,98 @@ bool DataBaseManager::readAnamnes(AnamnesManager *anamnesManager, qint64 profile
             anamnesManager->setTextPlanTher(query.value(32).toString());
             anamnesManager->setLineIncapacitated(query.value(33).toString());
             anamnesManager->setLineDoc(query.value(34).toString());
+        }
+        _db.commit();
+    }
+    return retVal;
+}
+
+bool DataBaseManager::readMorphology(QMap<qint64, QVector<MorphData *>* > *morphMap)
+{
+    for(auto it = morphMap->begin(); it != morphMap->end(); ++it)
+    {
+        qDeleteAll(*it.value());
+    }
+    qDeleteAll(*morphMap);
+    morphMap->clear();
+    QSet<qint64> ids;
+    bool retVal = false;
+    if(_db.isOpen())
+    {
+        _db.transaction();
+        qDebug() << "again";
+        QSqlQuery query;
+        retVal = query.exec(QString("SELECT diagnoses_id FROM patient_info;"));
+        while(query.next())
+        {
+            ids.insert(query.value(0).toLongLong());
+        }
+        for(auto it = ids.begin(); it != ids.end(); ++it)
+        {
+            QVector<MorphData *>* tmpVData = new QVector<MorphData *>;
+            retVal &= query.exec(QString("CALL View_Morph_ByDiag(%1);")
+                                 .arg(*it));
+            while(query.next())
+            {
+                qDebug() << "ok View_Morph_ByDiag";
+                MorphData* data = new MorphData;
+                int i = 0;
+                data->MarkId = query.value(i).toLongLong();
+                i++;
+                data->Spots = query.value(i).toLongLong();
+                i++;
+                data->SpotsSquare = query.value(i).toLongLong();
+                i++;
+                data->ExtCircuit8Len = query.value(i).toLongLong();
+                i++;
+                data->ExtCircuit4Len = query.value(i).toLongLong();
+                i++;
+                data->ExtPerimetr = query.value(i).toLongLong();
+                i++;
+                data->IntCircuit8Len = query.value(i).toLongLong();
+                i++;
+                data->IntCircuit4Len = query.value(i).toLongLong();
+                i++;
+                data->IntPerimetr = query.value(i).toLongLong();
+                i++;
+                data->Square = query.value(i).toLongLong();
+                i++;
+                data->Fullness = query.value(i).toReal();
+                i++;
+                data->ShapeFactor = query.value(i).toReal();
+                //Fere
+                i++;
+                data->MinDiametr = query.value(i).toReal();
+                i++;
+                data->AngleMin = query.value(i).toLongLong();
+                i++;
+                data->MaxDiametr = query.value(i).toReal();
+                i++;
+                data->AngleMax = query.value(i).toLongLong();
+                i++;
+                data->AverageDiametr = query.value(i).toReal();
+                i++;
+                data->MeanSquareDiametr = query.value(i).toReal();
+                i++;
+                data->FerValid = query.value(i).toBool();
+                // Radius
+                i++;
+                data->MaxRadius = query.value(i).toReal();
+                i++;
+                data->MinRadius = query.value(i).toReal();
+                i++;
+                data->AverageRadius = query.value(i).toReal();
+                i++;
+                data->MeanSquareRadius = query.value(i).toReal();
+                i++;
+                data->InertiaMoment = query.value(i).toReal();
+                i++;
+                data->RelInertiaMoment = query.value(i).toReal();
+                i++;
+                data->RadValid = query.value(i).toBool();
+                tmpVData->push_back(data);
+            }
+            morphMap->insert(*it, tmpVData);
         }
         _db.commit();
     }

@@ -35,7 +35,8 @@ public:
     void openByName(const QString& filename);
     QString getFilename() const;
     QString getPath() const;
-
+    QString getAbout() const;
+    void setAnalisisVersion();
 private:
     QGridLayout* layout;
     QVBoxLayout* subLayout;

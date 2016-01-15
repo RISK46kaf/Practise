@@ -6,7 +6,9 @@
 #ifdef _DEBUG
 #include <QDebug>
 #endif
-using namespace Recognizer;
+
+using namespace Core;
+using namespace Core::Recognizer;
 
 RecognizeMediator::RecognizeMediator(QObject *parent) : QObject(parent)
 {

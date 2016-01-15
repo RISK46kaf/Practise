@@ -3,6 +3,7 @@
 
 #include <QtCore>
 
+namespace Core {
 namespace Recognizer {
 
 //вспомогательный класс для TRecognizer
@@ -37,5 +38,6 @@ private:
     void SetLast();
 };
 
-}
+} // namespace Recognizer
+} // namespace Core
 #endif // TREGMODE_H

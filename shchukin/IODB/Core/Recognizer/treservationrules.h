@@ -4,6 +4,7 @@
 #include <QtCore>
 //#include "tthing.h"
 
+namespace Core {
 namespace Recognizer {
 
 class TThing;
@@ -48,5 +49,6 @@ private:
     qint64 GetIntReserve(const TThing *Thing);
 };
 
-}
+} // namespace Recognizer
+} // namespace Core
 #endif // TRESERVATIONRULES_H

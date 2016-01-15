@@ -8,6 +8,7 @@
 #include "tlayerb.h"
 #include "tlayerrec.h"
 
+namespace Core {
 namespace Recognizer {
 
 typedef QVector<TThing*> TThingVector;
@@ -83,6 +84,6 @@ class TRecognizer
   bool SelfTest(); //это метод самотестирования
 };
 
-}
-
+} // namespace Recognizer
+} // namespace Core
 #endif // TRECOGNIZER_H

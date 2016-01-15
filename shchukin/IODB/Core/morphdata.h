@@ -2,6 +2,8 @@
 #define MORPHDATA_H
 #include <QtCore>
 
+namespace Core {
+
 struct MorphData
 {
     qint64 Spots;
@@ -15,7 +17,7 @@ struct MorphData
     qint64 Square;
     qreal  Fullness;
     qreal  ShapeFactor;
-    qreal  MarkId; /// id макрера к кот относятся
+    qint64  MarkId; /// id макрера к кот относятся
     // Фере
     qreal MinDiametr;
     qint64 AngleMin;
@@ -29,10 +31,10 @@ struct MorphData
     qreal MinRadius;
     qreal AverageRadius;
     qreal MeanSquareRadius;
-    QPoint MaxRadiusPoint;
-    QPoint MinRadiusPoint;
     qreal InertiaMoment;
     qreal RelInertiaMoment;
     bool RadValid;
 };
+
+}
 #endif // MORPHDATA_H

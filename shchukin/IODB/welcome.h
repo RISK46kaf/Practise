@@ -11,7 +11,7 @@ namespace Core {
 class DataBaseManager;
 }
 
-class Input;
+class IOput;
 class Output;
 
 class Welcome : public QMainWindow
@@ -32,8 +32,7 @@ private slots:
 private:
     Ui::Welcome *ui;
     Core::DataBaseManager* _dbManager;
-    Input* _input;
-    Output* _output;
+    IOput* _ioput;
 };
 
 #endif // WELCOME_H

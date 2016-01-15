@@ -1,6 +1,6 @@
 ﻿#include "tregmode.h"
 
-using namespace Recognizer;
+using namespace Core::Recognizer;
 
 TRegMode::TRegMode():
              last_all(false),last_extunique(false),last_ext(false),

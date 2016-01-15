@@ -5,6 +5,12 @@
 #include "Recognizer/trecognizer.h"
 #include "morphdata.h"
 
+namespace cv {
+class Mat;
+}
+
+namespace Core {
+
 enum CalcType
 {
     Minimun = 0,
@@ -18,10 +24,6 @@ struct CalcError
     int code;
     QString mess;
 };
-
-namespace cv {
-class Mat;
-}
 
 class RecognizeMediator : public QObject
 {
@@ -46,4 +48,5 @@ signals:
 public slots:
 };
 
+} // namespace Core
 #endif // RECOGNIZEMEDIATOR_H

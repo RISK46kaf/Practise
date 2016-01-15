@@ -7,7 +7,7 @@
 
 
 //using std::QVector;
-
+namespace Core {
 namespace Recognizer {
 
 template<class T>
@@ -111,5 +111,6 @@ public:
         }
 };
 
-}
+} // namespace Recognizer
+} // namespace Core
 #endif // IP_MATRIX_H

@@ -77,7 +77,7 @@ void CutterRunnable::imageScales(vips::VImage& image,
         dir.mkpath(".");
     //m.unlock();
     QString pathP =
-            previewDir + "/1_" + QString::number(i*5) + ".jpg[Q=35,optimize_coding]";
+            previewDir + "/1_" + QString::number(i*5) + ".png[compression=9]";
     QString pathO =
             originDir + "/morph.png[compression=9]";
     for(int h = 0; h < tile_amount_h; ++h)
@@ -100,7 +100,7 @@ void CutterRunnable::imageScales(vips::VImage& image,
                 continue;
             }
             //m.unlock();
-            QString path1 = (dirName+"/"+"y=" + QString::number(h)+"x=" + QString::number(w)+".jpg[Q=35,optimize_coding]");
+            QString path1 = (dirName+"/"+"y=" + QString::number(h)+"x=" + QString::number(w)+".png[compression=9]");
             //m.lock();
             std::cout << path1.toStdString().c_str() << std::endl;
 

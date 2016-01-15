@@ -1,7 +1,7 @@
 ﻿#include "treservationrules.h"
 #include "tthing.h"
 
-using namespace Recognizer;
+using namespace Core::Recognizer;
 
 TReservationRules::TReservationRules():
     all_sum(0),ext_sum(0),int_sum(0), all_n(0), ext_n(0), int_n(0),

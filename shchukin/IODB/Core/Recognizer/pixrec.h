@@ -3,6 +3,7 @@
 
 #include <QtCore>
 
+namespace Core {
 namespace Recognizer {
 
 struct pixrec
@@ -43,6 +44,7 @@ struct pixrec
 
 };
 
-}
+} // namespace Recognizer
+} // namespace Core
 #endif // PIXREC
 

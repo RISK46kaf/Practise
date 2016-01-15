@@ -3,6 +3,7 @@
 #include <QtCore>
 //#include "treservationrules.h"
 
+namespace Core {
 namespace Recognizer {
 
 class TReservationRules;
@@ -92,4 +93,5 @@ public:
 };
 
 } // namespace Recognizer
+} // namespace Core
 #endif // THING_H

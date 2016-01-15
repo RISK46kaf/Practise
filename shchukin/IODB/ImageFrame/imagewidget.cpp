@@ -2,12 +2,14 @@
 
 inline void sortSize(QVector<QSize>& sizeList)
 {
-    for(uint j=1;j<sizeList.size();++j)
+    for(int j=1;j<sizeList.size();++j)
     {
-        uint key = sizeList[j].width()*sizeList[j].height();
+        quint64 key = sizeList[j].width()*sizeList[j].height();
         QSize sk = sizeList[j];
         int i = j - 1;
-        while((i > 0)&&((sizeList[i].width()*sizeList[i].height()) < key))
+        while((i > 0)
+              &&
+              ((quint64)(sizeList[i].width()*sizeList[i].height()) < key))
         {
             sizeList[i+1] = sizeList[i];
             i = i - 1;
@@ -80,7 +82,7 @@ void ImageWidget::openByName(const QString &path)
     qDebug() << d.path();
 //    path = d.path();
     QStringList sList;
-    qDebug() << "fucking" << (sList = dirry.entryList(QDir::Files | QDir::NoDotAndDotDot));
+    qDebug() << "sList" << (sList = dirry.entryList(QDir::Files | QDir::NoDotAndDotDot));
 
     if(sList.count())
     {
@@ -153,6 +155,17 @@ QString ImageWidget::getPath() const
     return path;
 }
 
+QString ImageWidget::getAbout() const
+{
+    return textComen->toPlainText();
+}
+
+void ImageWidget::setAnalisisVersion()
+{
+    comenLab->setEnabled(false);
+    textComen->setEnabled(false);
+}
+
 void ImageWidget::openImage(bool)
 {
     connect(view, SIGNAL(resized()),map,SLOT(viewResized()));
@@ -188,7 +201,7 @@ QRect ImageWidget::getViewField()
     QRect view_field;
     view_field.setTopLeft(view->mapToScene(0,0).toPoint());
     view_field.setBottomRight(view->mapToScene(view->size().width(),view->size().height()).toPoint());
-    for(uint i=0;i<markers.size();++i)
+    for(int i=0;i<markers.size();++i)
     {
         scene->update(markers[i]->item->sceneBoundingRect());
         view->update();
@@ -216,7 +229,7 @@ void ImageWidget::setPreview(QString path)
 void ImageWidget::markerScaleChange(uint sc)
 {
     scale = sc;
-    for(uint i=0;i<markers.size();++i)
+    for(int i=0;i<markers.size();++i)
     {
         qDebug()<<"####ImageWidgetScale:#### "<<scale;
         markers[i]->setScale(scale);

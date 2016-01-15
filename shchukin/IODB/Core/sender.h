@@ -2,16 +2,16 @@
 #define SENDER_H
 
 #include <QObject>
-#include <QListWidgetItem>
-#include "morphdata.h"
+
+
+class QListWidgetItem;
+class Marker;
 
 namespace Core {
+
 class AnamnesManager;
 class ProfileManager;
 class DataBaseManager;
-}
-
-class Marker;
 class RecognizeMediator;
 
 class Sender : public QObject
@@ -23,17 +23,18 @@ public:
 signals:
 
 public slots:
-    void startOperation(const QString& path,
-                        Core::DataBaseManager* dbm,
-                        Core::AnamnesManager* am,
-                        Core::ProfileManager* pm,
+    void startOperation(const QString& path, const QString &about,
+                        DataBaseManager* dbm,
+                        AnamnesManager* am,
+                        ProfileManager* pm,
                         QVector<QPair<QListWidgetItem*,Marker*> >* markers);
 
 private:
-    RecognizeMediator *mediator;
-    qint64 anamnesId;
-    qint64 profileId;
-    Core::DataBaseManager* dbM;
+    Core::RecognizeMediator *mediator;
+//    qint64 anamnesId;
+//    qint64 profileId;
+//    Core::DataBaseManager* dbM;
 };
 
+}
 #endif // SENDER_H

@@ -24,7 +24,7 @@ void ArrowMarker::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     painter->setPen(pn);
     painter->drawLine(firstPoint, secondPoint);
 
-    double PI = 3.14;
+//    double PI = 3.14;
     this->prepareGeometryChange();
 
     QLineF line;
@@ -33,9 +33,9 @@ void ArrowMarker::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     line.setP2(secondPoint);
 
 
-    double ang = std::acos(line.dx() / line.length());
+//    double ang = std::acos(line.dx() / line.length());
 
-    qreal arrowSize = 100;
+//    qreal arrowSize = 100;
 
 
     QLineF arrowHead1;

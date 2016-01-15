@@ -5,7 +5,6 @@
 #include <QSqlDatabase>
 #include <QHash>
 
-struct MorphData;
 class QTimer;
 class Marker;
 
@@ -13,6 +12,7 @@ namespace Core {
 
 class AnamnesManager;
 class ProfileManager;
+struct MorphData;
 
 enum Mode{
     PermissionDenied = -1,
@@ -31,11 +31,13 @@ public:
                  const QString& pass, int mode);
     qint64 writeProfile(ProfileManager* profileManager, qint64 anamnesId);
     qint64 writeAnamnes(AnamnesManager* anamnesManager);
-    qint64 writeMarker(Marker* marker, QString imgPath, qint64 profileId);
+    qint64 writeMarker(Marker* marker, const QString &imgPath, const QString &about, qint64 profileId);
     qint64 writeMorphology(MorphData& data, qint64 markerId);
+    QString readDiagnosisById(qint64 id, bool *ok = 0);
     void readPreview(QList<QPair<qint64, QString> >* previewList);
     bool readProfileAndAnamnes(ProfileManager* profileManager, AnamnesManager* anamnesManager, qint64 profileId);
     bool readAnamnes(AnamnesManager* anamnesManager, qint64 profileId);
+    bool readMorphology(QMap<qint64, QVector<MorphData *> *> *morphMap);
 signals:
     void openMode(int);
     void updatePreviewListWidget();
